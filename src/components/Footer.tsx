@@ -3,16 +3,17 @@ import { Mail, Heart } from "lucide-react";
 const footerLinks = {
   产品: [
     { label: "功能特色", href: "#features" },
+    { label: "应用场景", href: "#usecases" },
     { label: "界面预览", href: "#preview" },
     { label: "下载", href: "#download" },
   ],
-  资源: [
-    { label: "更新日志", href: "#download" },
+  支持: [
+    { label: "常见问题", href: "#faq" },
+    { label: "使用指南", href: "#howitworks" },
   ],
   关于: [
     { label: "关于九语", href: "#hero" },
     { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
-    { label: "问题反馈", href: "mailto:jiu0919@agent.qq.com" },
   ],
 };
 
@@ -51,7 +52,6 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      {...(link.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       className="text-xs text-dark-500 hover:text-dark-300 transition-colors"
                     >
                       {link.label}

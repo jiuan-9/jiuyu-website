@@ -24,24 +24,21 @@ export default function DownloadSection() {
         <ScrollReveal threshold={0.2}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-10">
             {/* Windows download */}
-            <a
-              href="https://github.com/jiuan-9/jiuyu-website/releases/download/v1.0.0/Jiuyu-1.0.0.exe"
-              className="group flex items-center gap-4 px-8 py-5 rounded-2xl glass glow-border hover:border-brand-500/30 hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 min-w-[240px]"
-            >
+            <div className="group flex items-center gap-4 px-8 py-5 rounded-2xl glass glow-border min-w-[240px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10">
               <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
                 <Monitor size={22} className="text-brand-400" />
               </div>
               <div className="text-left">
-                <div className="text-sm font-semibold text-white group-hover:text-brand-300 transition-colors">
+                <div className="text-sm font-semibold text-white">
                   Windows 版
                 </div>
                 <div className="text-xs text-dark-500 mt-0.5">v1.0.0 · 便携版</div>
               </div>
-              <Download size={16} className="text-dark-500 group-hover:text-brand-400 transition-colors ml-auto" />
-            </a>
+              <Download size={16} className="text-dark-500 transition-colors ml-auto" />
+            </div>
 
             {/* macOS coming soon */}
-            <div className="flex items-center gap-4 px-8 py-5 rounded-2xl glass border border-white/[0.03] min-w-[240px] opacity-60 cursor-not-allowed">
+            <div className="flex items-center gap-4 px-8 py-5 rounded-2xl glass border border-white/[0.03] min-w-[240px] opacity-60">
               <div className="w-10 h-10 rounded-xl bg-white/[0.02] flex items-center justify-center">
                 <Apple size={22} className="text-dark-500" />
               </div>

@@ -1,6 +1,53 @@
+import { useEffect, useState } from "react";
 import { Download, ChevronDown } from "lucide-react";
 
+const typewriterTexts = [
+  "你的专属 AI 伙伴",
+  "支持 11 家服务商 · 62+ 模型",
+  "纯本地加密存储 · 隐私无忧",
+  "AI 人设精调 · 创造专属角色",
+];
+
+function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, pauseDuration = 2000) {
+  const [displayText, setDisplayText] = useState("");
+  const [textIndex, setTextIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const currentText = texts[textIndex];
+
+    if (!isDeleting && charIndex === currentText.length) {
+      const timeout = setTimeout(() => setIsDeleting(true), pauseDuration);
+      return () => clearTimeout(timeout);
+    }
+
+    if (isDeleting && charIndex === 0) {
+      setIsDeleting(false);
+      setTextIndex((prev) => (prev + 1) % texts.length);
+      return;
+    }
+
+    const timeout = setTimeout(
+      () => {
+        setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
+      },
+      isDeleting ? deleteSpeed : typingSpeed,
+    );
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, textIndex, texts, typingSpeed, deleteSpeed, pauseDuration]);
+
+  useEffect(() => {
+    setDisplayText(texts[textIndex].slice(0, charIndex));
+  }, [charIndex, textIndex, texts]);
+
+  return displayText;
+}
+
 export default function Hero() {
+  const typewriterText = useTypewriter(typewriterTexts);
+
   return (
     <section
       id="hero"
@@ -39,8 +86,9 @@ export default function Hero() {
           九语
         </h1>
 
-        <p className="text-lg sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-2xl mx-auto animate-fade-in-up [animation-delay:0.2s] opacity-0">
-          你的专属 AI 伙伴
+        <p className="text-lg sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-2xl mx-auto animate-fade-in-up [animation-delay:0.2s] opacity-0 h-8 sm:h-9 flex items-center justify-center">
+          <span>{typewriterText}</span>
+          <span className="inline-block w-[2px] h-5 sm:h-6 ml-1 bg-brand-400 animate-pulse" />
         </p>
 
         <p className="text-sm sm:text-base text-dark-400 max-w-xl mx-auto mb-10 animate-fade-in-up [animation-delay:0.3s] opacity-0">
