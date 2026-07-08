@@ -68,7 +68,7 @@ export default function Footer() {
             &copy; 2026 九语. All rights reserved.
           </span>
           <span className="flex items-center gap-1 text-xs text-dark-600">
-            Made with <Heart size={11} className="text-red-400" /> by 九语团队
+            Made with <Heart size={11} className="text-red-400" /> by 九语开发者
           </span>
         </div>
       </div>
