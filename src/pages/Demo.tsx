@@ -62,15 +62,15 @@ const PROVIDERS = [
 
 // ─── Section header ───
 function SectionHeader({
-  icon: Icon,
+  icon,
   label,
 }: {
-  icon: React.ComponentType<{ size: number }>;
+  icon: React.ReactNode;
   label: string;
 }) {
   return (
     <div className="flex items-center gap-2 pt-3 pb-1.5 border-t border-white/[0.04]">
-      <Icon size={11} className="text-brand-400/70" />
+      {icon}
       <span className="text-[10px] font-semibold uppercase tracking-widest text-dark-400">
         {label}
       </span>
@@ -288,7 +288,7 @@ export default function Demo() {
 
           <div className="flex-1 overflow-y-auto p-4 space-y-2 text-xs">
             {/* ─── 当前会话统计 ─── */}
-            <SectionHeader icon={FileText} label="当前会话" />
+            <SectionHeader icon={<FileText size={11} className="text-brand-400/70" />} label="当前会话" />
             <div className="flex gap-4 py-1.5">
               <div className="flex-1 bg-dark-800/60 rounded-lg px-3 py-2 text-center">
                 <div className="text-[10px] text-dark-500">对话轮数</div>
@@ -303,7 +303,7 @@ export default function Demo() {
             </div>
 
             {/* ─── API 设置 ─── */}
-            <SectionHeader icon={Key} label="API 设置" />
+            <SectionHeader icon={<Key size={11} className="text-brand-400/70" />} label="API 设置" />
 
             <div className="space-y-1.5">
               <label className="text-[10px] text-dark-500">服务商</label>
@@ -380,7 +380,7 @@ export default function Demo() {
             </div>
 
             {/* ─── AI 设定 ─── */}
-            <SectionHeader icon={Sparkles} label="AI 设定" />
+            <SectionHeader icon={<Sparkles size={11} className="text-brand-400/70" />} label="AI 设定" />
 
             <div className="flex items-center justify-between py-1">
               <span className="text-[10px] text-dark-400">精调人设</span>
@@ -423,7 +423,7 @@ export default function Demo() {
             </div>
 
             {/* ─── 用户设定 ─── */}
-            <SectionHeader icon={User} label="用户设定" />
+            <SectionHeader icon={<User size={11} className="text-brand-400/70" />} label="用户设定" />
 
             <div className="space-y-1.5">
               <label className="text-[10px] text-dark-500">你的名字</label>
@@ -448,7 +448,7 @@ export default function Demo() {
             </div>
 
             {/* ─── 场景设定 ─── */}
-            <SectionHeader icon={MapPin} label="场景设定" />
+            <SectionHeader icon={<MapPin size={11} className="text-brand-400/70" />} label="场景设定" />
 
             <div className="space-y-1.5">
               <label className="text-[10px] text-dark-500">当前场景</label>
