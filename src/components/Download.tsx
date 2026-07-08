@@ -1,4 +1,4 @@
-import { Download, Monitor, Apple } from "lucide-react";
+import { Download, Monitor, Smartphone, Globe } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 export default function DownloadSection() {
@@ -41,15 +41,28 @@ export default function DownloadSection() {
             </a>
 
             {/* macOS coming soon */}
-            <div className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[220px] opacity-60">
+            <div className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[200px] opacity-60">
               <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center shrink-0">
-                <Apple size={20} className="text-dark-500" />
+                <Smartphone size={20} className="text-dark-500" />
               </div>
               <div className="text-left min-w-0">
                 <div className="text-sm font-semibold text-dark-400">
-                  macOS 版
+                  移动端
                 </div>
-                <div className="text-xs text-dark-600 mt-0.5">即将推出</div>
+                <div className="text-xs text-dark-600 mt-0.5">iOS / Android · 即将推出</div>
+              </div>
+            </div>
+
+            {/* Online experience coming soon */}
+            <div className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[200px] opacity-60">
+              <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center shrink-0">
+                <Globe size={20} className="text-dark-500" />
+              </div>
+              <div className="text-left min-w-0">
+                <div className="text-sm font-semibold text-dark-400">
+                  在线体验
+                </div>
+                <div className="text-xs text-dark-600 mt-0.5">Web 版 · 即将推出</div>
               </div>
             </div>
           </div>
