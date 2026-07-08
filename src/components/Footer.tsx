@@ -5,11 +5,10 @@ const footerLinks = {
     { label: "功能特色", href: "#features" },
     { label: "应用场景", href: "#usecases" },
     { label: "界面预览", href: "#preview" },
-    { label: "下载", href: "#download" },
+    { label: "下载应用", href: "#download" },
   ],
   支持: [
     { label: "常见问题", href: "#faq" },
-    { label: "使用指南", href: "#howitworks" },
   ],
   关于: [
     { label: "关于九语", href: "#hero" },

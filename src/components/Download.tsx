@@ -22,27 +22,27 @@ export default function DownloadSection() {
         </ScrollReveal>
 
         <ScrollReveal threshold={0.2}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             {/* Windows download */}
-            <div className="group flex items-center gap-4 px-8 py-5 rounded-2xl glass glow-border min-w-[240px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10">
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
-                <Monitor size={22} className="text-brand-400" />
+            <div className="group flex items-center gap-3 px-5 py-4 rounded-xl glass glow-border w-full sm:w-auto sm:min-w-[220px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10">
+              <div className="w-9 h-9 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors shrink-0">
+                <Monitor size={20} className="text-brand-400" />
               </div>
-              <div className="text-left">
+              <div className="text-left min-w-0">
                 <div className="text-sm font-semibold text-white">
                   Windows 版
                 </div>
                 <div className="text-xs text-dark-500 mt-0.5">v1.0.0 · 便携版</div>
               </div>
-              <Download size={16} className="text-dark-500 transition-colors ml-auto" />
+              <Download size={15} className="text-dark-500 transition-colors ml-auto shrink-0" />
             </div>
 
             {/* macOS coming soon */}
-            <div className="flex items-center gap-4 px-8 py-5 rounded-2xl glass border border-white/[0.03] min-w-[240px] opacity-60">
-              <div className="w-10 h-10 rounded-xl bg-white/[0.02] flex items-center justify-center">
-                <Apple size={22} className="text-dark-500" />
+            <div className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[220px] opacity-60">
+              <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center shrink-0">
+                <Apple size={20} className="text-dark-500" />
               </div>
-              <div className="text-left">
+              <div className="text-left min-w-0">
                 <div className="text-sm font-semibold text-dark-400">
                   macOS 版
                 </div>
@@ -52,13 +52,13 @@ export default function DownloadSection() {
           </div>
 
           {/* Version info */}
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-dark-600">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-dark-600">
             <span>版本 1.0.0</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700" />
+            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>Windows 10+</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700" />
+            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>完全免费</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700" />
+            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>无需注册</span>
           </div>
         </ScrollReveal>

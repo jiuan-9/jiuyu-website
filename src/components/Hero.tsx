@@ -86,14 +86,14 @@ export default function Hero() {
           九语
         </h1>
 
-        <p className="text-lg sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-2xl mx-auto animate-fade-in-up [animation-delay:0.2s] opacity-0 h-8 sm:h-9 flex items-center justify-center">
-          <span>{typewriterText}</span>
-          <span className="inline-block w-[2px] h-5 sm:h-6 ml-1 bg-brand-400 animate-pulse" />
+        <p className="text-base sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-[90vw] sm:max-w-2xl mx-auto animate-fade-in-up [animation-delay:0.2s] opacity-0 min-h-[2rem] sm:h-9 flex items-center justify-center flex-wrap">
+          <span className="break-all sm:break-normal text-center">{typewriterText}</span>
+          <span className="inline-block w-[2px] h-4 sm:h-6 ml-1 bg-brand-400 animate-pulse shrink-0" />
         </p>
 
-        <p className="text-sm sm:text-base text-dark-400 max-w-xl mx-auto mb-10 animate-fade-in-up [animation-delay:0.3s] opacity-0">
+        <p className="text-xs sm:text-base text-dark-400 max-w-xs sm:max-w-xl mx-auto mb-10 animate-fade-in-up [animation-delay:0.3s] opacity-0 leading-relaxed">
           支持多模型接入 · AI 人设精调 · 多会话管理 · 纯本地存储
-          <br />
+          <br className="hidden xs:block" />
           用你喜欢的方式，与 AI 自由对话
         </p>
 

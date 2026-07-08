@@ -66,30 +66,30 @@ export default function UseCases() {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Header */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
-                    <item.icon size={20} className="text-brand-400" />
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors shrink-0">
+                    <item.icon size={18} className="text-brand-400" />
                   </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                    <p className="text-xs text-dark-400 mt-0.5">{item.desc}</p>
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+                    <p className="text-[11px] text-dark-400 mt-0.5 leading-snug">{item.desc}</p>
                   </div>
                 </div>
 
                 {/* Chat preview */}
-                <div className="space-y-2.5">
+                <div className="space-y-2">
                   {item.messages.map((msg, i) => (
                     <div
                       key={i}
-                      className={`flex items-start gap-2 ${msg.role === "user" ? "justify-end" : ""}`}
+                      className={`flex items-start gap-1.5 ${msg.role === "user" ? "justify-end" : ""}`}
                     >
                       {msg.role === "ai" && (
-                        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5">
+                        <div className="w-5 h-5 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">
                           九
                         </div>
                       )}
                       <div
-                        className={`p-2.5 rounded-xl text-xs leading-relaxed max-w-[85%] ${
+                        className={`p-2 rounded-xl text-[11px] leading-snug max-w-[82%] ${
                           msg.role === "user"
                             ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
                             : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
@@ -98,7 +98,7 @@ export default function UseCases() {
                         {msg.text}
                       </div>
                       {msg.role === "user" && (
-                        <div className="w-6 h-6 rounded-md bg-dark-700 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5">
+                        <div className="w-5 h-5 rounded-md bg-dark-700 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">
                           你
                         </div>
                       )}
