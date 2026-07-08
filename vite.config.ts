@@ -5,8 +5,9 @@ import { traeBadgePlugin } from 'vite-plugin-trae-solo-badge';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/jiuyu-website/',
   build: {
+    outDir: 'docs',
     sourcemap: 'hidden',
   },
   plugins: [
