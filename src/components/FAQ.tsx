@@ -66,7 +66,7 @@ function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpe
 
 export default function FAQ() {
   return (
-    <section className="py-24 md:py-32 relative">
+    <section id="faq" className="py-24 md:py-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-transparent" />
 
       <div className="container relative z-10 mx-auto px-6">

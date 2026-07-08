@@ -2,7 +2,7 @@ import CountUp from "./CountUp";
 import ScrollReveal from "./ScrollReveal";
 
 const stats = [
-  { value: 60, suffix: "+", label: "内置模型", sublabel: "DeepSeek · Qwen · GLM · Kimi 等 62 款" },
+  { value: 62, suffix: "+", label: "内置模型", sublabel: "DeepSeek · Qwen · GLM · Kimi 等 62 款" },
   { value: 11, suffix: "", label: "服务商", sublabel: "阿里云 · 百度 · 腾讯 · 字节跳动等" },
   { value: "∞", suffix: "", label: "无限会话", sublabel: "随心创建，无数量限制" },
   { value: 100, suffix: "%", label: "本地加密", sublabel: "数据完全由你掌控" },
