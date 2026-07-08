@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -36,6 +36,32 @@ const faqs: FAQItem[] = [
 
 function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState(defaultOpen ? "auto" : "0px");
+
+  useEffect(() => {
+    if (isOpen) {
+      const el = contentRef.current;
+      if (el) {
+        const h = el.scrollHeight;
+        setContentHeight(`${h}px`);
+        // After transition ends, set to auto for responsive reflow
+        const timer = setTimeout(() => setContentHeight("auto"), 300);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      const el = contentRef.current;
+      if (el) {
+        setContentHeight(`${el.scrollHeight}px`);
+        // Force reflow then animate to 0
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setContentHeight("0px");
+          });
+        });
+      }
+    }
+  }, [isOpen]);
 
   return (
     <div className="border-b border-white/[0.04] last:border-b-0">
@@ -46,19 +72,21 @@ function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpe
         <span className="text-sm font-medium text-dark-200 group-hover:text-white transition-colors pr-4">
           {item.question}
         </span>
-        <ChevronDown
-          size={16}
-          className={`text-dark-500 shrink-0 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
+        <div
+          className={`w-6 h-6 rounded-full bg-white/[0.04] flex items-center justify-center shrink-0 transition-all duration-300 ${
+            isOpen ? "bg-brand-500/10 rotate-180" : ""
           }`}
-        />
+        >
+          <ChevronDown size={14} className="text-dark-400" />
+        </div>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ${
-          isOpen ? "max-h-40 pb-4" : "max-h-0"
-        }`}
+        className="overflow-hidden transition-[height] duration-300 ease-out"
+        style={{ height: contentHeight }}
       >
-        <p className="text-xs text-dark-400 leading-relaxed">{item.answer}</p>
+        <div ref={contentRef} className="pb-4">
+          <p className="text-xs text-dark-400 leading-relaxed">{item.answer}</p>
+        </div>
       </div>
     </div>
   );

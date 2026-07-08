@@ -16,10 +16,10 @@ export default function ScrollReveal({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-800 ease-out ${
+      className={`scroll-reveal transition-[transform,opacity] [transition-duration:var(--reveal-duration,800ms)] ease-out ${
         isVisible
           ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-8"
+          : "opacity-0 [transform:translateY(var(--reveal-distance,32px))]"
       } ${className}`}
     >
       {children}

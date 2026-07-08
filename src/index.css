@@ -31,6 +31,35 @@ body {
   overflow-x: hidden;
 }
 
+/* ───── Animation performance ───── */
+.scroll-reveal {
+  will-change: transform, opacity;
+}
+
+/* ───── Mobile: lighter animations ───── */
+@media (max-width: 767px) {
+  .scroll-reveal {
+    --reveal-distance: 12px;
+    --reveal-duration: 500ms;
+  }
+
+  .animate-fade-in-up {
+    animation-duration: 0.5s !important;
+  }
+
+  .animate-float {
+    animation-duration: 8s !important;
+  }
+}
+
+/* ───── PC: full animations ───── */
+@media (min-width: 768px) {
+  .scroll-reveal {
+    --reveal-distance: 32px;
+    --reveal-duration: 800ms;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -69,5 +98,17 @@ body {
   .glow-border {
     border: 1px solid rgba(20, 176, 255, 0.15);
     box-shadow: 0 0 30px rgba(20, 176, 255, 0.05), inset 0 0 30px rgba(20, 176, 255, 0.02);
+  }
+
+  /* Section divider: subtle gradient line */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(20, 176, 255, 0.12) 20%,
+      rgba(20, 176, 255, 0.12) 80%,
+      transparent
+    );
   }
 }

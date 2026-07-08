@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Download, ChevronDown } from "lucide-react";
 
 const typewriterTexts = [
@@ -45,8 +45,35 @@ function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, paus
   return displayText;
 }
 
+function useParallax(factor = 0.02) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      setOffset({
+        x: (e.clientX - cx) * factor,
+        y: (e.clientY - cy) * factor,
+      });
+    },
+    [factor],
+  );
+
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return; // Skip parallax on mobile
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  return offset;
+}
+
 export default function Hero() {
   const typewriterText = useTypewriter(typewriterTexts);
+  const parallax = useParallax(0.015);
 
   return (
     <section
@@ -57,11 +84,17 @@ export default function Hero() {
       <div className="absolute inset-0 bg-hero-gradient" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(20,176,255,0.03),transparent_70%)]" />
 
-      {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-brand-500/5 blur-[80px] sm:blur-[120px] animate-float" />
+      {/* Floating orbs with parallax */}
+      <div
+        className="absolute top-1/4 left-1/4 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-brand-500/5 blur-[80px] sm:blur-[120px] animate-float"
+        style={{ transform: `translate(${parallax.x}px, ${parallax.y}px)` }}
+      />
       <div
         className="absolute bottom-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 rounded-full bg-brand-600/5 blur-[100px] sm:blur-[140px] animate-float"
-        style={{ animationDelay: "-3s" }}
+        style={{
+          animationDelay: "-3s",
+          transform: `translate(${-parallax.x * 0.5}px, ${-parallax.y * 0.5}px)`,
+        }}
       />
 
       {/* Grid pattern */}
@@ -76,29 +109,46 @@ export default function Hero() {
 
       <div className="container relative z-10 mx-auto px-6 text-center flex-1 flex flex-col items-center justify-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in-up">
+        <div
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in-up opacity-0"
+          style={{ animationDelay: "0ms" }}
+        >
           <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
           AI 聊天桌面应用 · v1.0.0
         </div>
 
         {/* Main heading */}
-        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight animate-fade-in-up [animation-delay:0.1s] opacity-0">
+        <h1
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight animate-fade-in-up opacity-0"
+          style={{ animationDelay: "150ms" }}
+        >
           九语
         </h1>
 
-        <p className="text-base sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-[90vw] sm:max-w-2xl mx-auto animate-fade-in-up [animation-delay:0.2s] opacity-0 min-h-[2rem] sm:h-9 flex items-center justify-center flex-wrap">
+        {/* Typewriter */}
+        <p
+          className="text-base sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-[90vw] sm:max-w-2xl mx-auto animate-fade-in-up opacity-0 min-h-[2rem] sm:h-9 flex items-center justify-center flex-wrap"
+          style={{ animationDelay: "300ms" }}
+        >
           <span className="break-all sm:break-normal text-center">{typewriterText}</span>
           <span className="inline-block w-[2px] h-4 sm:h-6 ml-1 bg-brand-400 animate-pulse shrink-0" />
         </p>
 
-        <p className="text-xs sm:text-base text-dark-400 max-w-xs sm:max-w-xl mx-auto mb-10 animate-fade-in-up [animation-delay:0.3s] opacity-0 leading-relaxed">
+        {/* Subtitle */}
+        <p
+          className="text-xs sm:text-base text-dark-400 max-w-xs sm:max-w-xl mx-auto mb-10 animate-fade-in-up opacity-0 leading-relaxed"
+          style={{ animationDelay: "450ms" }}
+        >
           支持多模型接入 · AI 人设精调 · 多会话管理 · 纯本地存储
-          <br className="hidden xs:block" />
+          <br className="hidden sm:block" />
           用你喜欢的方式，与 AI 自由对话
         </p>
 
         {/* CTA buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:0.4s] opacity-0">
+        <div
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0"
+          style={{ animationDelay: "600ms" }}
+        >
           <a
             href="#download"
             className="group inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-500 hover:bg-brand-400 text-white font-semibold text-base transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/30 hover:-translate-y-0.5"
@@ -115,8 +165,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator — in-flow at the bottom, never overlaps */}
-      <div className="relative z-10 flex flex-col items-center gap-2.5 text-dark-500 pb-6 shrink-0 mt-4">
+      {/* Scroll indicator */}
+      <div className="relative z-10 flex flex-col items-center gap-2.5 text-dark-500 pb-6 shrink-0 mt-4 animate-fade-in-up opacity-0" style={{ animationDelay: "800ms" }}>
         <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
         <div className="w-px h-8 bg-gradient-to-b from-transparent via-dark-500 to-transparent" />
         <ChevronDown size={14} className="animate-scroll-down" />
