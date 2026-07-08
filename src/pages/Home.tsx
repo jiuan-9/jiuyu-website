@@ -3,7 +3,6 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
-import Demo from "@/components/Demo";
 import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
 import DownloadSection from "@/components/Download";
@@ -14,7 +13,6 @@ function Divider() {
 }
 
 export default function Home() {
-  // Force scroll to top on mount (belt-and-suspenders with index.html script)
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -27,8 +25,6 @@ export default function Home() {
       <Features />
       <Divider />
       <UseCases />
-      <Divider />
-      <Demo />
       <Divider />
       <Stats />
       <Divider />
