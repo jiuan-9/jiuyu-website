@@ -144,13 +144,6 @@ export default function Demo() {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
-  };
-
   return (
     <div className="h-screen flex flex-col bg-dark-950 text-dark-200 overflow-hidden">
       {/* ─── Title bar ─── */}
@@ -361,9 +354,8 @@ export default function Demo() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
                 disabled={loading}
-                placeholder={apiKey ? "输入消息，Enter 发送…" : "请先在左侧设置 API Key"}
+                placeholder={apiKey ? "输入消息，点击发送…" : "请先在左侧设置 API Key"}
                 className="flex-1 bg-transparent text-sm text-dark-200 placeholder-dark-600 outline-none disabled:opacity-40 py-1.5"
               />
               <button
