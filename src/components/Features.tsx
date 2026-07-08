@@ -5,7 +5,7 @@ const features = [
   {
     icon: MessageSquare,
     title: "多模型支持",
-    desc: "接入 OpenAI、Claude、Gemini 等 30+ 主流模型，一个应用畅享所有 AI 服务，自由切换不设限。",
+    desc: "内置 DeepSeek、通义千问、文心一言、GLM、Kimi 等 11 家服务商、60+ 模型，一键切换，一个应用畅享所有 AI 服务。",
   },
   {
     icon: Palette,

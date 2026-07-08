@@ -25,11 +25,7 @@ export default function DownloadSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mb-10">
             {/* Windows download */}
             <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                alert("即将跳转到下载页面（演示环境）");
-              }}
+              href="https://github.com/jiuan-9/jiuyu-website/releases/download/v1.0.0/Jiuyu-1.0.0.exe"
               className="group flex items-center gap-4 px-8 py-5 rounded-2xl glass glow-border hover:border-brand-500/30 hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 min-w-[240px]"
             >
               <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">

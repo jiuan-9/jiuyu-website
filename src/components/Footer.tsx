@@ -7,14 +7,14 @@ const footerLinks = {
     { label: "下载", href: "#download" },
   ],
   资源: [
-    { label: "使用文档", href: "#" },
-    { label: "常见问题", href: "#" },
-    { label: "更新日志", href: "#" },
+    { label: "GitHub", href: "https://github.com/jiuan-9/jiuyu-website" },
+    { label: "下载页", href: "#download" },
+    { label: "更新日志", href: "https://github.com/jiuan-9/jiuyu-website/releases" },
   ],
   关于: [
-    { label: "关于九语", href: "#" },
-    { label: "隐私政策", href: "#" },
-    { label: "联系我们", href: "#" },
+    { label: "关于九语", href: "#hero" },
+    { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
+    { label: "问题反馈", href: "https://github.com/jiuan-9/jiuyu-website/issues" },
   ],
 };
 
@@ -33,14 +33,16 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3">
               <a
-                href="#"
+                href="https://github.com/jiuan-9/jiuyu-website"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
                 aria-label="GitHub"
               >
                 <Github size={15} />
               </a>
               <a
-                href="#"
+                href="mailto:jiu0919@agent.qq.com"
                 className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
                 aria-label="Email"
               >

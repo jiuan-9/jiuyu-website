@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 
 interface CountUpProps {
-  end: number;
+  end: number | string;
   suffix?: string;
   duration?: number;
 }
@@ -10,6 +10,18 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
+
+  // If end is a string (like "∞"), just display it directly
+  if (typeof end === "string") {
+    return (
+      <span ref={ref}>
+        {end}
+        {suffix}
+      </span>
+    );
+  }
+
+  const numericEnd = end as number;
 
   useEffect(() => {
     const el = ref.current;
@@ -36,7 +48,7 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * end));
+      setCount(Math.floor(eased * numericEnd));
 
       if (progress < 1) {
         requestAnimationFrame(step);
@@ -44,7 +56,7 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
     };
 
     requestAnimationFrame(step);
-  }, [hasAnimated, end, duration]);
+  }, [hasAnimated, numericEnd, duration]);
 
   return (
     <span ref={ref}>
