@@ -3,7 +3,7 @@ dist/
 dist-ssr/
 *.local
 
-# Editor directories and files
+# Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -13,13 +13,6 @@ dist-ssr/
 *.njsproj
 *.sln
 *.sw?
-
-# Electron
-out/
-app.asar
-*.exe
-*.dll
-*.pak
 
 # OS
 Thumbs.db
