@@ -18,10 +18,25 @@
   scroll-behavior: smooth;
 }
 
-/* Performance: defer paint for below-fold sections, skip hero */
-section:not(#hero) {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
+/* Content visibility for below-fold sections (performance) */
+@supports (content-visibility: auto) {
+  section:not(#hero) {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
+}
+
+/* iOS smooth momentum scroll */
+.sidebar-scroll,
+.chat-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* iOS Safari dynamic viewport (address bar aware) */
+.demo-fullscreen {
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
 }
 
 body {

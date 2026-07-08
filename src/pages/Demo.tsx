@@ -188,7 +188,7 @@ export default function Demo() {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs">
+      <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs sidebar-scroll">
         {/* ─── 当前会话 ─── */}
         <CollapsibleSection icon={<FileText size={12} className="text-brand-400" />} label="当前会话">
           <div className="flex gap-3">
@@ -288,7 +288,7 @@ export default function Demo() {
   );
 
   return (
-    <div className="h-screen flex flex-col bg-dark-950 text-dark-200 overflow-hidden">
+    <div className="h-screen demo-fullscreen flex flex-col bg-dark-950 text-dark-200 overflow-hidden">
       {/* ─── Title bar ─── */}
       <div className="h-11 flex items-center justify-between px-3 bg-dark-900/90 border-b border-white/[0.06] select-none shrink-0">
         <div className="flex items-center gap-3">
@@ -325,7 +325,7 @@ export default function Demo() {
 
         {/* Chat area */}
         <div className="flex-1 flex flex-col min-w-0 bg-dark-950">
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-5">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-5 chat-scroll">
             {messages.map((msg, i) => (
               <div key={i} className={`flex items-start gap-2 sm:gap-3 ${msg.role === "user" ? "justify-end" : ""}`}>
                 {msg.role === "assistant" && (
