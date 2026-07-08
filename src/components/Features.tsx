@@ -57,7 +57,7 @@ export default function Features() {
           {features.map((feature, index) => (
             <ScrollReveal key={feature.title} threshold={0.1}>
               <div
-                className="group relative p-6 rounded-2xl glass glow-border transition-all duration-500 hover:border-brand-500/25 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/5"
+                className="group relative p-6 rounded-2xl glass glow-border transition-all duration-500 hover:border-brand-500/25"
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
                 {/* Icon */}

@@ -62,7 +62,7 @@ export default function UseCases() {
           {useCases.map((item, index) => (
             <ScrollReveal key={item.title} threshold={0.1}>
               <div
-                className="group relative p-6 rounded-2xl glass glow-border transition-all duration-500 hover:border-brand-500/25 hover:-translate-y-1"
+                className="group relative p-6 rounded-2xl glass glow-border transition-all duration-500 hover:border-brand-500/25"
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 {/* Header */}
