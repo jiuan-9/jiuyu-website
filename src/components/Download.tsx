@@ -53,18 +53,21 @@ export default function DownloadSection() {
               </div>
             </div>
 
-            {/* Online experience coming soon */}
-            <div className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[200px] opacity-60">
+            {/* Online experience */}
+            <a
+              href="#demo"
+              className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[200px] hover:border-brand-500/10 transition-colors cursor-pointer"
+            >
               <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center shrink-0">
-                <Globe size={20} className="text-dark-500" />
+                <Globe size={20} className="text-brand-400" />
               </div>
               <div className="text-left min-w-0">
-                <div className="text-sm font-semibold text-dark-400">
+                <div className="text-sm font-semibold text-white">
                   在线体验
                 </div>
-                <div className="text-xs text-dark-600 mt-0.5">Web 版 · 即将推出</div>
+                <div className="text-xs text-dark-400 mt-0.5">浏览器直接聊</div>
               </div>
-            </div>
+            </a>
           </div>
 
           {/* Version info */}

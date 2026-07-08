@@ -2,8 +2,8 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
+import Demo from "@/components/Demo";
 import Stats from "@/components/Stats";
-import Preview from "@/components/Preview";
 import FAQ from "@/components/FAQ";
 import DownloadSection from "@/components/Download";
 import Footer from "@/components/Footer";
@@ -15,8 +15,8 @@ export default function Home() {
       <Hero />
       <Features />
       <UseCases />
+      <Demo />
       <Stats />
-      <Preview />
       <FAQ />
       <DownloadSection />
       <Footer />
