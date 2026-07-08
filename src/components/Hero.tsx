@@ -4,16 +4,16 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Animated background */}
       <div className="absolute inset-0 bg-hero-gradient" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(20,176,255,0.03),transparent_70%)]" />
 
       {/* Floating orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-brand-500/5 blur-[120px] animate-float" />
+      <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-brand-500/5 blur-[80px] sm:blur-[120px] animate-float" />
       <div
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-brand-600/5 blur-[140px] animate-float"
+        className="absolute bottom-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 rounded-full bg-brand-600/5 blur-[100px] sm:blur-[140px] animate-float"
         style={{ animationDelay: "-3s" }}
       />
 
@@ -27,7 +27,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="container relative z-10 mx-auto px-6 text-center">
+      <div className="container relative z-10 mx-auto px-6 text-center flex-1 flex flex-col items-center justify-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in-up">
           <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
@@ -65,13 +65,13 @@ export default function Hero() {
             了解更多
           </a>
         </div>
+      </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2.5 text-dark-500">
-          <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
-          <div className="w-px h-8 bg-gradient-to-b from-transparent via-dark-500 to-transparent" />
-          <ChevronDown size={14} className="animate-scroll-down" />
-        </div>
+      {/* Scroll indicator — in-flow at the bottom, never overlaps */}
+      <div className="relative z-10 flex flex-col items-center gap-2.5 text-dark-500 pb-6 shrink-0 mt-4">
+        <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
+        <div className="w-px h-8 bg-gradient-to-b from-transparent via-dark-500 to-transparent" />
+        <ChevronDown size={14} className="animate-scroll-down" />
       </div>
     </section>
   );
