@@ -49,7 +49,7 @@ export default function DownloadSection() {
                 <div className="text-sm font-semibold text-dark-400">
                   移动端
                 </div>
-                <div className="text-xs text-dark-600 mt-0.5">iOS / Android · 即将推出</div>
+                <div className="text-xs text-dark-500 mt-0.5">iOS / Android · 即将推出</div>
               </div>
             </div>
 
@@ -71,7 +71,7 @@ export default function DownloadSection() {
           </div>
 
           {/* Version info */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-dark-600">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-dark-500">
             <span>版本 1.0.0</span>
             <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>Windows 10+</span>

@@ -64,10 +64,10 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-xs text-dark-600">
+          <span className="text-xs text-dark-500">
             &copy; 2026 九语. All rights reserved.
           </span>
-          <span className="flex items-center gap-1 text-xs text-dark-600">
+          <span className="flex items-center gap-1 text-xs text-dark-500">
             Made with <Heart size={11} className="text-red-400" /> by 九语开发者
           </span>
         </div>

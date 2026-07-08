@@ -37,7 +37,7 @@ export default function Stats() {
                 <div className="text-sm font-semibold text-dark-200 mb-1">
                   {stat.label}
                 </div>
-                <div className="text-xs text-dark-500 leading-relaxed">{stat.sublabel}</div>
+                <div className="text-xs text-dark-400 leading-relaxed">{stat.sublabel}</div>
               </div>
             </ScrollReveal>
           ))}
