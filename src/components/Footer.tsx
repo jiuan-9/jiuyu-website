@@ -1,4 +1,4 @@
-import { Github, Mail, Heart } from "lucide-react";
+import { Mail, Heart } from "lucide-react";
 
 const footerLinks = {
   产品: [
@@ -7,14 +7,12 @@ const footerLinks = {
     { label: "下载", href: "#download" },
   ],
   资源: [
-    { label: "GitHub", href: "https://github.com/jiuan-9/jiuyu-website" },
-    { label: "Release", href: "https://github.com/jiuan-9/jiuyu-website/releases" },
-    { label: "Issues", href: "https://github.com/jiuan-9/jiuyu-website/issues" },
+    { label: "更新日志", href: "#download" },
   ],
   关于: [
     { label: "关于九语", href: "#hero" },
     { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
-    { label: "问题反馈", href: "https://github.com/jiuan-9/jiuyu-website/issues" },
+    { label: "问题反馈", href: "mailto:jiu0919@agent.qq.com" },
   ],
 };
 
@@ -32,15 +30,6 @@ export default function Footer() {
               你的专属 AI 伙伴 — 支持多模型接入的桌面聊天应用，让 AI 真正为你所用。
             </p>
             <div className="flex items-center gap-3">
-              <a
-                href="https://github.com/jiuan-9/jiuyu-website"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={15} />
-              </a>
               <a
                 href="mailto:jiu0919@agent.qq.com"
                 className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
