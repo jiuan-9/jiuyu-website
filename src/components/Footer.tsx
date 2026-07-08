@@ -8,8 +8,8 @@ const footerLinks = {
   ],
   资源: [
     { label: "GitHub", href: "https://github.com/jiuan-9/jiuyu-website" },
-    { label: "下载页", href: "#download" },
-    { label: "更新日志", href: "https://github.com/jiuan-9/jiuyu-website/releases" },
+    { label: "Release", href: "https://github.com/jiuan-9/jiuyu-website/releases" },
+    { label: "Issues", href: "https://github.com/jiuan-9/jiuyu-website/issues" },
   ],
   关于: [
     { label: "关于九语", href: "#hero" },
@@ -62,6 +62,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
+                      {...(link.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                       className="text-xs text-dark-500 hover:text-dark-300 transition-colors"
                     >
                       {link.label}
