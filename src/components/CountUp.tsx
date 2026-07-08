@@ -11,19 +11,12 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
 
-  // If end is a string (like "∞"), just display it directly
-  if (typeof end === "string") {
-    return (
-      <span ref={ref}>
-        {end}
-        {suffix}
-      </span>
-    );
-  }
+  const isString = typeof end === "string";
+  const numericEnd = !isString ? (end as number) : 0;
 
-  const numericEnd = end as number;
-
+  // Observer for scroll-triggered animation
   useEffect(() => {
+    if (isString) return;
     const el = ref.current;
     if (!el) return;
 
@@ -38,10 +31,11 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [hasAnimated]);
+  }, [hasAnimated, isString]);
 
+  // Count-up animation
   useEffect(() => {
-    if (!hasAnimated) return;
+    if (isString || !hasAnimated) return;
 
     const startTime = performance.now();
     const step = (now: number) => {
@@ -56,7 +50,17 @@ export default function CountUp({ end, suffix = "", duration = 2000 }: CountUpPr
     };
 
     requestAnimationFrame(step);
-  }, [hasAnimated, numericEnd, duration]);
+  }, [hasAnimated, numericEnd, duration, isString]);
+
+  // Render string value directly (e.g. "∞")
+  if (isString) {
+    return (
+      <span ref={ref}>
+        {end}
+        {suffix}
+      </span>
+    );
+  }
 
   return (
     <span ref={ref}>

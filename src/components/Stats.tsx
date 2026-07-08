@@ -31,13 +31,13 @@ export default function Stats() {
                 className="text-center group"
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight min-h-[2.5rem] flex items-center justify-center">
                   <CountUp end={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-sm font-semibold text-dark-200 mb-1">
                   {stat.label}
                 </div>
-                <div className="text-xs text-dark-500">{stat.sublabel}</div>
+                <div className="text-xs text-dark-500 leading-relaxed">{stat.sublabel}</div>
               </div>
             </ScrollReveal>
           ))}
