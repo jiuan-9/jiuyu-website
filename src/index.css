@@ -18,8 +18,8 @@
   scroll-behavior: smooth;
 }
 
-/* Performance: defer paint for below-fold sections */
-section {
+/* Performance: defer paint for below-fold sections, skip hero */
+section:not(#hero) {
   content-visibility: auto;
   contain-intrinsic-size: auto 500px;
 }
