@@ -18,6 +18,12 @@
   scroll-behavior: smooth;
 }
 
+/* Performance: defer paint for below-fold sections */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
 body {
   margin: 0;
   background: #0a0e1a;

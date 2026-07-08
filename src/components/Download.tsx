@@ -56,9 +56,9 @@ export default function DownloadSection() {
             {/* Online experience */}
             <a
               href="#demo"
-              className="flex items-center gap-3 px-5 py-4 rounded-xl glass border border-white/[0.03] w-full sm:w-auto sm:min-w-[200px] hover:border-brand-500/10 transition-colors cursor-pointer"
+              className="group flex items-center gap-3 px-5 py-4 rounded-xl glass glow-border w-full sm:w-auto sm:min-w-[200px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/25 cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-lg bg-white/[0.02] flex items-center justify-center group-hover:bg-brand-500/10 transition-colors shrink-0">
                 <Globe size={20} className="text-brand-400" />
               </div>
               <div className="text-left min-w-0">

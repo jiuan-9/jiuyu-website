@@ -111,6 +111,9 @@ export default function Demo() {
           <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base">
             填写 API Key 即可在浏览器中体验九语的对话能力
           </p>
+          <p className="text-dark-600 max-w-xl mx-auto text-xs mt-2 italic">
+            * 此模块为在线 Demo，绝不代表真实应用体验
+          </p>
         </ScrollReveal>
 
         <ScrollReveal threshold={0.1}>
