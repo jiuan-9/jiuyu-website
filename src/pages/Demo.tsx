@@ -157,7 +157,7 @@ export default function Demo() {
       <div className="h-11 flex items-center justify-between px-3 bg-dark-900 border-b border-white/[0.04] select-none shrink-0">
         <div className="flex items-center gap-3">
           <a
-            href="/#/"
+            href="#/"
             className="text-dark-500 hover:text-dark-300 transition-colors"
             title="返回首页"
           >
