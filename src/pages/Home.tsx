@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
+import ProviderShowcase from "@/components/ProviderShowcase";
 import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
 import DownloadSection from "@/components/Download";
@@ -25,6 +26,8 @@ export default function Home() {
       <Features />
       <Divider />
       <UseCases />
+      <Divider />
+      <ProviderShowcase />
       <Divider />
       <Stats />
       <Divider />

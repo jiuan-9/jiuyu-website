@@ -9,8 +9,16 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
+    question: "九语是什么？",
+    answer: "九语是一个 AI 工具平台。目前桌面端提供多模型 AI 聊天功能；新一代 Agent AI 工具「Quiddity」正在开发中，将支持自主任务执行、工具调用等高级能力。移动端将作为独立的全新 AI 工具推出。",
+  },
+  {
+    question: "Quiddity 和现在的九语桌面端有什么区别？",
+    answer: "当前九语桌面端 (v1.0.0) 是一款多模型 AI 聊天应用。Quiddity 则是正在开发的全新 Agent AI 工具，它不仅能聊天，更能自主规划、调用工具、执行复杂任务。两者是同一品牌下的不同产品。",
+  },
+  {
     question: "九语需要付费吗？",
-    answer: "九语完全免费使用，无需付费、无需注册账号。你只需要自行准备所用 AI 服务商的 API Key 即可畅聊。",
+    answer: "九语桌面端完全免费使用，无需付费、无需注册账号。你只需要自行准备所用 AI 服务商的 API Key 即可使用。",
   },
   {
     question: "我的对话数据安全吗？",
@@ -18,26 +26,18 @@ const faqs: FAQItem[] = [
   },
   {
     question: "如何获取和配置 API Key？",
-    answer: "在你使用的 AI 服务商官网注册并获取 API Key，然后在九语设置界面中粘贴即可。配置好的密钥会加密保存在本地。",
+    answer: "在你使用的 AI 服务商官网注册并获取 API Key，然后在九语设置界面中粘贴即可。配置好的密钥会加密保存在本地。目前支持深度求索、阿里云通义千问、硅基流动等服务商。",
   },
   {
-    question: "支持 macOS 系统吗？",
-    answer: "当前 v1.0.0 版本支持 Windows 10 及以上系统。macOS 版本正在开发中，敬请期待。",
-  },
-  {
-    question: "可以同时使用多个 AI 模型吗？",
-    answer: "当然！九语内置 11 家服务商、62+ 个模型，你可以在不同会话中切换不同模型，也可以在同一会话中随时切换。",
-  },
-  {
-    question: "什么是 AI 人设精调？",
-    answer: "你可以在设置中自定义 AI 的名字、性格、外貌和说话风格。九语的精调引擎会将这些描述自动编译成 AI 最能理解的高质量提示词，让 AI 按照你设定的方式来回应。",
+    question: "移动端什么时候上线？",
+    answer: "移动端正处于规划阶段，将作为一个全新的 AI 工具独立开发，不包含 Agent 能力。具体上线时间请关注后续公告。",
   },
 ];
 
-function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpen?: boolean }) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+function FAQAccordion({ item }: { item: FAQItem }) {
+  const [isOpen, setIsOpen] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState(defaultOpen ? "auto" : "0px");
+  const [contentHeight, setContentHeight] = useState("0px");
 
   useEffect(() => {
     if (isOpen) {
@@ -45,7 +45,6 @@ function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpe
       if (el) {
         const h = el.scrollHeight;
         setContentHeight(`${h}px`);
-        // After transition ends, set to auto for responsive reflow
         const timer = setTimeout(() => setContentHeight("auto"), 300);
         return () => clearTimeout(timer);
       }
@@ -53,7 +52,6 @@ function FAQAccordion({ item, defaultOpen = false }: { item: FAQItem; defaultOpe
       const el = contentRef.current;
       if (el) {
         setContentHeight(`${el.scrollHeight}px`);
-        // Force reflow then animate to 0
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             setContentHeight("0px");
@@ -105,14 +103,14 @@ export default function FAQ() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             常见<span className="text-gradient"> 问题</span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-base md:text-lg">
-            关于九语，你可能想知道的都在这里
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
+            关于九语和 Quiddity，你可能想知道的都在这里
           </p>
         </ScrollReveal>
 
         <ScrollReveal threshold={0.1}>
           <div className="max-w-2xl mx-auto glass rounded-2xl glow-border p-6 md:p-8">
-            {faqs.map((faq, index) => (
+            {faqs.map((faq) => (
               <FAQAccordion key={faq.question} item={faq} />
             ))}
           </div>

@@ -2,25 +2,24 @@ import CountUp from "./CountUp";
 import ScrollReveal from "./ScrollReveal";
 
 const stats = [
-  { value: 62, suffix: "+", label: "内置模型", sublabel: "DeepSeek · Qwen · GLM · Kimi 等 62 款" },
-  { value: 11, suffix: "", label: "服务商", sublabel: "阿里云 · 百度 · 腾讯 · 字节跳动等" },
+  { value: 11, suffix: "", label: "服务商接入", sublabel: "主流 AI 平台一站集成" },
   { value: "∞", suffix: "", label: "无限会话", sublabel: "随心创建，无数量限制" },
   { value: 100, suffix: "%", label: "本地加密", sublabel: "数据完全由你掌控" },
+  { value: 4, suffix: "", label: "Agent 场景", sublabel: "多领域智能体能力建设中" },
 ];
 
 export default function Stats() {
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
-      {/* Background gradient line */}
-      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-500/10 to-transparent" />
+      <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-500/[0.08] to-transparent" />
 
       <div className="container relative z-10 mx-auto px-6">
         <ScrollReveal className="text-center mb-14">
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
-            By the Numbers
+            Platform
           </span>
           <h2 className="text-3xl md:text-4xl font-bold text-white">
-            用数据说话
+            平台<span className="text-gradient"> 能力</span>
           </h2>
         </ScrollReveal>
 

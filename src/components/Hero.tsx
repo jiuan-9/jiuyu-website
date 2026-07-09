@@ -1,14 +1,124 @@
-import { useEffect, useState, useCallback } from "react";
-import { Download, ChevronDown } from "lucide-react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { ArrowRight, ChevronDown, Sparkles, Zap } from "lucide-react";
 
+// ─── Animated Background Particles ───
+function ParticleField() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    const particles: { x: number; y: number; vx: number; vy: number; r: number; alpha: number }[] = [];
+    const count = 60;
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
+      canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
+      ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.offsetWidth,
+        y: Math.random() * canvas.offsetHeight,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.5 + 0.5,
+        alpha: Math.random() * 0.5 + 0.1,
+      });
+    }
+
+    const animate = () => {
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(20, 176, 255, ${0.06 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(64, 208, 255, ${p.alpha})`;
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
+}
+
+// ─── Parallax hook ───
+function useParallax(factor = 0.01) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      setOffset({
+        x: (e.clientX - cx) * factor,
+        y: (e.clientY - cy) * factor,
+      });
+    },
+    [factor],
+  );
+
+  useEffect(() => {
+    if (window.innerWidth < 768) return;
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [handleMouseMove]);
+
+  return offset;
+}
+
+// ─── Typewriter ───
 const typewriterTexts = [
-  "你的专属 AI 伙伴",
-  "支持 11 家服务商 · 62+ 模型",
-  "纯本地加密存储 · 隐私无忧",
-  "AI 人设精调 · 创造专属角色",
+  "不止对话，更能执行任务",
+  "自主规划 · 工具调用 · 流程自动化",
+  "Quiddity — 你的 AI 智能体",
 ];
 
-function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, pauseDuration = 2000) {
+function useTypewriter(texts: string[], typingSpeed = 50, deleteSpeed = 25, pauseDuration = 2500) {
   const [displayText, setDisplayText] = useState("");
   const [textIndex, setTextIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -29,9 +139,7 @@ function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, paus
     }
 
     const timeout = setTimeout(
-      () => {
-        setCharIndex((prev) => prev + (isDeleting ? -1 : 1));
-      },
+      () => setCharIndex((prev) => prev + (isDeleting ? -1 : 1)),
       isDeleting ? deleteSpeed : typingSpeed,
     );
 
@@ -45,130 +153,130 @@ function useTypewriter(texts: string[], typingSpeed = 60, deleteSpeed = 30, paus
   return displayText;
 }
 
-function useParallax(factor = 0.02) {
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      const cx = window.innerWidth / 2;
-      const cy = window.innerHeight / 2;
-      setOffset({
-        x: (e.clientX - cx) * factor,
-        y: (e.clientY - cy) * factor,
-      });
-    },
-    [factor],
-  );
-
-  useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return; // Skip parallax on mobile
-
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [handleMouseMove]);
-
-  return offset;
-}
-
 export default function Hero() {
   const typewriterText = useTypewriter(typewriterTexts);
-  const parallax = useParallax(0.015);
+  const parallax = useParallax(0.008);
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-dark-950"
     >
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-hero-gradient" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(20,176,255,0.03),transparent_70%)]" />
+      {/* Particle canvas */}
+      <ParticleField />
 
-      {/* Floating orbs with parallax */}
+      {/* Gradient orbs with parallax */}
       <div
-        className="absolute top-1/4 left-1/4 w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-brand-500/5 blur-[80px] sm:blur-[120px] animate-float"
+        className="absolute top-1/4 left-1/4 w-64 sm:w-[500px] h-64 sm:h-[500px] rounded-full bg-brand-500/[0.04] blur-[100px] sm:blur-[160px] animate-float-slow"
         style={{ transform: `translate(${parallax.x}px, ${parallax.y}px)` }}
       />
       <div
-        className="absolute bottom-1/4 right-1/4 w-64 sm:w-96 h-64 sm:h-96 rounded-full bg-brand-600/5 blur-[100px] sm:blur-[140px] animate-float"
+        className="absolute bottom-1/3 right-1/4 w-72 sm:w-[400px] h-72 sm:h-[400px] rounded-full bg-purple-500/[0.03] blur-[100px] sm:blur-[140px] animate-float"
         style={{
-          animationDelay: "-3s",
-          transform: `translate(${-parallax.x * 0.5}px, ${-parallax.y * 0.5}px)`,
+          animationDelay: "-5s",
+          transform: `translate(${-parallax.x * 0.6}px, ${-parallax.y * 0.6}px)`,
+        }}
+      />
+      <div
+        className="absolute top-1/2 right-1/3 w-48 sm:w-80 h-48 sm:h-80 rounded-full bg-brand-700/[0.04] blur-[80px] sm:blur-[120px] animate-float-slow"
+        style={{
+          animationDelay: "-8s",
+          transform: `translate(${-parallax.x * 0.3}px, ${parallax.y * 0.3}px)`,
         }}
       />
 
-      {/* Grid pattern */}
+      {/* Grid overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.025]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
+            "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
         }}
       />
 
-      <div className="container relative z-10 mx-auto px-6 text-center flex-1 flex flex-col items-center justify-center">
+      <div className="container relative z-10 mx-auto px-6 text-center flex-1 flex flex-col items-center justify-center pt-20">
         {/* Badge */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in-up opacity-0"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in opacity-0"
           style={{ animationDelay: "0ms" }}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse" />
-          AI 聊天桌面应用 · v1.0.0
+          <Sparkles size={12} className="text-brand-400" />
+          全新 Agent AI 工具 · 正在开发
         </div>
 
-        {/* Main heading */}
-        <h1
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight animate-fade-in-up opacity-0"
-          style={{ animationDelay: "150ms" }}
+        {/* Brand name */}
+        <div
+          className="animate-fade-in-up opacity-0 mb-2"
+          style={{ animationDelay: "100ms" }}
         >
-          九语
+          <span className="text-sm tracking-[0.3em] uppercase text-dark-500">
+            九语 Jiuyu
+          </span>
+        </div>
+
+        {/* Main title */}
+        <h1
+          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-4 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
+          style={{ animationDelay: "200ms" }}
+        >
+          Quiddity
         </h1>
 
+        {/* Subtitle with gradient */}
+        <p
+          className="text-lg sm:text-xl md:text-2xl text-dark-300 mb-2 max-w-2xl mx-auto animate-fade-in-up opacity-0"
+          style={{ animationDelay: "350ms" }}
+        >
+          下一代<span className="text-gradient font-semibold"> Agent AI </span>智能体
+        </p>
+
         {/* Typewriter */}
-        <p
-          className="text-base sm:text-xl md:text-2xl text-dark-300 mb-4 max-w-[90vw] sm:max-w-2xl mx-auto animate-fade-in-up opacity-0 min-h-[2rem] sm:h-9 flex items-center justify-center flex-wrap"
-          style={{ animationDelay: "300ms" }}
+        <div
+          className="text-sm sm:text-base text-dark-400 mb-10 max-w-xl mx-auto h-7 flex items-center justify-center animate-fade-in-up opacity-0"
+          style={{ animationDelay: "500ms" }}
         >
-          <span className="break-all sm:break-normal text-center">{typewriterText}</span>
-          <span className="inline-block w-[2px] h-4 sm:h-6 ml-1 bg-brand-400 animate-pulse shrink-0" />
-        </p>
+          <span>{typewriterText}</span>
+          <span className="inline-block w-[2px] h-4 ml-1 bg-brand-400 animate-pulse" />
+        </div>
 
-        {/* Subtitle */}
+        {/* Description */}
         <p
-          className="text-xs sm:text-base text-dark-400 max-w-xs sm:max-w-xl mx-auto mb-10 animate-fade-in-up opacity-0 leading-relaxed"
-          style={{ animationDelay: "450ms" }}
+          className="text-xs sm:text-sm text-dark-500 max-w-lg mx-auto mb-12 animate-fade-in-up opacity-0 leading-relaxed"
+          style={{ animationDelay: "650ms" }}
         >
-          支持多模型接入 · AI 人设精调 · 多会话管理 · 纯本地存储
+          Quiddity 是一个能自主规划、调用工具、执行复杂任务的 AI 智能体。
           <br className="hidden sm:block" />
-          用你喜欢的方式，与 AI 自由对话
+          不再是简单的问答，而是真正能帮你"做事"的 AI。
         </p>
 
-        {/* CTA buttons */}
+        {/* CTA */}
         <div
           className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0"
-          style={{ animationDelay: "600ms" }}
+          style={{ animationDelay: "800ms" }}
         >
           <a
-            href="#download"
-            className="group inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-500 hover:bg-brand-400 text-white font-semibold text-base transition-all duration-300 hover:shadow-xl hover:shadow-brand-500/30 hover:-translate-y-0.5"
-          >
-            <Download size={18} className="group-hover:translate-y-px transition-transform" />
-            立即下载
-          </a>
-          <a
-            href="#features"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass text-dark-200 hover:text-white text-base transition-all duration-300 hover:border-brand-500/30 hover:bg-white/5"
+            href="#quiddity"
+            className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-500 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5"
           >
             了解更多
+            <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+          </a>
+          <a
+            href="#download"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-500 hover:border-brand-500/30 hover:bg-white/5"
+          >
+            下载现有版本
           </a>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="relative z-10 flex flex-col items-center gap-2.5 text-dark-500 pb-6 shrink-0 mt-4 animate-fade-in-up opacity-0" style={{ animationDelay: "800ms" }}>
-        <span className="text-[10px] tracking-[0.2em] uppercase">Scroll</span>
-        <div className="w-px h-8 bg-gradient-to-b from-transparent via-dark-500 to-transparent" />
+      <div
+        className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-8 shrink-0 animate-fade-in opacity-0"
+        style={{ animationDelay: "1000ms" }}
+      >
+        <span className="text-[10px] tracking-[0.25em] uppercase">探索</span>
         <ChevronDown size={14} className="animate-scroll-down" />
       </div>
     </section>

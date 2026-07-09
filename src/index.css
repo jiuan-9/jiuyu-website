@@ -7,7 +7,6 @@
     BlinkMacSystemFont, "Segoe UI", sans-serif;
   line-height: 1.6;
   font-weight: 400;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -18,27 +17,6 @@
   scroll-behavior: smooth;
 }
 
-/* Content visibility for below-fold sections (performance) */
-@supports (content-visibility: auto) {
-  section:not(#hero) {
-    content-visibility: auto;
-    contain-intrinsic-size: 0 500px;
-  }
-}
-
-/* iOS smooth momentum scroll */
-.sidebar-scroll,
-.chat-scroll {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* iOS Safari dynamic viewport (address bar aware) */
-.demo-fullscreen {
-  height: 100vh;
-  height: -webkit-fill-available;
-  height: 100dvh;
-}
-
 body {
   margin: 0;
   background: #0a0e1a;
@@ -46,36 +24,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ───── Animation performance ───── */
-.scroll-reveal {
-  will-change: transform, opacity;
-}
-
-/* ───── Mobile: lighter animations ───── */
-@media (max-width: 767px) {
-  .scroll-reveal {
-    --reveal-distance: 12px;
-    --reveal-duration: 500ms;
-  }
-
-  .animate-fade-in-up {
-    animation-duration: 0.5s !important;
-  }
-
-  .animate-float {
-    animation-duration: 8s !important;
-  }
-}
-
-/* ───── PC: full animations ───── */
-@media (min-width: 768px) {
-  .scroll-reveal {
-    --reveal-distance: 32px;
-    --reveal-duration: 800ms;
-  }
-}
-
-/* Custom scrollbar */
+/* ───── Scrollbar ───── */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -90,12 +39,45 @@ body {
   background: rgba(20, 176, 255, 0.5);
 }
 
-/* Glass utility */
+/* ───── Animation Performance ───── */
+.scroll-reveal {
+  will-change: transform, opacity;
+}
+
+@media (max-width: 767px) {
+  .scroll-reveal {
+    --reveal-distance: 12px;
+    --reveal-duration: 500ms;
+  }
+  .animate-fade-in-up {
+    animation-duration: 0.5s !important;
+  }
+  .animate-float {
+    animation-duration: 8s !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .scroll-reveal {
+    --reveal-distance: 32px;
+    --reveal-duration: 800ms;
+  }
+}
+
+/* ───── Glass & Effects ───── */
 @layer components {
   .glass {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.025);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .glass-hover:hover {
@@ -104,26 +86,56 @@ body {
   }
 
   .text-gradient {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 50%, #4facfe 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: text-shimmer 4s ease-in-out infinite;
+  }
+
+  @keyframes text-shimmer {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 200% center; }
+  }
+
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shimmer 5s ease-in-out infinite;
   }
 
   .glow-border {
-    border: 1px solid rgba(20, 176, 255, 0.15);
-    box-shadow: 0 0 30px rgba(20, 176, 255, 0.05), inset 0 0 30px rgba(20, 176, 255, 0.02);
+    border: 1px solid rgba(20, 176, 255, 0.12);
+    box-shadow: 0 0 30px rgba(20, 176, 255, 0.04), inset 0 0 30px rgba(20, 176, 255, 0.015);
   }
 
-  /* Section divider: subtle gradient line */
+  .glow-border-strong {
+    border: 1px solid rgba(20, 176, 255, 0.2);
+    box-shadow: 0 0 40px rgba(20, 176, 255, 0.08), inset 0 0 20px rgba(20, 176, 255, 0.03);
+  }
+
   .section-divider {
     height: 1px;
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(20, 176, 255, 0.12) 20%,
-      rgba(20, 176, 255, 0.12) 80%,
+      rgba(20, 176, 255, 0.08) 20%,
+      rgba(20, 176, 255, 0.12) 50%,
+      rgba(20, 176, 255, 0.08) 80%,
       transparent
     );
+  }
+
+  /* Card 3D tilt effect */
+  .card-tilt {
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+  }
+  .card-tilt:hover {
+    transform: perspective(1200px) rotateX(2deg) rotateY(-2deg) translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(20, 176, 255, 0.06);
   }
 }

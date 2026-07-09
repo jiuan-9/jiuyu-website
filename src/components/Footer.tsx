@@ -2,7 +2,7 @@ import { Mail, Heart } from "lucide-react";
 
 const footerLinks = {
   产品: [
-    { label: "功能特色", href: "#features" },
+    { label: "Quiddity", href: "#quiddity" },
     { label: "应用场景", href: "#usecases" },
     { label: "在线体验", href: "#/demo" },
     { label: "下载应用", href: "#download" },
@@ -27,7 +27,7 @@ export default function Footer() {
               九语
             </a>
             <p className="text-xs text-dark-500 leading-relaxed mb-5 max-w-52">
-              你的专属 AI 伙伴 — 支持多模型接入的桌面聊天应用，让 AI 真正为你所用。
+              AI 工具平台 — 打造下一代 Agent AI 智能体 Quiddity。
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -40,7 +40,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
               <h4 className="text-sm font-semibold text-dark-200 mb-4">
@@ -62,7 +61,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Bottom */}
         <div className="pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="text-xs text-dark-500">
             &copy; 2026 九语. All rights reserved.

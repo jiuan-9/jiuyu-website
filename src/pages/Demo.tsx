@@ -10,7 +10,6 @@ interface Message {
   content: string;
 }
 
-// ─── Providers ───
 const PROVIDERS = [
   {
     id: "deepseek", label: "深度求索",
@@ -32,7 +31,6 @@ const PROVIDERS = [
   },
 ];
 
-// ─── Shared styles ───
 const inputClass =
   "w-full bg-dark-800/90 border border-white/[0.10] rounded-lg px-3 py-2 text-xs text-dark-100 outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 placeholder:text-dark-500 transition-all duration-200";
 const selectClass =
@@ -40,7 +38,6 @@ const selectClass =
 const labelClass = "text-[10px] text-dark-300 font-medium";
 const hintClass = "text-[9px] text-dark-500 mt-0.5";
 
-// ─── Collapsible section card ───
 function CollapsibleSection({
   icon, label, defaultOpen = true, children,
 }: {
@@ -54,10 +51,7 @@ function CollapsibleSection({
   const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
-    if (!open) {
-      setHeight(0);
-      return;
-    }
+    if (!open) { setHeight(0); return; }
     const el = contentRef.current;
     if (!el) return;
     const measure = () => setHeight(el.scrollHeight);
@@ -94,7 +88,6 @@ function CollapsibleSection({
   );
 }
 
-// ─── Loading dots ───
 function LoadingDots() {
   return (
     <div className="flex gap-1">
@@ -105,7 +98,6 @@ function LoadingDots() {
   );
 }
 
-// ─── System prompt builder ───
 function buildSystemPrompt(
   aiName: string, aiPersona: string, aiCharacter: string,
   userName: string, userIdentity: string, scene: string,
@@ -124,11 +116,10 @@ function buildSystemPrompt(
 
 export default function Demo() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "你好！我是九语在线体验版。\n\n请在左侧面板配置 API Key 和参数，然后就可以开始对话了。本页面仅供体验，不代表真实应用的完整功能。" },
+    { role: "assistant", content: "你好！这是九语桌面端的在线体验版。\n\n请在左侧配置 API Key 和参数后开始对话。本页面仅展示九语桌面端 (v1.0.0) 的基础聊天功能。\n\n更多高级 Agent 能力，请期待 Quiddity。" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [apiKey, setApiKey] = useState("");
   const [providerIdx, setProviderIdx] = useState(0);
   const [modelIdx, setModelIdx] = useState(0);
@@ -181,7 +172,6 @@ export default function Demo() {
 
   const handleKeyDown = (e: React.KeyboardEvent) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } };
 
-  // ─── Sidebar ───
   const sidebarContent = (
     <>
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
@@ -195,7 +185,6 @@ export default function Demo() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs sidebar-scroll">
-        {/* ─── 当前会话 ─── */}
         <CollapsibleSection icon={<FileText size={12} className="text-brand-400" />} label="当前会话">
           <div className="flex gap-3">
             <div className="flex-1 bg-dark-900/60 border border-white/[0.05] rounded-lg px-3 py-2 text-center">
@@ -209,7 +198,6 @@ export default function Demo() {
           </div>
         </CollapsibleSection>
 
-        {/* ─── API 设置 ─── */}
         <CollapsibleSection icon={<Key size={12} className="text-brand-400" />} label="API 设置">
           <div className="space-y-1">
             <label className={labelClass}>服务商</label>
@@ -240,14 +228,11 @@ export default function Demo() {
           </div>
         </CollapsibleSection>
 
-        {/* ─── AI 设定 ─── */}
         <CollapsibleSection icon={<Sparkles size={12} className="text-brand-400" />} label="AI 设定">
           <div className="flex items-center justify-between py-0.5">
             <span className="text-[10px] text-dark-300">精调人设</span>
             <button onClick={() => setCompileEnabled(!compileEnabled)} className="transition-all duration-150 hover:scale-110 active:scale-95">
-              <span className="transition-all duration-200">
-                {compileEnabled ? <ToggleRight size={18} className="text-brand-500" /> : <ToggleLeft size={18} className="text-dark-400" />}
-              </span>
+              {compileEnabled ? <ToggleRight size={18} className="text-brand-500" /> : <ToggleLeft size={18} className="text-dark-400" />}
             </button>
           </div>
           <div className="space-y-1">
@@ -264,7 +249,6 @@ export default function Demo() {
           </div>
         </CollapsibleSection>
 
-        {/* ─── 用户设定 ─── */}
         <CollapsibleSection icon={<User size={12} className="text-brand-400" />} label="用户设定">
           <div className="space-y-1">
             <label className={labelClass}>你的名字</label>
@@ -276,7 +260,6 @@ export default function Demo() {
           </div>
         </CollapsibleSection>
 
-        {/* ─── 场景设定 ─── */}
         <CollapsibleSection icon={<MapPin size={12} className="text-brand-400" />} label="场景设定">
           <div className="space-y-1">
             <label className={labelClass}>当前场景</label>
@@ -287,7 +270,7 @@ export default function Demo() {
 
       <div className="px-4 py-2.5 border-t border-white/[0.06]">
         <p className="text-[9px] text-dark-500 leading-relaxed">
-          以下设置仅对当前会话生效。此页面为在线 Demo，绝不代表真实应用的完整体验。
+          九语桌面端 v1.0.0 在线体验。此页面仅展示基础对话功能，不代表 Quiddity 的完整体验。
         </p>
       </div>
     </>
@@ -295,13 +278,13 @@ export default function Demo() {
 
   return (
     <div className="h-screen demo-fullscreen flex flex-col bg-dark-950 text-dark-200 overflow-hidden">
-      {/* ─── Title bar ─── */}
+      {/* Title bar */}
       <div className="h-11 flex items-center justify-between px-3 bg-dark-900/90 border-b border-white/[0.06] select-none shrink-0">
         <div className="flex items-center gap-3">
           <a href="#/" className="text-dark-400 hover:text-dark-200 transition-colors" title="返回首页"><ArrowLeft size={16} /></a>
           <div className="flex items-center gap-2">
             <Zap size={13} className="text-brand-400" />
-            <span className="text-[11px] font-medium text-dark-200">九语 · 在线体验</span>
+            <span className="text-[11px] font-medium text-dark-200">九语桌面端 · 在线体验</span>
           </div>
         </div>
         <div className="flex items-center gap-1.5">

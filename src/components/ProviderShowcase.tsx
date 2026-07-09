@@ -2,17 +2,17 @@ import { useEffect, useRef } from "react";
 import ScrollReveal from "./ScrollReveal";
 
 const providers = [
+  { name: "深度求索", model: "DeepSeek" },
   { name: "阿里云", model: "通义千问" },
-  { name: "百度", model: "文心一言" },
   { name: "硅基流动", model: "多模型平台" },
+  { name: "智谱", model: "GLM" },
+  { name: "月之暗面", model: "Kimi" },
   { name: "阶跃星辰", model: "Step" },
   { name: "科大讯飞", model: "星火" },
   { name: "MiniMax", model: "海螺AI" },
-  { name: "DeepSeek", model: "DeepSeek" },
   { name: "腾讯", model: "混元" },
-  { name: "月之暗面", model: "Kimi" },
   { name: "字节跳动", model: "豆包" },
-  { name: "智谱", model: "GLM" },
+  { name: "百度", model: "文心一言" },
 ];
 
 export default function ProviderShowcase() {
@@ -24,7 +24,7 @@ export default function ProviderShowcase() {
 
     let animationId: number;
     let scrollPos = 0;
-    const speed = 0.5;
+    const speed = 0.4;
 
     const animate = () => {
       scrollPos += speed;
@@ -56,14 +56,12 @@ export default function ProviderShowcase() {
           </p>
         </ScrollReveal>
 
-        {/* Scrolling row */}
         <div className="relative max-w-3xl mx-auto">
           <div
             ref={scrollRef}
             className="flex gap-4 overflow-x-hidden py-2"
             style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}
           >
-            {/* Duplicate for seamless scroll */}
             {[...providers, ...providers].map((provider, index) => (
               <div
                 key={`${provider.name}-${index}`}

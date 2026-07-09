@@ -1,67 +1,66 @@
-import { MessageSquare, Users, Palette, Shield, Eye, Sparkles } from "lucide-react";
+import { Cpu, Zap, Globe, Shield, Layers, Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const features = [
   {
-    icon: MessageSquare,
-    title: "多模型支持",
-    desc: "内置 DeepSeek、通义千问、文心一言、GLM、Kimi 等 11 家服务商、62+ 模型，一键切换，一个应用畅享所有 AI 服务。",
+    icon: Cpu,
+    title: "自主任务执行",
+    desc: "Quiddity 能够自主规划执行路径，调用工具、操作文件、访问网络，完成你交给它的复杂任务。",
   },
   {
-    icon: Palette,
-    title: "AI 人设精调",
-    desc: "自定义 AI 的名字、性格、外貌和说话方式，创造专属的 AI 伙伴。精调引擎让你的描述被翻译成 AI 最佳理解的语言。",
+    icon: Zap,
+    title: "工具链集成",
+    desc: "内置代码执行、网页搜索、文件管理等工具链。丰富的扩展接口，让 AI 的能力无限延展。",
   },
   {
-    icon: Users,
-    title: "多会话管理",
-    desc: "无限创建会话，分类管理不同对话场景。置顶、搜索、重命名，让每个话题都井井有条。",
+    icon: Globe,
+    title: "多模型调度",
+    desc: "根据任务复杂度智能调度不同模型。简单任务用轻量模型，复杂推理自动切换到最强模型。",
   },
   {
     icon: Shield,
     title: "本地数据安全",
-    desc: "所有对话记录和 API 密钥均加密保存在本地，不上传任何服务器。你的隐私，由你掌控。",
+    desc: "所有对话记录和 API 密钥均加密保存在本地设备，不上传任何服务器。你的数据由你掌控。",
   },
   {
-    icon: Eye,
-    title: "深色模式",
-    desc: "精心设计的亮色/暗色双主题，平滑过渡动画。无论白天黑夜，都能享受舒适的视觉体验。",
+    icon: Layers,
+    title: "流程自动化",
+    desc: "将常用操作编排为自动化流程，一键执行。支持条件判断、循环、错误重试等控制逻辑。",
   },
   {
     icon: Sparkles,
-    title: "Markdown 渲染",
-    desc: "AI 回复支持完整的 Markdown 语法渲染，代码高亮、表格、列表一应俱全，阅读体验如丝般顺滑。",
+    title: "持续学习进化",
+    desc: "Quiddity 从每次交互中学习你的偏好和习惯，越用越懂你，逐步成为最契合你的 AI 助手。",
   },
 ];
 
 export default function Features() {
   return (
-    <section id="features" className="py-24 md:py-32 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark-950/50 to-transparent" />
+    <section id="quiddity" className="py-24 md:py-32 relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950" />
 
       <div className="container relative z-10 mx-auto px-6">
         <ScrollReveal className="text-center mb-16">
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
-            Core Features
+            Quiddity
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            为什么选择<span className="text-gradient"> 九语</span>
+            不只是聊天，是<span className="text-gradient"> 真正的 AI 智能体</span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-base md:text-lg">
-            从底层构建的 AI 桌面体验，每一个细节都经过精心打磨
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+            Quiddity 正在开发中。它将颠覆你与 AI 的交互方式——从一问一答，到自主执行。
           </p>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <ScrollReveal key={feature.title} threshold={0.1}>
               <div
-                className="group relative p-6 rounded-2xl glass glow-border transition-[border-color] duration-500 hover:border-brand-500/25"
+                className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20"
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
                 {/* Icon */}
-                <div className="w-11 h-11 rounded-xl bg-brand-500/10 flex items-center justify-center mb-5 group-hover:bg-brand-500/20 transition-colors duration-500">
+                <div className="w-11 h-11 rounded-xl bg-brand-500/10 flex items-center justify-center mb-5 group-hover:bg-brand-500/20 group-hover:scale-110 transition-all duration-500">
                   <feature.icon size={22} className="text-brand-400" />
                 </div>
 
@@ -72,7 +71,7 @@ export default function Features() {
                   {feature.desc}
                 </p>
 
-                {/* Hover glow effect */}
+                {/* Hover glow */}
                 <div className="absolute inset-0 rounded-2xl bg-card-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </div>
             </ScrollReveal>
