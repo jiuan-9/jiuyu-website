@@ -11,6 +11,7 @@ const footerLinks = {
   ],
   支持: [
     { label: "常见问题", href: "#faq" },
+    { label: "版本历程", href: "#/timeline" },
   ],
   关于: [
     { label: "关于九语", href: "#hero" },
