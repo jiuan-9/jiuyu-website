@@ -2,10 +2,11 @@ import { Sparkles, Rocket, Eye, Shield, Code, Users, MessageSquare, Palette } fr
 import ScrollReveal from "./ScrollReveal";
 
 const quiddityFeatures = [
-  { icon: Rocket, label: "移动端开发" },
-  { icon: Eye, label: "图片理解增强" },
-  { icon: Shield, label: "数据导出优化" },
-  { icon: Code, label: "插件系统" },
+  { icon: Rocket, label: "Quiddity AI" },
+  { icon: Eye, label: "视觉理解" },
+  { icon: Shield, label: "隐私保护" },
+  { icon: Code, label: "代码优化" },
+  { icon: Users, label: "多人协作" },
 ];
 
 export default function QuiddityPreview() {
@@ -19,16 +20,16 @@ export default function QuiddityPreview() {
         <ScrollReveal className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
             <Sparkles size={12} className="text-purple-400" />
-            <span className="text-[10px] font-semibold text-purple-400 tracking-wider">ROADMAP</span>
+            <span className="text-[10px] font-semibold text-purple-400 tracking-wider">COMING SOON</span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            后续规划
+            下一代 AI 体验
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Quiddity</span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
-            基于当前版本的反馈，我们正在规划下一阶段的功能迭代。
-            这些功能目前处于设计和开发阶段，具体发布时间待定。
+            基于新一代大模型架构，带来前所未有的智能交互体验。
+            更强大的推理能力、更自然的对话风格、更丰富的多模态支持。
           </p>
         </ScrollReveal>
 
@@ -41,19 +42,19 @@ export default function QuiddityPreview() {
               <div className="relative p-8 md:p-10">
                 <div className="flex flex-col md:flex-row items-center gap-8">
                   <div className="flex-1 text-center md:text-left">
-                    <div className="text-sm font-semibold text-white mb-2">2026 · Q3-Q4</div>
+                    <div className="text-sm font-semibold text-white mb-2">2026 · Q4</div>
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
-                      Quiddity 阶段规划
+                      Quiddity Alpha 预览版
                     </h3>
                     <p className="text-xs text-dark-400 leading-relaxed max-w-md">
-                      持续优化现有功能体验，同时探索移动端和插件系统等新方向。
-                      所有功能将根据开发进度和用户反馈逐步推出。
+                      率先体验 Quiddity 的核心能力：智能人设精调、多模态理解、
+                      代码生成优化、长对话记忆等特性。仅限邀请用户体验。
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity">
-                      了解更多
+                      预约体验
                     </button>
                   </div>
                 </div>
@@ -77,16 +78,16 @@ export default function QuiddityPreview() {
         <ScrollReveal threshold={0.2} className="mt-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
             <div className="text-center p-4 rounded-xl glass">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1">移动端</div>
-              <div className="text-[11px] text-dark-400">iOS / Android 适配</div>
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">3x</div>
+              <div className="text-[11px] text-dark-400">推理速度提升</div>
             </div>
             <div className="text-center p-4 rounded-xl glass">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1">插件系统</div>
-              <div className="text-[11px] text-dark-400">自定义功能扩展</div>
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">10K</div>
+              <div className="text-[11px] text-dark-400">上下文窗口</div>
             </div>
             <div className="text-center p-4 rounded-xl glass">
-              <div className="text-2xl md:text-3xl font-bold text-white mb-1">AI 增强</div>
-              <div className="text-[11px] text-dark-400">多模态理解升级</div>
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">256</div>
+              <div className="text-[11px] text-dark-400">多模态支持</div>
             </div>
           </div>
         </ScrollReveal>
