@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
+import { scrollToSection } from "@/lib/scroll";
 
 function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -188,6 +189,7 @@ export default function Hero() {
         >
           <a
             href="#download"
+            onClick={(e) => { e.preventDefault(); scrollToSection("download"); }}
             className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-500 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5"
           >
             下载 Windows 版
@@ -201,6 +203,7 @@ export default function Hero() {
           </a>
           <a
             href="#features"
+            onClick={(e) => { e.preventDefault(); scrollToSection("features"); }}
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass text-dark-300 hover:text-dark-200 text-sm transition-all duration-500 hover:border-brand-500/20"
           >
             了解更多
@@ -237,6 +240,7 @@ export default function Hero() {
         >
           <a
             href="#quiddity"
+            onClick={(e) => { e.preventDefault(); scrollToSection("quiddity"); }}
             className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brand-500/10 bg-brand-500/[0.03] hover:bg-brand-500/[0.06] hover:border-brand-500/25 transition-all duration-500"
           >
             <Sparkles size={13} className="text-brand-400" />

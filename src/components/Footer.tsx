@@ -1,4 +1,6 @@
 import { Mail, Heart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { scrollToSection } from "@/lib/scroll";
 
 const footerLinks = {
   产品: [
@@ -18,12 +20,24 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const navigate = useNavigate();
+
+  const handleLink = (href: string, e: React.MouseEvent) => {
+    if (href.startsWith("mailto:")) return; // let native mailto work
+    e.preventDefault();
+    if (href.startsWith("#/")) {
+      navigate(href.slice(1));
+    } else {
+      scrollToSection(href.slice(1));
+    }
+  };
+
   return (
     <footer className="py-16 border-t border-white/[0.04] relative">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-2 md:col-span-1">
-            <a href="#hero" className="inline-block text-2xl font-bold text-white mb-3 hover:text-brand-400 transition-colors">
+            <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-2xl font-bold text-white mb-3 hover:text-brand-400 transition-colors">
               九语
             </a>
             <p className="text-xs text-dark-500 leading-relaxed mb-5 max-w-52">
@@ -45,7 +59,7 @@ export default function Footer() {
               <ul className="flex flex-col gap-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} className="text-xs text-dark-500 hover:text-dark-300 transition-colors">
+                    <a href={link.href} onClick={(e) => handleLink(link.href, e)} className="text-xs text-dark-500 hover:text-dark-300 transition-colors">
                       {link.label}
                     </a>
                   </li>
