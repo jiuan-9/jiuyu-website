@@ -25,7 +25,7 @@ const features = [
   {
     icon: Eye,
     title: "Markdown 渲染",
-    desc: "代码高亮、表格、公式、流程图——AI 回复以精美排版呈现，阅读体验丝滑。",
+    desc: "标题、列表、表格、代码块——AI 回复自动排版为精美格式，阅读体验丝滑。",
   },
   {
     icon: Zap,
