@@ -15,19 +15,19 @@ const PROVIDERS = [
   {
     id: "deepseek", label: "深度求索",
     url: "https://api.deepseek.com/chat/completions",
-    models: [{ id: "deepseek-chat", label: "DeepSeek-V3" }, { id: "deepseek-reasoner", label: "DeepSeek-R1" }],
+    models: [{ id: "deepseek-v4-flash", label: "DeepSeek-V4-Flash" }, { id: "deepseek-v4-pro", label: "DeepSeek-V4-Pro" }],
     keyPlaceholder: "sk-...",
   },
   {
     id: "qwen", label: "阿里云（通义千问）",
     url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-    models: [{ id: "qwen-turbo", label: "Qwen-Turbo" }, { id: "qwen-plus", label: "Qwen-Plus" }, { id: "qwen-max", label: "Qwen-Max" }],
+    models: [{ id: "qwen3.6-flash", label: "Qwen3.6-Flash" }, { id: "qwen3.7-plus", label: "Qwen3.7-Plus" }, { id: "qwen3.7-max", label: "Qwen3.7-Max" }],
     keyPlaceholder: "sk-...",
   },
   {
     id: "siliconflow", label: "硅基流动",
     url: "https://api.siliconflow.cn/v1/chat/completions",
-    models: [{ id: "deepseek-ai/DeepSeek-V3", label: "DeepSeek-V3" }, { id: "deepseek-ai/DeepSeek-R1", label: "DeepSeek-R1" }, { id: "Qwen/Qwen2.5-7B-Instruct", label: "Qwen2.5-7B" }],
+    models: [{ id: "deepseek-ai/DeepSeek-V3.2", label: "DeepSeek-V3.2" }, { id: "deepseek-ai/DeepSeek-V4-Flash", label: "DeepSeek-V4-Flash" }, { id: "Qwen/Qwen3-8B", label: "Qwen3-8B" }],
     keyPlaceholder: "sk-...",
   },
 ];
@@ -54,11 +54,17 @@ function CollapsibleSection({
   const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
-    if (open && contentRef.current) {
-      setHeight(contentRef.current.scrollHeight);
-    } else {
+    if (!open) {
       setHeight(0);
+      return;
     }
+    const el = contentRef.current;
+    if (!el) return;
+    const measure = () => setHeight(el.scrollHeight);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, [open, children]);
 
   return (
