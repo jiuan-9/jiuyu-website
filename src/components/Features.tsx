@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { MessageSquare, Users, Palette, Shield, Eye, Zap } from "lucide-react";
+import { MessageSquare, Users, Palette, Shield, Eye, Zap, Sparkles, ShieldCheck, UserCog, Repeat } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const features = [
@@ -36,20 +35,18 @@ const features = [
 ];
 
 const highlights = [
-  { emoji: "🆓", label: "完全免费", desc: "无需付费，无需注册" },
-  { emoji: "🔒", label: "加密存储", desc: "AES 本地加密，数据不外传" },
-  { emoji: "🎛️", label: "精调人设", desc: "随意定制 AI 性格与身份" },
-  { emoji: "⚡", label: "快速切换", desc: "一键在不同模型间切换" },
+  { Icon: Sparkles, label: "完全免费", desc: "无需付费，无需注册", color: "text-yellow-400" },
+  { Icon: ShieldCheck, label: "加密存储", desc: "AES 本地加密，数据不外传", color: "text-green-400" },
+  { Icon: UserCog, label: "精调人设", desc: "随意定制 AI 性格与身份", color: "text-purple-400" },
+  { Icon: Repeat, label: "快速切换", desc: "一键在不同模型间切换", color: "text-brand-400" },
 ];
 
 export default function Features() {
-  const [activeTab, setActiveTab] = useState(0);
-
   return (
     <section id="features" className="py-24 md:py-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-dark-950/50 to-transparent" />
 
-      <div className="container relative z-10 mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <ScrollReveal className="text-center mb-14">
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Features</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
@@ -62,25 +59,24 @@ export default function Features() {
 
         {/* Quick highlights */}
         <ScrollReveal threshold={0.1}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 max-w-4xl mx-auto mb-12">
             {highlights.map((h) => (
-              <div key={h.label} className="glass rounded-xl px-4 py-4 text-center card-interactive group">
-                <div className="text-xl mb-2">{h.emoji}</div>
-                <div className="text-sm font-semibold text-white mb-1 group-hover:text-brand-300 transition-colors">{h.label}</div>
-                <div className="text-[11px] text-dark-400">{h.desc}</div>
+              <div key={h.label} className="glass rounded-xl px-5 py-5 card-interactive group text-center">
+                <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/[0.03] mb-3 group-hover:scale-110 transition-transform duration-300`}>
+                  <h.Icon size={20} className={h.color} />
+                </div>
+                <div className="text-sm font-semibold text-white mb-1.5 group-hover:text-brand-300 transition-colors">{h.label}</div>
+                <div className="text-[11px] text-dark-400 leading-relaxed">{h.desc}</div>
               </div>
             ))}
           </div>
         </ScrollReveal>
 
-        {/* Feature cards grid - always visible on all screen sizes */}
+        {/* Feature cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-          {features.map((feature, index) => (
+          {features.map((feature) => (
             <ScrollReveal key={feature.title} threshold={0.1}>
-              <div
-                className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20"
-                style={{ transitionDelay: `${index * 80}ms` }}
-              >
+              <div className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 group-hover:scale-110 transition-all duration-500 shrink-0">
                     <feature.icon size={20} className="text-brand-400" />
@@ -90,7 +86,6 @@ export default function Features() {
                   </h3>
                 </div>
                 <p className="text-xs text-dark-400 leading-relaxed pl-[52px]">{feature.desc}</p>
-                <div className="absolute inset-0 rounded-2xl bg-card-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </div>
             </ScrollReveal>
           ))}
