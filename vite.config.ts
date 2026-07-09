@@ -6,7 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   base: '/jiuyu-website/',
   build: {
-    outDir: 'dist',
+    outDir: 'docs',
     sourcemap: false,
     minify: 'terser',
     terserOptions: {
