@@ -1,44 +1,45 @@
 import { useState } from "react";
-import { MessageSquare, Users, Palette, Shield, Eye, Sparkles, Monitor, Zap } from "lucide-react";
+import { MessageSquare, Users, Palette, Shield, Eye, Zap } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const features = [
   {
     icon: MessageSquare,
     title: "多模型支持",
-    desc: "内置 DeepSeek、通义千问、Kimi、GLM 等主流 AI 服务商，一键切换不同 AI 引擎，一个应用畅享所有服务。",
-    tag: "桌面端已有",
+    desc: "内置 DeepSeek、通义千问、Kimi、GLM 等主流 AI 服务商，一键切换引擎，一个应用畅享所有模型。",
   },
   {
     icon: Palette,
     title: "AI 人设精调",
-    desc: "自定义 AI 的名字、性格、说话方式，精调引擎将你的描述翻译成 AI 最佳理解的语言，创造专属 AI 伙伴。",
-    tag: "桌面端已有",
+    desc: "自定义 AI 的名字、性格、说话方式。精调引擎将你的描述自动编译为最佳 System Prompt。",
   },
   {
     icon: Users,
     title: "多会话管理",
-    desc: "无限创建会话，分类管理不同对话场景。置顶、搜索、重命名，让每个话题井井有条。",
-    tag: "桌面端已有",
+    desc: "无限创建会话，拖拽排序、置顶、搜索、重命名。每个话题都井井有条。",
   },
   {
     icon: Shield,
     title: "本地数据安全",
-    desc: "所有对话记录和 API 密钥均加密保存在本地，不上传任何服务器。你的隐私，由你掌控。",
-    tag: "桌面端已有",
+    desc: "对话记录和 API 密钥均 AES 加密存储在本地磁盘。数据从未离开你的设备。",
   },
   {
     icon: Eye,
     title: "Markdown 渲染",
-    desc: "AI 回复支持完整的 Markdown 语法，代码高亮、表格、列表一应俱全，阅读体验如丝般顺滑。",
-    tag: "桌面端已有",
+    desc: "代码高亮、表格、公式、流程图——AI 回复以精美排版呈现，阅读体验丝滑。",
   },
   {
     icon: Zap,
-    title: "AI 人设编译引擎",
-    desc: "独有的精调编译器，将你输入的自然语言人设描述，自动编译为结构化的高质量 System Prompt。",
-    tag: "桌面端已有",
+    title: "精调编译器",
+    desc: "独有的自然语言编译引擎。输入口语化描述，自动翻译为高质量 System Prompt。",
   },
+];
+
+const highlights = [
+  { emoji: "🆓", label: "完全免费", desc: "无需付费，无需注册" },
+  { emoji: "🔒", label: "加密存储", desc: "AES 本地加密，数据不外传" },
+  { emoji: "🎛️", label: "精调人设", desc: "随意定制 AI 性格与身份" },
+  { emoji: "⚡", label: "快速切换", desc: "一键在不同模型间切换" },
 ];
 
 export default function Features() {
@@ -56,13 +57,31 @@ export default function Features() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             为什么选择<span className="text-gradient"> 九语</span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-            从底层构建的 AI 桌面体验，每一个细节都经过精心打磨
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
+            从底层构建的桌面 AI 体验，每个细节都精心打磨
           </p>
         </ScrollReveal>
 
-        {/* ─── Interactive Feature Tabs (desktop) ─── */}
-        <div className="hidden lg:flex max-w-4xl mx-auto mb-8 gap-2 justify-center flex-wrap">
+        {/* ─── Quick highlights ─── */}
+        <ScrollReveal threshold={0.1}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto mb-12">
+            {highlights.map((h) => (
+              <div
+                key={h.label}
+                className="glass rounded-xl px-4 py-4 text-center hover:border-brand-500/20 transition-all duration-300 group"
+              >
+                <div className="text-xl mb-2">{h.emoji}</div>
+                <div className="text-sm font-semibold text-white mb-1 group-hover:text-brand-300 transition-colors">
+                  {h.label}
+                </div>
+                <div className="text-[11px] text-dark-400">{h.desc}</div>
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
+
+        {/* ─── Interactive Tab Selector (desktop) ─── */}
+        <div className="hidden lg:flex max-w-4xl mx-auto mb-6 gap-2 justify-center flex-wrap">
           {features.map((f, i) => (
             <button
               key={f.title}
@@ -78,47 +97,39 @@ export default function Features() {
           ))}
         </div>
 
-        {/* ─── Active Feature Highlight (desktop) ─── */}
+        {/* ─── Active Feature Detail (desktop) ─── */}
         <div className="hidden lg:block max-w-3xl mx-auto mb-10">
-          <div className="glass glow-border rounded-2xl p-8 text-center transition-all duration-500">
-            <div className="w-14 h-14 mx-auto mb-5 rounded-2xl bg-brand-500/10 flex items-center justify-center">
+          <div className="glass glow-border rounded-2xl px-8 py-7 flex items-center gap-6 transition-all duration-500">
+            <div className="w-14 h-14 shrink-0 rounded-2xl bg-brand-500/10 flex items-center justify-center">
               {(() => {
                 const Icon = features[activeTab].icon;
                 return <Icon size={28} className="text-brand-400" />;
               })()}
             </div>
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <h3 className="text-xl font-bold text-white">{features[activeTab].title}</h3>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20">
-                {features[activeTab].tag}
-              </span>
+            <div className="text-left min-w-0">
+              <h3 className="text-lg font-bold text-white mb-1.5">{features[activeTab].title}</h3>
+              <p className="text-sm text-dark-400 leading-relaxed">{features[activeTab].desc}</p>
             </div>
-            <p className="text-dark-400 text-sm leading-relaxed max-w-md mx-auto">
-              {features[activeTab].desc}
-            </p>
           </div>
         </div>
 
-        {/* ─── Mobile / Tablet grid ─── */}
-        <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* ─── Full Feature Grid (all screen sizes) ─── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <ScrollReveal key={feature.title} threshold={0.1}>
               <div
                 className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20"
                 style={{ transitionDelay: `${index * 80}ms` }}
               >
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 group-hover:scale-110 transition-all duration-500 shrink-0">
                     <feature.icon size={20} className="text-brand-400" />
                   </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-white group-hover:text-brand-300 transition-colors">
-                      {feature.title}
-                    </h3>
-                    <span className="text-[9px] text-green-400/60">{feature.tag}</span>
-                  </div>
+                  <h3 className="text-base font-semibold text-white group-hover:text-brand-300 transition-colors">
+                    {feature.title}
+                  </h3>
                 </div>
-                <p className="text-xs text-dark-400 leading-relaxed">{feature.desc}</p>
+                <p className="text-xs text-dark-400 leading-relaxed pl-[52px]">{feature.desc}</p>
                 <div className="absolute inset-0 rounded-2xl bg-card-glow opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </div>
             </ScrollReveal>

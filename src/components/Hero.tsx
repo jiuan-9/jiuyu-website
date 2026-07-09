@@ -1,20 +1,16 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { ArrowRight, ChevronDown, Sparkles, Monitor, Smartphone } from "lucide-react";
+import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 
-// ─── Animated Background Particles ───
 function ParticleField() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
     let animId: number;
     const particles: { x: number; y: number; vx: number; vy: number; r: number; alpha: number }[] = [];
-    const count = 60;
-
+    const count = 50;
     const resize = () => {
       canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
       canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
@@ -22,39 +18,35 @@ function ParticleField() {
     };
     resize();
     window.addEventListener("resize", resize);
-
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvas.offsetWidth,
         y: Math.random() * canvas.offsetHeight,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
         r: Math.random() * 1.5 + 0.5,
         alpha: Math.random() * 0.5 + 0.1,
       });
     }
-
     const animate = () => {
       const w = canvas.offsetWidth;
       const h = canvas.offsetHeight;
       ctx.clearRect(0, 0, w, h);
-
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < 100) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(20, 176, 255, ${0.06 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(20, 176, 255, ${0.05 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
         }
       }
-
       for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
@@ -67,21 +59,17 @@ function ParticleField() {
         ctx.fillStyle = `rgba(64, 208, 255, ${p.alpha})`;
         ctx.fill();
       }
-
       animId = requestAnimationFrame(animate);
     };
     animate();
-
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
     };
   }, []);
-
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
 }
 
-// ─── Parallax hook ───
 function useParallax(factor = 0.01) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const handleMouseMove = useCallback(
@@ -100,7 +88,6 @@ function useParallax(factor = 0.01) {
   return offset;
 }
 
-// ─── Typewriter ───
 const typewriterTexts = [
   "支持 DeepSeek、通义千问、Kimi 等 11 家 AI 服务商",
   "AI 人设精调 · 创造专属你的 AI 角色",
@@ -113,7 +100,6 @@ function useTypewriter(texts: string[], typingSpeed = 50, deleteSpeed = 25, paus
   const [textIndex, setTextIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-
   useEffect(() => {
     const currentText = texts[textIndex];
     if (!isDeleting && charIndex === currentText.length) {
@@ -131,11 +117,9 @@ function useTypewriter(texts: string[], typingSpeed = 50, deleteSpeed = 25, paus
     );
     return () => clearTimeout(timeout);
   }, [charIndex, isDeleting, textIndex, texts, typingSpeed, deleteSpeed, pauseDuration]);
-
   useEffect(() => {
     setDisplayText(texts[textIndex].slice(0, charIndex));
   }, [charIndex, textIndex, texts]);
-
   return displayText;
 }
 
@@ -149,8 +133,6 @@ export default function Hero() {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-dark-950"
     >
       <ParticleField />
-
-      {/* Gradient orbs */}
       <div
         className="absolute top-1/4 left-1/4 w-64 sm:w-[500px] h-64 sm:h-[500px] rounded-full bg-brand-500/[0.04] blur-[100px] sm:blur-[160px] animate-float-slow"
         style={{ transform: `translate(${parallax.x}px, ${parallax.y}px)` }}
@@ -159,8 +141,6 @@ export default function Hero() {
         className="absolute bottom-1/3 right-1/4 w-72 sm:w-[400px] h-72 sm:h-[400px] rounded-full bg-purple-500/[0.03] blur-[100px] sm:blur-[140px] animate-float"
         style={{ animationDelay: "-5s", transform: `translate(${-parallax.x * 0.6}px, ${-parallax.y * 0.6}px)` }}
       />
-
-      {/* Grid overlay */}
       <div
         className="absolute inset-0 opacity-[0.025]"
         style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "80px 80px" }}
@@ -172,13 +152,13 @@ export default function Hero() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in opacity-0"
           style={{ animationDelay: "0ms" }}
         >
-          <span className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
-          多模型 AI 桌面应用 · v1.0.0
+          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          v1.0.0 · 已发布
         </div>
 
         {/* Main title */}
         <h1
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-4 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
+          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
           style={{ animationDelay: "200ms" }}
         >
           九语
@@ -194,26 +174,16 @@ export default function Hero() {
 
         {/* Typewriter */}
         <div
-          className="text-sm sm:text-base text-dark-400 mb-6 max-w-xl mx-auto h-7 flex items-center justify-center animate-fade-in-up opacity-0"
+          className="text-sm sm:text-base text-dark-400 mb-8 max-w-xl mx-auto h-7 flex items-center justify-center animate-fade-in-up opacity-0"
           style={{ animationDelay: "500ms" }}
         >
           <span>{typewriterText}</span>
           <span className="inline-block w-[2px] h-4 ml-1 bg-brand-400 animate-pulse" />
         </div>
 
-        {/* Desc */}
-        <p
-          className="text-xs sm:text-sm text-dark-500 max-w-lg mx-auto mb-10 animate-fade-in-up opacity-0 leading-relaxed"
-          style={{ animationDelay: "650ms" }}
-        >
-          一个应用，接入主流 AI 平台。自定义 AI 人设，管理无限会话。
-          <br className="hidden sm:block" />
-          所有数据加密存储在本地，隐私由你掌控。
-        </p>
-
         {/* CTA buttons */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 animate-fade-in-up opacity-0"
           style={{ animationDelay: "800ms" }}
         >
           <a
@@ -237,7 +207,30 @@ export default function Hero() {
           </a>
         </div>
 
-        {/* ─── Quiddity teaser ─── */}
+        {/* Key selling points */}
+        <div
+          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-dark-500 animate-fade-in opacity-0"
+          style={{ animationDelay: "900ms" }}
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            接入 11 家 AI 服务商
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            完全免费
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            无需注册
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            Windows 10+
+          </span>
+        </div>
+
+        {/* Quiddity teaser */}
         <div
           className="mt-10 animate-fade-in opacity-0"
           style={{ animationDelay: "1100ms" }}
@@ -248,19 +241,18 @@ export default function Hero() {
           >
             <Sparkles size={13} className="text-brand-400" />
             <span className="text-xs text-dark-400 group-hover:text-dark-300 transition-colors">
-              预览即将到来的 Agent AI · <span className="text-brand-400 font-medium">Quiddity</span>
+              预告：下一代 Agent AI · <span className="text-brand-400 font-medium">Quiddity</span>
             </span>
             <ArrowRight size={12} className="text-brand-500 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div
         className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-8 shrink-0 animate-fade-in opacity-0"
         style={{ animationDelay: "1200ms" }}
       >
-        <span className="text-[10px] tracking-[0.25em] uppercase">探索</span>
+        <span className="text-[10px] tracking-[0.25em] uppercase">向下探索</span>
         <ChevronDown size={14} className="animate-scroll-down" />
       </div>
     </section>

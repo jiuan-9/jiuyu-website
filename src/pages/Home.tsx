@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
+import AppPreview from "@/components/AppPreview";
 import UseCases from "@/components/UseCases";
 import HowItWorks from "@/components/HowItWorks";
 import ProviderShowcase from "@/components/ProviderShowcase";
@@ -26,11 +27,12 @@ export default function Home() {
       <Divider />
       <Features />
       <Divider />
+      <AppPreview />
+      <Divider />
       <UseCases />
       <Divider />
       <ProviderShowcase />
       <Divider />
-      {/* Quiddity teaser - compact */}
       <HowItWorks />
       <Divider />
       <Stats />
