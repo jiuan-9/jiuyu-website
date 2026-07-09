@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Code, BookOpen, Palette, MessageCircle } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -75,6 +75,79 @@ function ChatBubble({ text, role }: { text: string; role: Role }) {
   );
 }
 
+function ExpandableCard({
+  item,
+  index,
+  isOpen,
+  onToggle,
+}: {
+  item: (typeof useCases)[number];
+  index: number;
+  isOpen: boolean;
+  onToggle: (idx: number | null) => void;
+}) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (!contentRef.current) return;
+    setHeight(isOpen ? contentRef.current.scrollHeight : 0);
+  }, [isOpen]);
+
+  return (
+    <div
+      className={`relative rounded-2xl glass glow-border transition-all duration-500 ${
+        isOpen ? "border-brand-500/25 shadow-lg shadow-brand-500/5" : "hover:border-brand-500/20"
+      }`}
+    >
+      <button
+        onClick={() => onToggle(isOpen ? null : index)}
+        className="w-full text-left p-5 cursor-pointer"
+      >
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
+            isOpen ? "bg-brand-500/20 scale-105" : "bg-brand-500/10"
+          }`}>
+            <item.icon size={20} className="text-brand-400" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+              <span className="hidden sm:inline text-[11px] text-dark-500">—</span>
+              <span className="hidden sm:inline text-[11px] text-dark-400">{item.subtitle}</span>
+            </div>
+            <p className="text-[10px] text-dark-500 mt-0.5 sm:hidden">{item.subtitle}</p>
+          </div>
+          <div className={`flex items-center gap-1 text-[10px] font-medium transition-colors shrink-0 ${
+            isOpen ? "text-brand-400" : "text-dark-500"
+          }`}>
+            <span>{isOpen ? "收起" : "展开预览"}</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+              className={`transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`}>
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </div>
+        </div>
+      </button>
+
+      {/* Expandable body — JS-measured height for reliable animation */}
+      <div
+        className="overflow-hidden transition-all duration-500 ease-out"
+        style={{ height: `${height}px` }}
+      >
+        <div ref={contentRef} className="px-5 pb-5">
+          <div className={`h-px mb-4 bg-gradient-to-r ${item.color} from-30% to-transparent`} />
+          <div className="space-y-3">
+            {item.messages.map((msg, i) => (
+              <ChatBubble key={i} text={msg.text} role={msg.role} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function UseCases() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
@@ -94,66 +167,16 @@ export default function UseCases() {
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-5xl mx-auto">
-          {useCases.map((item, index) => {
-            const isOpen = activeIdx === index;
-            return (
-              <ScrollReveal key={item.title} threshold={0.1}>
-                <div
-                  className={`relative rounded-2xl glass glow-border transition-all duration-500 overflow-hidden ${
-                    isOpen ? "border-brand-500/25 shadow-lg shadow-brand-500/5" : "hover:border-brand-500/20"
-                  }`}
-                >
-                  <button
-                    onClick={() => setActiveIdx(isOpen ? null : index)}
-                    className="w-full text-left p-5 cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
-                        isOpen ? "bg-brand-500/20 scale-105" : "bg-brand-500/10"
-                      }`}>
-                        <item.icon size={20} className="text-brand-400" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-sm font-semibold text-white">{item.title}</h3>
-                          <span className="hidden sm:inline text-[11px] text-dark-500">—</span>
-                          <span className="hidden sm:inline text-[11px] text-dark-400">{item.subtitle}</span>
-                        </div>
-                        <p className="text-[10px] text-dark-500 mt-0.5 sm:hidden">{item.subtitle}</p>
-                      </div>
-                      <div className={`flex items-center gap-1 text-[10px] font-medium transition-colors shrink-0 ${
-                        isOpen ? "text-brand-400" : "text-dark-500"
-                      }`}>
-                        <span>{isOpen ? "收起" : "展开预览"}</span>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-                          className={`transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`}>
-                          <path d="M9 18l6-6-6-6"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Expanded content - conditionally rendered */}
-                  <div
-                    className={`grid transition-all duration-500 ${
-                      isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="px-5 pb-5">
-                        <div className={`h-px mb-4 bg-gradient-to-r ${item.color} from-30% to-transparent`} />
-                        <div className="space-y-3">
-                          {item.messages.map((msg, i) => (
-                            <ChatBubble key={i} text={msg.text} role={msg.role} />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            );
-          })}
+          {useCases.map((item, index) => (
+            <ScrollReveal key={item.title} threshold={0.1}>
+              <ExpandableCard
+                item={item}
+                index={index}
+                isOpen={activeIdx === index}
+                onToggle={setActiveIdx}
+              />
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
