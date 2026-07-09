@@ -116,7 +116,7 @@ function buildSystemPrompt(
 
 export default function Demo() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "你好！这是九语桌面端的在线体验版。\n\n请在左侧配置 API Key 和参数后开始对话。本页面仅展示九语桌面端 (v1.0.0) 的基础聊天功能。\n\n更多高级 Agent 能力，请期待 Quiddity。" },
+    { role: "assistant", content: "你好！这是九语 (v1.0.0) 的在线体验版。\n\n请在左侧配置 API Key 和参数后开始对话。\n\n本页面仅展示基础聊天功能。实际桌面端还支持多会话管理、AI 人设精调等更完整的功能。" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -270,7 +270,7 @@ export default function Demo() {
 
       <div className="px-4 py-2.5 border-t border-white/[0.06]">
         <p className="text-[9px] text-dark-500 leading-relaxed">
-          九语桌面端 v1.0.0 在线体验。此页面仅展示基础对话功能，不代表 Quiddity 的完整体验。
+          九语桌面端 v1.0.0 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
         </p>
       </div>
     </>

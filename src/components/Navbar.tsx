@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 
 const navLinks = [
-  { label: "Quiddity", href: "#quiddity" },
-  { label: "下载", href: "#download" },
+  { label: "功能", href: "#features" },
+  { label: "场景", href: "#usecases" },
   { label: "在线体验", href: "#/demo" },
+  { label: "下载", href: "#download" },
   { label: "FAQ", href: "#faq" },
 ];
 
@@ -27,14 +28,12 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between h-16 px-6">
-        {/* Logo */}
         <a href="#hero" className="flex items-center gap-2.5 group">
           <span className="text-2xl font-bold text-white tracking-wide transition-colors group-hover:text-brand-400">
             九语
           </span>
         </a>
 
-        {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <a
@@ -54,7 +53,6 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Mobile toggle */}
         <button
           className="md:hidden text-white p-1"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -64,7 +62,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden glass-strong border-t border-white/[0.06]">
           <div className="container mx-auto px-6 py-5 flex flex-col gap-3">

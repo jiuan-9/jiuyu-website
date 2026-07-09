@@ -5,7 +5,7 @@ import App from './App'
 import './index.css'
 
 console.log(
-  '%c 九语 Jiuyu %c AI Tools Platform ',
+  '%c 九语 Jiuyu %c v1.0.0 ',
   'color: #fff; background: #7c3aed; padding: 4px 8px; border-radius: 4px 0 0 4px; font-weight: bold;',
   'color: #7c3aed; background: #1a1a2e; padding: 4px 8px; border-radius: 0 4px 4px 0;',
 );

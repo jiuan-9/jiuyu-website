@@ -1,31 +1,47 @@
-import { Monitor, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 export default function HowItWorks() {
   return (
-    <section className="py-24 md:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/90 to-dark-950" />
+    <section id="quiddity" className="py-24 md:py-32 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950" />
+      {/* Subtle glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-brand-500/[0.03] blur-[120px]" />
 
       <div className="container relative z-10 mx-auto px-6 text-center">
         <ScrollReveal>
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
-            Current Product
-          </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            九语桌面端<span className="text-gradient"> v1.0.0</span>
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-500/10 bg-brand-500/[0.03] text-xs text-brand-400 mb-6">
+            <Sparkles size={12} />
+            即将到来
+          </div>
+
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-3">
+            <span className="text-gradient">Quiddity</span>
           </h2>
-          <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base mb-10 leading-relaxed">
-            Quiddity 的前身——一款多模型 AI 聊天应用，支持 11 家服务商接入，纯本地加密存储。
-            这是九语 AI 工具平台的第一步。
+          <p className="text-lg text-dark-300 mb-3 font-medium">
+            下一代 Agent AI 智能体
           </p>
-          <a
-            href="#download"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-300 hover:border-brand-500/30"
-          >
-            <Monitor size={16} />
-            下载桌面端
-            <ArrowRight size={14} />
-          </a>
+          <p className="text-sm text-dark-500 max-w-lg mx-auto mb-10 leading-relaxed">
+            Quiddity 是九语正在开发的全新 Agent AI 工具。它不再停留于问答，而是能自主规划、
+            调用工具、执行复杂任务——真正帮你"做事"的 AI。
+          </p>
+
+          {/* Preview pills */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10 max-w-xl mx-auto">
+            {["自主任务规划", "工具链调用", "流程自动化", "多模型调度"].map((item) => (
+              <span
+                key={item}
+                className="px-4 py-2 rounded-full glass text-xs text-dark-400 border border-white/[0.05]"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
+
+          <p className="text-xs text-dark-500">
+            具体发布日期待定，敬请关注。
+          </p>
         </ScrollReveal>
       </div>
     </section>

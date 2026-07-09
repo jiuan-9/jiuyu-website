@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import UseCases from "@/components/UseCases";
+import HowItWorks from "@/components/HowItWorks";
 import ProviderShowcase from "@/components/ProviderShowcase";
 import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
@@ -28,6 +29,9 @@ export default function Home() {
       <UseCases />
       <Divider />
       <ProviderShowcase />
+      <Divider />
+      {/* Quiddity teaser - compact */}
+      <HowItWorks />
       <Divider />
       <Stats />
       <Divider />
