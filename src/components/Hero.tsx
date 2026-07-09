@@ -190,7 +190,7 @@ export default function Hero() {
           <a
             href="#download"
             onClick={(e) => { e.preventDefault(); scrollToSection("download"); }}
-            className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-500 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5"
+            className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5 btn-press"
           >
             下载 Windows 版
             <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />

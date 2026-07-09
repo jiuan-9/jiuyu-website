@@ -1,16 +1,14 @@
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 export default function HowItWorks() {
   return (
     <section id="quiddity" className="py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950" />
-      {/* Subtle glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-brand-500/[0.03] blur-[120px]" />
 
       <div className="container relative z-10 mx-auto px-6 text-center">
         <ScrollReveal>
-          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-500/10 bg-brand-500/[0.03] text-xs text-brand-400 mb-6">
             <Sparkles size={12} />
             即将到来
@@ -27,12 +25,11 @@ export default function HowItWorks() {
             调用工具、执行复杂任务——真正帮你"做事"的 AI。
           </p>
 
-          {/* Preview pills */}
           <div className="flex flex-wrap items-center justify-center gap-3 mb-10 max-w-xl mx-auto">
             {["自主任务规划", "工具链调用", "流程自动化", "多模型调度"].map((item) => (
               <span
                 key={item}
-                className="px-4 py-2 rounded-full glass text-xs text-dark-400 border border-white/[0.05]"
+                className="px-4 py-2 rounded-full glass text-xs text-dark-400 border border-white/[0.05] hover:border-brand-500/20 hover:text-dark-300 transition-all duration-300"
               >
                 {item}
               </span>
@@ -40,7 +37,7 @@ export default function HowItWorks() {
           </div>
 
           <p className="text-xs text-dark-500">
-            具体发布日期待定，敬请关注。
+            预计 2027 年前正式上线，敬请关注。
           </p>
         </ScrollReveal>
       </div>

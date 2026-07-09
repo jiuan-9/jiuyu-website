@@ -64,7 +64,7 @@ export default function Features() {
         <ScrollReveal threshold={0.1}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto mb-10">
             {highlights.map((h) => (
-              <div key={h.label} className="glass rounded-xl px-4 py-4 text-center hover:border-brand-500/20 transition-all duration-300 group">
+              <div key={h.label} className="glass rounded-xl px-4 py-4 text-center card-interactive group">
                 <div className="text-xl mb-2">{h.emoji}</div>
                 <div className="text-sm font-semibold text-white mb-1 group-hover:text-brand-300 transition-colors">{h.label}</div>
                 <div className="text-[11px] text-dark-400">{h.desc}</div>
