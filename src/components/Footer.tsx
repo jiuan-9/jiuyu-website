@@ -70,10 +70,27 @@ export default function Footer() {
         </div>
         {/* 免责声明 */}
         <div className="border-t border-white/[0.04] py-6 mb-2">
-          <div className="text-[11px] text-dark-500 leading-relaxed max-w-4xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
+          <div className="text-[11px] text-dark-500 leading-relaxed max-w-5xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
             <span className="text-dark-400 font-semibold">免责声明：</span>
             九语是一款基于第三方大语言模型 API 的 AI 聊天桌面应用，<span className="text-dark-300 font-semibold">目前尚未进行任何法律备案</span>。
-            使用本软件时请遵守相关法律法规，包括但不限于《生成式人工智能服务管理暂行办法》《人工智能拟人化互动服务管理暂行办法》《互联网信息服务算法推荐管理规定》《中华人民共和国网络安全法》《中华人民共和国数据安全法》《中华人民共和国个人信息保护法》《中华人民共和国科学技术进步法》《未成年人网络保护条例》《互联网信息服务管理办法》《中华人民共和国电信条例》《GitHub 服务条款与可接受使用政策》《数字千年版权法（DMCA）》《美国出口管制条例（EAR）》《欧盟人工智能法案（EU AI Act）》《通用数据保护条例（GDPR）》《世界知识产权组织（WIPO）相关条约》及《伯尔尼公约》。
+            使用本软件时请遵守相关法律法规，包括但不限于
+            <a href="https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《生成式人工智能服务管理暂行办法》</a>
+            <a href="https://www.cac.gov.cn/2025-03/14/c_1796715804888045.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《人工智能拟人化互动服务管理暂行办法》</a>
+            <a href="https://www.cac.gov.cn/2021-12/31/c_1648887370382482.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《互联网信息服务算法推荐管理规定》</a>
+            <a href="https://www.npc.gov.cn/npc/c30834/201611/7c4d7e2c62d042d380b54e19e8b74068.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国网络安全法》</a>
+            <a href="https://www.npc.gov.cn/npc/c30834/202106/9dfc6cf54f6b421597da6e72e6880880.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国数据安全法》</a>
+            <a href="https://www.npc.gov.cn/npc/c30834/202108/0d2752b77d534b418f19b509b565ed66.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国个人信息保护法》</a>
+            <a href="https://www.npc.gov.cn/npc/c30834/202112/f73d7c95c9a448be9a4d58391450187e.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国科学技术进步法》</a>
+            <a href="https://www.gov.cn/zhengce/content/2023-10/24/content_6912294.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《未成年人网络保护条例》</a>
+            <a href="https://www.gov.cn/zhengce/content/2023-02/17/content_5742864.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《互联网信息服务管理办法》</a>
+            <a href="https://www.gov.cn/zhengce/content/2023-07/20/content_6899369.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国电信条例》</a>
+            <a href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">GitHub 服务条款与可接受使用政策</a>
+            <a href="https://www.copyright.gov/legislation/dmca.pdf" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《数字千年版权法（DMCA）》</a>
+            <a href="https://www.ecfr.gov/current/title-15/chapter-VII/subchapter-C" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《美国出口管制条例（EAR）》</a>
+            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024PC0016" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《欧盟人工智能法案（EU AI Act）》</a>
+            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《通用数据保护条例（GDPR）》</a>
+            <a href="https://www.wipo.int/treaties/en/" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《世界知识产权组织（WIPO）相关条约》</a>及
+            <a href="https://www.wipo.int/treaties/en/text.jsp?file_id=283698" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《伯尔尼公约》</a>。
             本软件仅供学习交流使用，用户需自行承担使用风险，开发者不对因使用本软件产生的任何直接或间接损失承担责任。
           </div>
         </div>
