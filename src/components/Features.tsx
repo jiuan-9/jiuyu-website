@@ -51,9 +51,7 @@ export default function Features() {
 
       <div className="container relative z-10 mx-auto px-6">
         <ScrollReveal className="text-center mb-14">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
-            Features
-          </span>
+          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Features</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             为什么选择<span className="text-gradient"> 九语</span>
           </h2>
@@ -62,58 +60,20 @@ export default function Features() {
           </p>
         </ScrollReveal>
 
-        {/* ─── Quick highlights ─── */}
+        {/* Quick highlights */}
         <ScrollReveal threshold={0.1}>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto mb-10">
             {highlights.map((h) => (
-              <div
-                key={h.label}
-                className="glass rounded-xl px-4 py-4 text-center hover:border-brand-500/20 transition-all duration-300 group"
-              >
+              <div key={h.label} className="glass rounded-xl px-4 py-4 text-center hover:border-brand-500/20 transition-all duration-300 group">
                 <div className="text-xl mb-2">{h.emoji}</div>
-                <div className="text-sm font-semibold text-white mb-1 group-hover:text-brand-300 transition-colors">
-                  {h.label}
-                </div>
+                <div className="text-sm font-semibold text-white mb-1 group-hover:text-brand-300 transition-colors">{h.label}</div>
                 <div className="text-[11px] text-dark-400">{h.desc}</div>
               </div>
             ))}
           </div>
         </ScrollReveal>
 
-        {/* ─── Interactive Tab Selector (desktop) ─── */}
-        <div className="hidden lg:flex max-w-4xl mx-auto mb-6 gap-2 justify-center flex-wrap">
-          {features.map((f, i) => (
-            <button
-              key={f.title}
-              onClick={() => setActiveTab(i)}
-              className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-300 ${
-                activeTab === i
-                  ? "bg-brand-500/15 text-brand-400 border border-brand-500/25"
-                  : "text-dark-400 hover:text-dark-300 border border-transparent hover:bg-white/[0.03]"
-              }`}
-            >
-              {f.title}
-            </button>
-          ))}
-        </div>
-
-        {/* ─── Active Feature Detail (desktop) ─── */}
-        <div className="hidden lg:block max-w-3xl mx-auto mb-10">
-          <div className="glass glow-border rounded-2xl px-8 py-7 flex items-center gap-6 transition-all duration-500">
-            <div className="w-14 h-14 shrink-0 rounded-2xl bg-brand-500/10 flex items-center justify-center">
-              {(() => {
-                const Icon = features[activeTab].icon;
-                return <Icon size={28} className="text-brand-400" />;
-              })()}
-            </div>
-            <div className="text-left min-w-0">
-              <h3 className="text-lg font-bold text-white mb-1.5">{features[activeTab].title}</h3>
-              <p className="text-sm text-dark-400 leading-relaxed">{features[activeTab].desc}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* ─── Full Feature Grid (all screen sizes) ─── */}
+        {/* Feature cards grid - always visible on all screen sizes */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {features.map((feature, index) => (
             <ScrollReveal key={feature.title} threshold={0.1}>
