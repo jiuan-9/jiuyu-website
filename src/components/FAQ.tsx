@@ -113,7 +113,7 @@ export default function FAQ() {
         <ScrollReveal threshold={0.1}>
           <div className="max-w-2xl mx-auto glass rounded-2xl glow-border p-6 md:p-8">
             {faqs.map((faq, index) => (
-              <FAQAccordion key={faq.question} item={faq} defaultOpen={index === 0} />
+              <FAQAccordion key={faq.question} item={faq} />
             ))}
           </div>
         </ScrollReveal>
