@@ -1,4 +1,4 @@
-import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun } from "lucide-react";
+import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
@@ -54,112 +54,139 @@ function AppMockup() {
 
   return (
     <div className="w-full max-w-[900px] mx-auto rounded-2xl overflow-hidden border border-white/[0.08] bg-dark-900/80 shadow-2xl shadow-black/60">
-      {/* Title bar */}
-      <div className="h-10 bg-dark-900 flex items-center px-4 gap-2 border-b border-white/[0.05]">
-        <div className="flex gap-1.5 shrink-0">
-          <div className="w-3 h-3 rounded-full bg-red-500/70" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-          <div className="w-3 h-3 rounded-full bg-green-500/70" />
+      {/* Title bar - 40px height, matches real app */}
+      <div className="h-[40px] flex items-center px-2 bg-dark-900 border-b border-white/[0.05]">
+        <div className="flex items-center gap-0 shrink-0">
+          <button className="w-[36px] h-[36px] rounded-md flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </button>
+          <button className="w-[36px] h-[36px] rounded-md flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-brand-400 transition-colors">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2"/>
+              <path d="M12 20v2"/>
+              <path d="m4.93 4.93 1.41 1.41"/>
+              <path d="m17.66 17.66 1.41 1.41"/>
+              <path d="M2 12h2"/>
+              <path d="M20 12h2"/>
+              <path d="m6.34 17.66-1.41 1.41"/>
+              <path d="m19.07 4.93-1.41 1.41"/>
+            </svg>
+          </button>
         </div>
-        <span className="text-[10px] text-dark-400 ml-3 truncate">九语 v1.1.0</span>
-        <span className="ml-auto text-[9px] text-dark-500 hidden sm:block">便携版 · 无需安装</span>
+        <div className="flex-1 flex items-center justify-center">
+          <span className="text-[13px] font-medium text-dark-300 tracking-[0.5px]">九语</span>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
+            &#xE921;
+          </button>
+          <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
+            &#xE922;
+          </button>
+          <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-[#e81123] hover:text-white transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
+            &#xE8BB;
+          </button>
+        </div>
       </div>
 
       {/* App body */}
       <div className="flex h-[440px]">
-        {/* Sidebar */}
-        <div className="w-[180px] shrink-0 border-r border-white/[0.04] bg-dark-950/60 flex flex-col">
-          <div className="p-2.5 border-b border-white/[0.04]">
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-brand-500/10 text-brand-400 text-[10px] font-medium">
-              <Plus size={12} /> 新建会话
+        {/* Sidebar - 220px width */}
+        <div className="w-[220px] shrink-0 border-r border-white/[0.04] bg-dark-900/60 flex flex-col">
+          <div className="flex items-center gap-2 p-[10px_12px] border-b border-white/[0.04]">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1 px-2 py-1 rounded-sm bg-white/[0.03] text-[12px] text-dark-400">
+                <Search size={11} />
+                <span className="truncate">搜索会话...</span>
+              </div>
             </div>
+            <button className="w-[26px] h-[26px] rounded-sm border border-white/[0.08] flex items-center justify-center text-dark-500 hover:bg-white/[0.03] hover:text-dark-300 transition-colors text-[14px]">⚙</button>
+            <button className="w-[26px] h-[26px] rounded-sm border border-white/[0.08] flex items-center justify-center text-dark-300 hover:bg-white/[0.03] hover:text-dark-100 transition-colors text-[16px] leading-none">+</button>
+            <button className="w-[26px] h-[26px] rounded-sm flex items-center justify-center text-dark-500 hover:bg-white/[0.03] hover:text-dark-300 transition-colors text-[14px]">&laquo;</button>
           </div>
-          <div className="p-1.5 border-b border-white/[0.04]">
-            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-white/[0.03] text-[10px] text-dark-400">
-              <Search size={11} />
-              搜索会话...
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto p-1.5 space-y-0.5">
+          <div className="flex-1 overflow-y-auto p-[6px] space-y-[2px]">
             {chatData.map((chat, i) => (
               <button
                 key={chat.name}
                 onClick={() => setActiveChat(i)}
-                className={`w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[10px] text-left transition-all duration-200 ${
+                className={`w-full flex items-center justify-between px-[12px] py-[10px] rounded-md text-[13px] text-left transition-all duration-200 ${
                   activeChat === i
-                    ? "bg-white/[0.06] text-dark-100 ring-1 ring-brand-500/10"
-                    : "text-dark-400 hover:bg-white/[0.03] hover:text-dark-300"
+                    ? "bg-brand-500/10 text-brand-400 font-medium"
+                    : "text-dark-300 hover:bg-white/[0.03]"
                 }`}
               >
-                <MessageSquare size={11} className="shrink-0" />
                 <span className="truncate flex-1">{chat.name}</span>
-                <MoreVertical size={10} className="opacity-40 shrink-0" />
+                <MoreVertical size={12} className="opacity-40 shrink-0" />
               </button>
             ))}
-          </div>
-          <div className="p-2 border-t border-white/[0.04] flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0">九</div>
-            <span className="text-[10px] text-dark-300 truncate">用户</span>
-            <div className="ml-auto">
-              <Sun size={11} className="text-dark-500" />
-            </div>
           </div>
         </div>
 
         {/* Chat area */}
         <div className="flex-1 flex flex-col bg-dark-950/40 min-w-0">
           {/* Chat header */}
-          <div className="h-9 flex items-center px-3 border-b border-white/[0.04] shrink-0">
-            <span className="text-[10px] text-dark-200 font-medium truncate">{current.name}</span>
-            <span className="ml-auto text-[9px] text-dark-500 shrink-0 ml-2">{current.model}</span>
+          <div className="h-[36px] flex items-center px-[16px] border-b border-white/[0.04] shrink-0">
+            <span className="text-[13px] text-dark-200 font-medium truncate">{current.name}</span>
+            <span className="ml-auto text-[11px] text-dark-500 shrink-0 ml-2">{current.model}</span>
           </div>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
-            {current.messages.map((msg, i) => (
-              <div key={i} className={`flex items-start gap-2 ${msg.role === "user" ? "justify-end" : ""}`}>
-                {msg.role === "ai" && (
-                  <div className="w-6 h-6 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">九</div>
-                )}
-                <div className={`max-w-[85%] min-w-0 ${msg.role === "user" ? "" : ""}`}>
-                  {parseContent(msg.text).map((seg, si) =>
-                    seg.type === "code" ? (
-                      <div key={si} className="my-1 rounded-lg overflow-hidden border border-white/[0.08] bg-[#0d1117]">
-                        <div className="flex items-center justify-between px-2.5 py-1 border-b border-white/[0.04] bg-[#161b22]/80">
-                          <span className="text-[8px] text-dark-500 font-medium">
-                            {seg.language || "代码"}
-                          </span>
+          {/* Messages - max-width 640px centered */}
+          <div className="flex-1 overflow-y-auto px-[16px] py-[20px]">
+            <div className="max-w-[640px] mx-auto space-y-[8px]">
+              {current.messages.map((msg, i) => (
+                <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
+                  <span className="text-[12px] font-medium text-dark-500 mb-1 px-1">
+                    {msg.role === "user" ? "你" : "AI"}
+                    <span className="font-normal text-[11px] ml-1 opacity-70">{i === 0 ? "" : ""}</span>
+                  </span>
+                  <div className={`max-w-[85%] min-w-0 ${msg.role === "user" ? "" : ""}`}>
+                    {parseContent(msg.text).map((seg, si) =>
+                      seg.type === "code" ? (
+                        <div key={si} className="my-1 rounded-lg overflow-hidden border border-white/[0.08] bg-[#0d1117]">
+                          <div className="flex items-center justify-between px-2.5 py-1 border-b border-white/[0.04] bg-[#161b22]/80">
+                            <span className="text-[8px] text-dark-500 font-medium">
+                              {seg.language || "代码"}
+                            </span>
+                          </div>
+                          <pre className="px-2.5 py-1.5 text-[9px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
+                            <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
+                          </pre>
                         </div>
-                        <pre className="px-2.5 py-1.5 text-[9px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
-                          <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
-                        </pre>
-                      </div>
-                    ) : (
-                      <div key={si} className={`p-2.5 rounded-xl text-[10px] leading-relaxed whitespace-pre-wrap break-words ${
-                        msg.role === "user"
-                          ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
-                          : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
-                      }`}>
-                        {seg.content}
-                      </div>
-                    )
-                  )}
+                      ) : (
+                        <div key={si} className={`px-[15px] py-[10px] rounded-xl text-[14px] leading-[1.6] whitespace-pre-wrap break-words ${
+                          msg.role === "user"
+                            ? "rounded-br-sm bg-brand-500 text-white"
+                            : "rounded-bl-sm bg-dark-800/60 border border-white/[0.04] text-dark-200"
+                        }`}>
+                          {seg.content}
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
-                {msg.role === "user" && (
-                  <div className="w-6 h-6 rounded-md bg-dark-700 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">你</div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {/* Input */}
-          <div className="p-2.5 border-t border-white/[0.04] shrink-0">
-            <div className="flex items-center gap-2">
-              <div className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-1.5 text-[10px] text-dark-500">
-                输入消息...
+          {/* Input bar - matches real app */}
+          <div className="px-[16px] py-[10px_14px] border-t border-white/[0.04] shrink-0">
+            <div className="flex items-center gap-[8px]">
+              <button className="w-[30px] h-[30px] rounded-full border border-white/[0.1] flex items-center justify-center text-dark-500 hover:border-brand-500/50 hover:text-brand-400 hover:bg-brand-500/5 transition-colors text-[13px] font-bold">?</button>
+              <button className="w-[30px] h-[30px] rounded-full border border-white/[0.1] flex items-center justify-center text-dark-500 hover:border-brand-500/50 hover:text-brand-400 hover:bg-brand-500/5 transition-colors">
+                <Image size={14} />
+              </button>
+              <div className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-xl px-[14px] py-[9px] text-[14px] text-dark-500 min-h-[38px] flex items-center">
+                输入消息...（Enter 发送，Shift+Enter 换行）
               </div>
-              <button className="w-7 h-7 rounded-lg bg-brand-500/20 flex items-center justify-center hover:bg-brand-500/30 transition-colors">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#40d0ff" strokeWidth="2"><path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/></svg>
+              <button className="w-[38px] h-[38px] rounded-full bg-brand-500 flex items-center justify-center text-white hover:bg-brand-400 transition-colors">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
               </button>
             </div>
           </div>
