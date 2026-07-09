@@ -15,7 +15,6 @@ const footerLinks = {
   ],
   关于: [
     { label: "关于九语", href: "#hero" },
-    { label: "Quiddity 预告", href: "#quiddity" },
     { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
   ],
 };

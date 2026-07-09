@@ -9,7 +9,6 @@ import HowItWorks from "@/components/HowItWorks";
 import ProviderShowcase from "@/components/ProviderShowcase";
 import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
-import QuiddityPreview from "@/components/QuiddityPreview";
 import DownloadSection from "@/components/Download";
 import Footer from "@/components/Footer";
 
@@ -66,8 +65,6 @@ export default function Home() {
       <Stats />
       <Divider />
       <FAQ />
-      <Divider />
-      <QuiddityPreview />
       <Divider />
       <DownloadSection />
       <Footer />

@@ -241,23 +241,6 @@ export default function Hero() {
           </span>
         </div>
 
-        {/* Quiddity teaser */}
-        <div
-          className="mt-10 animate-fade-in opacity-0"
-          style={{ animationDelay: "1100ms" }}
-        >
-          <a
-            href="#quiddity"
-            onClick={(e) => { e.preventDefault(); scrollToSection("quiddity"); }}
-            className="group inline-flex items-center gap-2 px-5 py-2 rounded-full border border-brand-500/10 bg-brand-500/[0.03] hover:bg-brand-500/[0.06] hover:border-brand-500/25 transition-all duration-500"
-          >
-            <Sparkles size={13} className="text-brand-400" />
-            <span className="text-xs text-dark-400 group-hover:text-dark-300 transition-colors">
-              预告：下一代 Agent AI · <span className="text-brand-400 font-medium">Quiddity</span>
-            </span>
-            <ArrowRight size={12} className="text-brand-500 group-hover:translate-x-0.5 transition-transform" />
-          </a>
-        </div>
       </div>
 
       <div

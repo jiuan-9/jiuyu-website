@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Sparkles, Bug, Zap, Shield, Code, Users, Eye, Palette, Globe } from "lucide-react";
+import { ArrowLeft, Sparkles, Bug, Zap, Shield, Code, Users, Eye, Palette, Globe, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -44,38 +44,12 @@ const versionData = [
     ],
     color: "blue",
   },
-  {
-    version: "v0.9.0",
-    date: "2026-04",
-    status: "beta",
-    title: "公测版本",
-    description: "公开测试，收集用户反馈，优化核心体验",
-    features: [
-      { icon: Eye, text: "消息气泡优化" },
-      { icon: Code, text: "Markdown 支持" },
-    ],
-    color: "yellow",
-  },
-  {
-    version: "v0.5.0",
-    date: "2026-03",
-    status: "alpha",
-    title: "内测版本",
-    description: "内部测试，验证核心功能和架构稳定性",
-    features: [
-      { icon: Zap, text: "基础聊天功能" },
-      { icon: Users, text: "多会话管理" },
-    ],
-    color: "purple",
-  },
 ];
 
 const colorMap = {
   brand: { bg: "bg-brand-500/10", border: "border-brand-500/30", text: "text-brand-400", glow: "shadow-brand-500/10" },
   green: { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-400", glow: "shadow-green-500/10" },
   blue: { bg: "bg-blue-500/10", border: "border-blue-500/30", text: "text-blue-400", glow: "shadow-blue-500/10" },
-  yellow: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-400", glow: "shadow-yellow-500/10" },
-  purple: { bg: "bg-purple-500/10", border: "border-purple-500/30", text: "text-purple-400", glow: "shadow-purple-500/10" },
 };
 
 export default function Timeline() {
@@ -144,11 +118,6 @@ export default function Timeline() {
                                     BETA
                                   </span>
                                 )}
-                                {version.status === "alpha" && (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-purple-500/20 text-[9px] font-bold text-purple-400">
-                                    ALPHA
-                                  </span>
-                                )}
                               </div>
                               <span className="text-[11px] text-dark-500">{version.date}</span>
                             </div>
@@ -185,7 +154,7 @@ export default function Timeline() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center p-5 rounded-xl glass">
-                <div className="text-3xl font-bold text-white mb-1">5</div>
+                <div className="text-3xl font-bold text-white mb-1">3</div>
                 <div className="text-[11px] text-dark-400">版本发布</div>
               </div>
               <div className="text-center p-5 rounded-xl glass">
@@ -193,12 +162,12 @@ export default function Timeline() {
                 <div className="text-[11px] text-dark-400">个月迭代</div>
               </div>
               <div className="text-center p-5 rounded-xl glass">
-                <div className="text-3xl font-bold text-white mb-1">15+</div>
+                <div className="text-3xl font-bold text-white mb-1">10+</div>
                 <div className="text-[11px] text-dark-400">核心功能</div>
               </div>
               <div className="text-center p-5 rounded-xl glass">
-                <div className="text-3xl font-bold text-white mb-1">10K+</div>
-                <div className="text-[11px] text-dark-400">下载量</div>
+                <div className="text-3xl font-bold text-white mb-1">11</div>
+                <div className="text-[11px] text-dark-400">AI 服务商</div>
               </div>
             </div>
           </div>
