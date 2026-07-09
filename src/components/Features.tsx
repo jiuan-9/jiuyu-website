@@ -15,7 +15,7 @@ const features = [
   {
     icon: MessageSquare,
     title: "多模型支持",
-    desc: "内置 DeepSeek、通义千问、Kimi、GLM 等主流 AI 服务商。一键切换引擎，一个应用畅享所有模型，不受单一平台限制。",
+    desc: "内置 11 家 AI 服务商，包括阿里云（通义千问）、百度（文心一言）、智谱（GLM）、月之暗面（Kimi）、腾讯（混元）、字节跳动（豆包）、深度求索（DeepSeek）、科大讯飞（星火）、MiniMax（海螺AI）、硅基流动（聚合平台）、阶跃星辰。一键切换引擎，一个应用畅享所有模型。",
   },
   {
     icon: Shield,

@@ -61,7 +61,7 @@ function AppMockup() {
           <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
           <div className="w-3 h-3 rounded-full bg-green-500/70" />
         </div>
-        <span className="text-[10px] text-dark-400 ml-3 truncate">九语 v1.0.0</span>
+        <span className="text-[10px] text-dark-400 ml-3 truncate">九语 v1.1.0</span>
         <span className="ml-auto text-[9px] text-dark-500 hidden sm:block">便携版 · 无需安装</span>
       </div>
 

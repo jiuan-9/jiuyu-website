@@ -90,10 +90,10 @@ function useParallax(factor = 0.01) {
 }
 
 const typewriterTexts = [
-  "支持 DeepSeek、通义千问、Kimi 等 11 家 AI 服务商",
-  "AI 人设精调 · 创造专属你的 AI 角色",
-  "纯本地加密存储 · 隐私数据绝不外泄",
-  "免费使用 · 无需注册 · 即开即用",
+  "支持阿里云、百度、智谱、Kimi 等 11 家 AI 服务商",
+  "AI 人设精调 · 自动编译为最佳 System Prompt",
+  "支持图片上传 · 图文混聊更精彩",
+  "AES 加密本地存储 · 数据安全由你掌控",
 ];
 
 function useTypewriter(texts: string[], typingSpeed = 50, deleteSpeed = 25, pauseDuration = 2500) {
@@ -221,11 +221,19 @@ export default function Hero() {
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            完全免费
+            支持图片上传
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            无需注册
+            AES 加密存储
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            多会话管理
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
+            完全免费
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
