@@ -154,7 +154,7 @@ export default function Hero() {
           style={{ animationDelay: "0ms" }}
         >
           <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          v1.0.0 · 已发布
+          v1.1.0 · 已发布
         </div>
 
         {/* Main title */}

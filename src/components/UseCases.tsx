@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Code, BookOpen, Palette, MessageCircle } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
+import { parseContent, highlightCode } from "@/lib/syntax-highlight";
 
 type Role = "user" | "ai";
 
@@ -61,12 +62,27 @@ function ChatBubble({ text, role }: { text: string; role: Role }) {
       {role === "ai" && (
         <div className="w-5 h-5 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">九</div>
       )}
-      <div className={`p-2.5 rounded-xl text-[11px] leading-snug max-w-[82%] ${
-        role === "user"
-          ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
-          : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
-      }`}>
-        <pre className="font-sans whitespace-pre-wrap break-words">{text}</pre>
+      <div className="max-w-[82%] min-w-0">
+        {parseContent(text).map((seg, si) =>
+          seg.type === "code" ? (
+            <div key={si} className="my-1 rounded-lg overflow-hidden border border-white/[0.08] bg-[#0d1117]">
+              <div className="flex items-center justify-between px-2.5 py-1 border-b border-white/[0.04] bg-[#161b22]/80">
+                <span className="text-[8px] text-dark-500 font-medium">{seg.language || "代码"}</span>
+              </div>
+              <pre className="px-2.5 py-1.5 text-[9px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
+                <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
+              </pre>
+            </div>
+          ) : (
+            <div key={si} className={`p-2.5 rounded-xl text-[11px] leading-snug whitespace-pre-wrap break-words ${
+              role === "user"
+                ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
+                : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
+            }`}>
+              {seg.content}
+            </div>
+          )
+        )}
       </div>
       {role === "user" && (
         <div className="w-5 h-5 rounded-md bg-dark-700 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">你</div>

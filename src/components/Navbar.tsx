@@ -4,21 +4,42 @@ import { scrollToSection } from "@/lib/scroll";
 import { useNavigate } from "react-router-dom";
 
 const navLinks = [
-  { label: "功能", href: "#features" },
-  { label: "场景", href: "#usecases" },
-  { label: "在线体验", href: "#/demo" },
-  { label: "下载", href: "#download" },
-  { label: "FAQ", href: "#faq" },
+  { label: "功能", href: "#features", sectionId: "features" },
+  { label: "场景", href: "#usecases", sectionId: "usecases" },
+  { label: "在线体验", href: "#/demo", sectionId: null },
+  { label: "下载", href: "#download", sectionId: "download" },
+  { label: "FAQ", href: "#faq", sectionId: "faq" },
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // 滚动监听：背景变化 + 当前区域高亮
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const sectionIds = navLinks
+      .map((l) => l.sectionId)
+      .filter(Boolean) as string[];
+
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+
+      // 检测当前在哪个区域
+      const scrollPos = window.scrollY + 120; // 偏移量，提前触发
+      for (const id of [...sectionIds].reverse()) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(id);
+          return;
+        }
+      }
+      setActiveSection(null);
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -26,10 +47,15 @@ export default function Navbar() {
     e.preventDefault();
     setMobileOpen(false);
     if (href.startsWith("#/")) {
-      navigate(href.slice(1)); // "#/demo" -> "/demo"
+      navigate(href.slice(1));
     } else {
-      scrollToSection(href.slice(1)); // "#features" -> "features"
+      scrollToSection(href.slice(1));
     }
+  };
+
+  const isActive = (sectionId: string | null) => {
+    if (!sectionId) return false;
+    return activeSection === sectionId;
   };
 
   return (
@@ -53,7 +79,11 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onClick={(e) => handleNav(link.href, e)}
-              className="text-sm text-dark-300 hover:text-white transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-brand-500 after:transition-all hover:after:w-full"
+              className={`text-sm transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:bg-brand-500 after:transition-all ${
+                isActive(link.sectionId)
+                  ? "text-brand-400 after:w-full"
+                  : "text-dark-300 hover:text-white after:w-0 hover:after:w-full"
+              }`}
             >
               {link.label}
             </a>
@@ -85,7 +115,9 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNav(link.href, e)}
-                className="text-sm text-dark-300 hover:text-white transition-colors py-2"
+                className={`text-sm py-2 transition-colors ${
+                  isActive(link.sectionId) ? "text-brand-400" : "text-dark-300 hover:text-white"
+                }`}
               >
                 {link.label}
               </a>

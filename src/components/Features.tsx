@@ -1,36 +1,36 @@
-import { MessageSquare, Users, Palette, Shield, Eye, Zap, Sparkles, ShieldCheck, UserCog, Repeat } from "lucide-react";
+import { MessageSquare, Users, Palette, Shield, Eye, Zap, Sparkles, ShieldCheck, UserCog, Repeat, Code } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const features = [
   {
-    icon: MessageSquare,
-    title: "多模型支持",
-    desc: "内置 DeepSeek、通义千问、Kimi、GLM 等主流 AI 服务商，一键切换引擎，一个应用畅享所有模型。",
+    icon: Code,
+    title: "代码高亮 & 分框显示",
+    desc: "代码块自动识别语言、语法高亮、独立深色背景框。文字和代码清晰分离，一键复制整段代码，阅读体验媲美专业编辑器。",
   },
   {
     icon: Palette,
     title: "AI 人设精调",
-    desc: "自定义 AI 的名字、性格、说话方式。精调引擎将你的描述自动编译为最佳 System Prompt。",
+    desc: "自定义 AI 的名字、性格、说话方式。精调引擎将你的描述自动编译为最佳 System Prompt，创造专属你的 AI 角色。",
   },
   {
-    icon: Users,
-    title: "多会话管理",
-    desc: "无限创建会话，拖拽排序、置顶、搜索、重命名。每个话题都井井有条。",
+    icon: MessageSquare,
+    title: "多模型支持",
+    desc: "内置 DeepSeek、通义千问、Kimi、GLM 等主流 AI 服务商。一键切换引擎，一个应用畅享所有模型，不受单一平台限制。",
   },
   {
     icon: Shield,
     title: "本地数据安全",
-    desc: "对话记录和 API 密钥均 AES 加密存储在本地磁盘。数据从未离开你的设备。",
+    desc: "对话记录和 API 密钥均 AES 加密存储在本地磁盘。数据从未离开你的设备，你的隐私由你掌控。",
+  },
+  {
+    icon: Users,
+    title: "多会话管理",
+    desc: "无限创建会话，拖拽排序、置顶、搜索、重命名。每个话题井井有条，工作、学习、闲聊互不干扰。",
   },
   {
     icon: Eye,
-    title: "Markdown 渲染",
-    desc: "标题、列表、表格、代码块——AI 回复自动排版为精美格式，阅读体验丝滑。",
-  },
-  {
-    icon: Zap,
-    title: "精调编译器",
-    desc: "独有的自然语言编译引擎。输入口语化描述，自动翻译为高质量 System Prompt。",
+    title: "Markdown 精美排版",
+    desc: "标题、列表、表格、代码块——AI 回复自动排版为精美格式。代码高亮 + 表格对齐 + 文字排版，阅读体验丝滑。",
   },
 ];
 

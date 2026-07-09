@@ -1,4 +1,4 @@
-import { Download, Monitor, Smartphone, Globe } from "lucide-react";
+import { Download, Monitor, Smartphone, Globe, Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 export default function DownloadSection() {
@@ -14,7 +14,7 @@ export default function DownloadSection() {
             获取<span className="text-gradient"> 九语</span>
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base mb-14 leading-relaxed">
-            桌面端完全免费，无需注册即可使用。移动端将作为全新 AI 工具推出。
+            桌面端完全免费，无需注册即可使用。内置自动更新检测，随时保持最新版本。
           </p>
         </ScrollReveal>
 
@@ -22,15 +22,18 @@ export default function DownloadSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 max-w-2xl mx-auto">
             {/* Desktop */}
             <a
-              href="https://github.com/jiuan-9/jiuyu-website/releases/download/v1.0.0/Jiuyu-1.0.0.exe"
+              href="https://github.com/jiuan-9/jiuyu-website/releases/download/v1.1.0/Jiuyu-1.1.0.exe"
               className="group flex items-center gap-3 px-5 py-4 rounded-xl glass glow-border-strong w-full sm:w-auto sm:min-w-[220px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/25"
             >
               <div className="w-9 h-9 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors shrink-0">
                 <Monitor size={20} className="text-brand-400" />
               </div>
               <div className="text-left min-w-0">
-                <div className="text-sm font-semibold text-white">Windows 桌面端</div>
-                <div className="text-xs text-dark-400 mt-0.5">v1.0.0 · 便携版</div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-semibold text-white">Windows 桌面端</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-brand-500/15 text-[9px] font-bold text-brand-400">NEW</span>
+                </div>
+                <div className="text-xs text-dark-400 mt-0.5">v1.1.0 · 便携版</div>
               </div>
               <Download size={15} className="text-dark-500 group-hover:text-brand-400 transition-colors ml-auto shrink-0" />
             </a>
@@ -62,13 +65,15 @@ export default function DownloadSection() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-dark-500">
-            <span>版本 1.0.0</span>
+            <span>版本 1.1.0</span>
             <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>Windows 10+</span>
             <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>完全免费</span>
             <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
             <span>无需注册</span>
+            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
+            <span>代码高亮</span>
           </div>
         </ScrollReveal>
       </div>

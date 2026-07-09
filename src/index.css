@@ -198,3 +198,131 @@ button:focus-visible {
     from { opacity: 0; transform: translateY(8px); }
   }
 }
+
+/* ──────────────────────────────────── */
+/*  新增：代码块 & 语法高亮 & 其他      */
+/* ──────────────────────────────────── */
+
+/* ── 代码块容器 ── */
+.code-block-wrapper {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.code-block-wrapper:hover {
+  border-color: rgba(20, 176, 255, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(20, 176, 255, 0.04);
+}
+
+.code-block-content {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", "Monaco", monospace;
+  tab-size: 4;
+  -moz-tab-size: 4;
+  white-space: pre;
+  overflow-x: auto;
+  counter-reset: line;
+}
+
+.code-block-content code {
+  display: block;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ── 语法高亮颜色 ── */
+.hl-comment {
+  color: #6a737d;
+  font-style: italic;
+}
+.hl-string {
+  color: #7ecb8b;
+}
+.hl-keyword {
+  color: #c792ea;
+  font-weight: 500;
+}
+.hl-number {
+  color: #f78c6c;
+}
+.hl-function {
+  color: #ffcb6b;
+}
+.hl-builtin {
+  color: #82aaff;
+}
+.hl-punctuation {
+  color: #89ddff;
+}
+.hl-plain {
+  color: #e2e8f0;
+}
+
+/* ── 行内代码 ── */
+.inline-code {
+  font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", "Monaco", monospace;
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: rgba(20, 176, 255, 0.1);
+  color: #7ecb8b;
+  border: 1px solid rgba(20, 176, 255, 0.1);
+  word-break: break-all;
+}
+
+/* ── 更新通知进度条动画 ── */
+@keyframes shrink-bar {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+.animate-shrink-bar {
+  animation: shrink-bar linear forwards;
+}
+
+/* ── 回到顶部按钮 ── */
+.back-to-top {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(100px);
+}
+.back-to-top.visible {
+  transform: translateY(0);
+}
+.back-to-top:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(20, 176, 255, 0.2);
+}
+
+/* ── 导航栏激活状态 ── */
+.nav-active {
+  color: #14b0ff !important;
+}
+.nav-active::after {
+  width: 100% !important;
+}
+
+/* ── Demo 页面聊天区滚动条 ── */
+.chat-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 2px;
+}
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── 侧边栏滚动条 ── */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1.5px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.08);
+}

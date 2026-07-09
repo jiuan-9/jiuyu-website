@@ -68,6 +68,16 @@ export default function Footer() {
             </div>
           ))}
         </div>
+        {/* 免责声明 */}
+        <div className="border-t border-white/[0.04] py-6 mb-2">
+          <div className="text-[11px] text-dark-500 leading-relaxed max-w-4xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
+            <span className="text-dark-400 font-semibold">免责声明：</span>
+            九语是一款基于第三方大语言模型 API 的 AI 聊天桌面应用，<span className="text-dark-300 font-semibold">目前尚未进行任何法律备案</span>。
+            使用本软件时请遵守相关法律法规，包括但不限于《生成式人工智能服务管理暂行办法》《人工智能拟人化互动服务管理暂行办法》《互联网信息服务算法推荐管理规定》《中华人民共和国网络安全法》《中华人民共和国数据安全法》《中华人民共和国个人信息保护法》《中华人民共和国科学技术进步法》《未成年人网络保护条例》《互联网信息服务管理办法》《中华人民共和国电信条例》《GitHub 服务条款与可接受使用政策》《数字千年版权法（DMCA）》《美国出口管制条例（EAR）》《欧盟人工智能法案（EU AI Act）》《通用数据保护条例（GDPR）》《世界知识产权组织（WIPO）相关条约》及《伯尔尼公约》。
+            本软件仅供学习交流使用，用户需自行承担使用风险，开发者不对因使用本软件产生的任何直接或间接损失承担责任。
+          </div>
+        </div>
+
         <div className="pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
           <span className="text-xs text-dark-500">&copy; 2026 九语. All rights reserved.</span>
           <span className="flex items-center gap-1 text-xs text-dark-500">

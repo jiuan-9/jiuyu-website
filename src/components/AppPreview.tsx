@@ -1,6 +1,7 @@
 import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
+import { parseContent, highlightCode } from "@/lib/syntax-highlight";
 
 type MSG = { role: "user" | "ai"; text: string };
 
@@ -120,12 +121,29 @@ function AppMockup() {
                 {msg.role === "ai" && (
                   <div className="w-6 h-6 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">九</div>
                 )}
-                <div className={`p-2.5 rounded-xl text-[10px] leading-relaxed max-w-[85%] ${
-                  msg.role === "user"
-                    ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
-                    : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
-                }`}>
-                  <pre className="font-sans whitespace-pre-wrap break-words">{msg.text}</pre>
+                <div className={`max-w-[85%] min-w-0 ${msg.role === "user" ? "" : ""}`}>
+                  {parseContent(msg.text).map((seg, si) =>
+                    seg.type === "code" ? (
+                      <div key={si} className="my-1 rounded-lg overflow-hidden border border-white/[0.08] bg-[#0d1117]">
+                        <div className="flex items-center justify-between px-2.5 py-1 border-b border-white/[0.04] bg-[#161b22]/80">
+                          <span className="text-[8px] text-dark-500 font-medium">
+                            {seg.language || "代码"}
+                          </span>
+                        </div>
+                        <pre className="px-2.5 py-1.5 text-[9px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
+                          <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
+                        </pre>
+                      </div>
+                    ) : (
+                      <div key={si} className={`p-2.5 rounded-xl text-[10px] leading-relaxed whitespace-pre-wrap break-words ${
+                        msg.role === "user"
+                          ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
+                          : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
+                      }`}>
+                        {seg.content}
+                      </div>
+                    )
+                  )}
                 </div>
                 {msg.role === "user" && (
                   <div className="w-6 h-6 rounded-md bg-dark-700 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">你</div>
