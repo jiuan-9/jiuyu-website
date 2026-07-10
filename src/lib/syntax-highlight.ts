@@ -262,7 +262,7 @@ export function parseContent(raw: string): ContentSegment[] {
 
   while ((match = codeBlockRegex.exec(raw)) !== null) {
     // 代码块之前的文本
-    const before = raw.slice(lastIndex, match.index).trimEnd();
+    const before = raw.slice(lastIndex, match.index).trim();
     if (before) {
       segments.push({ type: "text", content: before });
     }
@@ -276,7 +276,7 @@ export function parseContent(raw: string): ContentSegment[] {
   }
 
   // 最后剩余的文本
-  const after = raw.slice(lastIndex).trimEnd();
+  const after = raw.slice(lastIndex).trim();
   if (after) {
     segments.push({ type: "text", content: after });
   }
