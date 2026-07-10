@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 const milestones = [
   {
     version: "v1.0.0",
-    date: "2027.07.08",
+    date: "2026.07.08",
     label: "正式启航",
     description:
       "九语 1.0.0 官网正式部署上线，同步开放安装包下载。首版即带来 AI 人设精调引擎，支持十一家国内主流 AI 服务商、数十款大语言模型，打造真正属于你的桌面 AI 助手。",
@@ -20,7 +20,7 @@ const milestones = [
   },
   {
     version: "v1.0.5",
-    date: "2027.07.09",
+    date: "2026.07.09",
     label: "走向 Agent",
     description:
       "九语正式踏上 Agent 之路——率先实现代码块独立分框与语法高亮、文本块独立分框等普通 AI 聊天软件不具备的能力。同时新增多家服务商支持，一键切换引擎更灵活。",
@@ -34,7 +34,7 @@ const milestones = [
   },
   {
     version: "v1.1.0",
-    date: "2027.07",
+    date: "2026.07",
     label: "精调进化",
     description:
       "人设精调引擎全面升级，用户描述自动编译为最优 System Prompt。新增 AES 本地加密存储与图片上传支持，安全性与会话体验双双跃升。",
