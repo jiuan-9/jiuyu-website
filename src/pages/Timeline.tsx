@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { ArrowLeft, Globe, Zap, Shield, Code, Users, Eye, Palette, Monitor, Layers } from "lucide-react";
+import { ArrowLeft, Globe, Zap, Shield, Code, Palette, Layers } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -14,38 +14,22 @@ const milestones = [
     highlights: [
       { icon: Globe, text: "官网上线 & 开放下载" },
       { icon: Palette, text: "AI 人设精调引擎" },
-      { icon: Users, text: "11 家 AI 服务商" },
-      { icon: Layers, text: "数十款大语言模型" },
+      { icon: Layers, text: "11 家 AI 服务商" },
     ],
     color: "blue" as const,
-  },
-  {
-    version: "v1.0.5",
-    date: "2026.07.09",
-    label: "走向 Agent",
-    description:
-      "实现代码块独立分框与语法高亮、文本块独立分框等能力。新增多家服务商支持，一键切换引擎更灵活。",
-    highlights: [
-      { icon: Code, text: "代码块分框 & 高亮" },
-      { icon: Monitor, text: "文本块独立分框" },
-      { icon: Zap, text: "新增 AI 服务商" },
-      { icon: Eye, text: "Agent 能力探索" },
-    ],
-    color: "purple" as const,
   },
   {
     version: "v1.1.0",
-    date: "2026.07",
-    label: "精调进化",
+    date: "2026.07.09",
+    label: "能力跃升",
     description:
-      "人设精调引擎升级，用户描述自动编译为最优 System Prompt。新增 AES 本地加密存储与图片上传支持。",
+      "新增代码高亮显示、Agent 能力接口预留、自动更新检测，大幅提升开发体验与产品可持续性。",
     highlights: [
-      { icon: Palette, text: "Prompt 自动优化" },
-      { icon: Shield, text: "AES 本地加密" },
-      { icon: Eye, text: "图片上传支持" },
-      { icon: Code, text: "代码高亮打磨" },
+      { icon: Code, text: "代码高亮显示" },
+      { icon: Zap, text: "Agent 能力预留" },
+      { icon: Shield, text: "自动更新检测" },
     ],
-    color: "blue" as const,
+    color: "purple" as const,
   },
 ];
 
@@ -88,7 +72,7 @@ export default function Timeline() {
             <div className="absolute left-[15px] top-2 bottom-2 w-px bg-gradient-to-b from-brand-500/20 via-brand-500/10 to-transparent" />
 
             <div className="flex flex-col gap-8">
-              {milestones.map((m, i) => {
+              {milestones.map((m) => {
                 const c = colorMap[m.color];
                 return (
                   <ScrollReveal key={m.version} threshold={0.1}>
