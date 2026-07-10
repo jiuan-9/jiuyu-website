@@ -94,7 +94,7 @@ export default function QuiddityPreview() {
           <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-5 rounded-2xl glass glow-border">
             <div className="text-left">
               <div className="text-sm font-semibold text-white">Quiddity Agent · 开发中</div>
-              <div className="text-xs text-dark-400 mt-0.5">预计 2026 Q4 开放预览，敬请期待</div>
+              <div className="text-xs text-dark-400 mt-0.5">2027年前上线，敬请期待</div>
             </div>
             <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap">
               预约体验

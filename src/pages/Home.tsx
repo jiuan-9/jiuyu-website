@@ -10,7 +10,6 @@ import ProviderShowcase from "@/components/ProviderShowcase";
 import Stats from "@/components/Stats";
 import FAQ from "@/components/FAQ";
 import QuiddityPreview from "@/components/QuiddityPreview";
-import Roadmap from "@/components/Roadmap";
 import DownloadSection from "@/components/Download";
 import Footer from "@/components/Footer";
 
@@ -69,8 +68,6 @@ export default function Home() {
       <FAQ />
       <Divider />
       <QuiddityPreview />
-      <Divider />
-      <Roadmap />
       <Divider />
       <DownloadSection />
       <Footer />

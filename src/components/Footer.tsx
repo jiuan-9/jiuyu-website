@@ -6,7 +6,6 @@ const footerLinks = {
   产品: [
     { label: "功能特色", href: "#features" },
     { label: "应用场景", href: "#usecases" },
-    { label: "版本前瞻", href: "#roadmap" },
     { label: "在线体验", href: "#/demo" },
     { label: "下载应用", href: "#download" },
   ],
