@@ -10,7 +10,7 @@ const milestones = [
     date: "2026.07.08",
     label: "正式启航",
     description:
-      "九语 1.0.0 官网正式部署上线，同步开放安装包下载。首版即带来 AI 人设精调引擎，支持十一家国内主流 AI 服务商、数十款大语言模型。",
+      "九语 1.0.0 官网正式部署上线，同步开放安装包下载。首版即带来 AI 人设精调引擎，支持十一家国内主流 AI 服务商、62 款大语言模型。",
     highlights: [
       { icon: Globe, text: "官网上线 & 开放下载" },
       { icon: Palette, text: "AI 人设精调引擎" },
@@ -120,7 +120,7 @@ export default function Timeline() {
                 { value: milestones.length.toString(), label: "版本发布" },
                 { value: "6 项", label: "核心功能" },
                 { value: "11 家", label: "AI 服务商" },
-                { value: "数十款", label: "大语言模型" },
+                { value: "62 款", label: "大语言模型" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center py-5 px-3 rounded-2xl glass">
                   <div className="text-2xl md:text-3xl font-bold text-white mb-1">{stat.value}</div>

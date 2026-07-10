@@ -15,7 +15,7 @@ const features = [
   {
     icon: MessageSquare,
     title: "多模型一键切换",
-    desc: "内置 11 家国内主流 AI 服务商、数十款大模型。通义千问、Kimi、DeepSeek 等随时切换，一个应用全搞定。",
+    desc: "内置 11 家国内主流 AI 服务商、62 款大模型。通义千问、Kimi、DeepSeek 等随时切换，一个应用全搞定。",
   },
   {
     icon: Shield,
