@@ -40,7 +40,7 @@ const quiddityFeatures = [
   {
     icon: HeartHandshake,
     title: "完全免费",
-    desc: "Quiddity 不作商业变现，完全免费开放。我们的目标始终是做出好用的 AI 工具。",
+    desc: "Quiddity Agent 不作商业变现，完全免费开放。我们的目标始终是做出好用的 AI 工具。",
   },
 ];
 
@@ -62,11 +62,11 @@ export default function QuiddityPreview() {
             下一代 AI 体验
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
-              Quiddity
+              Quiddity Agent
             </span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
-            Quiddity 是九语正在打造的新一代 Agent AI 工具。
+            Quiddity Agent 是九语正在打造的新一代 Agent AI 工具。
             支持自主任务规划、工具调用与流程自动化，从"对话助手"进化为"能独立干活的 AI 搭档"。
           </p>
         </ScrollReveal>
@@ -93,8 +93,8 @@ export default function QuiddityPreview() {
         <ScrollReveal threshold={0.2} className="mt-12 text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-5 rounded-2xl glass glow-border">
             <div className="text-left">
-              <div className="text-sm font-semibold text-white">Quiddity · 开发中</div>
-              <div className="text-xs text-dark-400 mt-0.5">预计 2026 Q4 开放 Alpha 预览，敬请期待</div>
+              <div className="text-sm font-semibold text-white">Quiddity Agent · 开发中</div>
+              <div className="text-xs text-dark-400 mt-0.5">预计 2026 Q4 开放预览，敬请期待</div>
             </div>
             <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap">
               预约体验
