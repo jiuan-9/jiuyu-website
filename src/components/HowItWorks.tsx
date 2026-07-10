@@ -36,7 +36,7 @@ export default function HowItWorks() {
             How It Works
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            三步开始使用
+            快速上手
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base">
             简单易用，无需复杂配置，上手只需几分钟

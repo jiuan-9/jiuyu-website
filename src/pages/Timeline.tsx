@@ -134,7 +134,7 @@ export default function Timeline() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { value: milestones.length.toString(), label: "版本发布" },
-                { value: "10+", label: "核心功能" },
+                { value: "6 项", label: "核心功能" },
                 { value: "11 家", label: "AI 服务商" },
                 { value: "数十款", label: "大语言模型" },
               ].map((stat) => (

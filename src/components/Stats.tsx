@@ -5,7 +5,7 @@ const stats = [
   { value: 11, suffix: "", label: "服务商接入", sublabel: "主流 AI 平台一站集成" },
   { value: "∞", suffix: "", label: "无限会话", sublabel: "随心创建，无数量限制" },
   { value: 100, suffix: "%", label: "本地加密", sublabel: "数据完全由你掌控" },
-  { value: 6, suffix: "", label: "核心功能", sublabel: "从人设精调到多模型切换" },
+  { value: 6, suffix: "", label: "核心功能", sublabel: "代码高亮、人设精调、多模型切换等" },
 ];
 
 export default function Stats() {
