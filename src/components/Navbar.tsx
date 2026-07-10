@@ -9,6 +9,7 @@ const navLinks = [
   { label: "在线体验", href: "#/demo", sectionId: null },
   { label: "下载", href: "#download", sectionId: "download" },
   { label: "FAQ", href: "#faq", sectionId: "faq" },
+  { label: "前瞻", href: "#roadmap", sectionId: "roadmap" },
   { label: "历程", href: "#/timeline", sectionId: null },
 ];
 
