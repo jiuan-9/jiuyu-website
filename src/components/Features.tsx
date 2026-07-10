@@ -5,32 +5,32 @@ const features = [
   {
     icon: Code,
     title: "代码高亮 & 分框显示",
-    desc: "代码块自动识别语言、语法高亮、独立深色背景框。文字和代码清晰分离，一键复制整段代码，阅读体验媲美专业编辑器。",
+    desc: "代码块智能识别语言、语法高亮、独立深色背景框。文字与代码清晰分离，一键复制，媲美专业编辑器。",
   },
   {
     icon: Palette,
     title: "AI 人设精调",
-    desc: "自定义 AI 的名字、性格、说话方式。精调引擎将你的描述自动编译为最佳 System Prompt，创造专属你的 AI 角色。",
+    desc: "定义 AI 的名字、性格与说话风格。精调引擎自动编译为最佳 System Prompt，打造专属你的 AI 角色。",
   },
   {
     icon: MessageSquare,
-    title: "多模型支持",
-    desc: "内置 11 家 AI 服务商，包括阿里云（通义千问）、百度（文心一言）、智谱（GLM）、月之暗面（Kimi）、腾讯（混元）、字节跳动（豆包）、深度求索（DeepSeek）、科大讯飞（星火）、MiniMax（海螺AI）、硅基流动（聚合平台）、阶跃星辰。一键切换引擎，一个应用畅享所有模型。",
+    title: "多模型一键切换",
+    desc: "内置 11 家国内主流 AI 服务商、数十款大模型。通义千问、Kimi、DeepSeek 等随时切换，一个应用全搞定。",
   },
   {
     icon: Shield,
     title: "本地数据安全",
-    desc: "对话记录和 API 密钥均 AES 加密存储在本地磁盘。数据从未离开你的设备，你的隐私由你掌控。",
+    desc: "对话记录与 API 密钥 AES 加密存储在本地，数据从不上传任何服务器。你的隐私，完全由你掌控。",
   },
   {
     icon: Users,
     title: "多会话管理",
-    desc: "无限创建会话，拖拽排序、置顶、搜索、重命名。每个话题井井有条，工作、学习、闲聊互不干扰。",
+    desc: "无限创建会话，支持置顶、搜索、重命名。工作、学习、生活分门别类，每个话题井井有条互不干扰。",
   },
   {
     icon: Eye,
     title: "Markdown 精美排版",
-    desc: "标题、列表、表格、代码块——AI 回复自动排版为精美格式。代码高亮 + 表格对齐 + 文字排版，阅读体验丝滑。",
+    desc: "AI 回复自动渲染为精美格式——标题、列表、表格、代码块一目了然，阅读体验流畅自然。",
   },
 ];
 
@@ -75,8 +75,8 @@ export default function Features() {
         {/* Feature cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
           {features.map((feature) => (
-            <ScrollReveal key={feature.title} threshold={0.1}>
-              <div className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20">
+            <ScrollReveal key={feature.title} threshold={0.1} className="h-full">
+              <div className="group relative p-6 rounded-2xl glass glow-border card-tilt transition-all duration-500 hover:border-brand-500/20 h-full flex flex-col">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 group-hover:scale-110 transition-all duration-500 shrink-0">
                     <feature.icon size={20} className="text-brand-400" />
@@ -85,7 +85,7 @@ export default function Features() {
                     {feature.title}
                   </h3>
                 </div>
-                <p className="text-xs text-dark-400 leading-relaxed pl-[52px]">{feature.desc}</p>
+                <p className="text-xs text-dark-400 leading-relaxed pl-[52px] flex-1">{feature.desc}</p>
               </div>
             </ScrollReveal>
           ))}

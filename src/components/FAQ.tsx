@@ -26,7 +26,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: "Quiddity 是什么？",
-    answer: "Quiddity 是九语正在开发的新一代 Agent AI 工具。与当前桌面端不同，Quiddity 将支持自主任务规划、工具调用、流程自动化等高级能力。目前仍在开发中，发布日期待定。",
+    answer: 'Quiddity 是九语正在打造的新一代 Agent AI 工具。支持多 Agent 协作、自主任务规划、工具调用、流程自动化等高级能力，从「对话助手」进化为「能独立干活的 AI 搭档」。预计 2026 Q4 开放 Alpha 预览。',
   },
   {
     question: "移动端什么时候上线？",
