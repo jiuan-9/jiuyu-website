@@ -1,7 +1,8 @@
-import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
+import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle, Shield, Zap, Layers, Palette } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
+import { scrollToSection } from "@/lib/scroll";
 
 type MSG = { role: "user" | "ai"; text: string };
 
@@ -199,6 +200,37 @@ function AppMockup() {
   );
 }
 
+const mobileHighlights = [
+  {
+    icon: Zap,
+    title: "即开即用",
+    desc: "免安装便携版，下载即用",
+    color: "text-yellow-400",
+    bgColor: "bg-yellow-500/10",
+  },
+  {
+    icon: Layers,
+    title: "11 家服务商",
+    desc: "62 个模型，一键切换",
+    color: "text-brand-400",
+    bgColor: "bg-brand-500/10",
+  },
+  {
+    icon: Shield,
+    title: "本地加密",
+    desc: "数据不上传，隐私安全",
+    color: "text-green-400",
+    bgColor: "bg-green-500/10",
+  },
+  {
+    icon: Palette,
+    title: "人设精调",
+    desc: "自定义 AI 性格身份",
+    color: "text-purple-400",
+    bgColor: "bg-purple-500/10",
+  },
+];
+
 export default function AppPreview() {
   return (
     <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
@@ -216,20 +248,44 @@ export default function AppPreview() {
           <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
             简洁直观的桌面界面——左边会话、右边聊天，上手只需 3 秒
           </p>
-          <p className="text-[11px] sm:text-xs text-dark-500 mt-2 sm:mt-3">
+          <p className="text-[11px] sm:text-xs text-dark-500 mt-2 sm:mt-3 hidden sm:block">
             点击左侧会话切换预览不同场景
           </p>
         </ScrollReveal>
 
-        <ScrollReveal threshold={0.1}>
-          <div className="max-w-5xl mx-auto overflow-x-auto">
-            <div className="min-w-[640px]">
-              <AppMockup />
-            </div>
+        {/* 桌面端：界面预览 */}
+        <ScrollReveal threshold={0.1} className="hidden sm:block">
+          <div className="max-w-5xl mx-auto">
+            <AppMockup />
           </div>
         </ScrollReveal>
 
-        <ScrollReveal threshold={0.2}>
+        {/* 移动端：核心亮点卡片 */}
+        <ScrollReveal threshold={0.1} className="sm:hidden">
+          <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6">
+            {mobileHighlights.map((item) => (
+              <div key={item.title} className="glass rounded-xl p-4 text-center card-interactive">
+                <div className={`w-10 h-10 rounded-xl ${item.bgColor} flex items-center justify-center mx-auto mb-2.5`}>
+                  <item.icon size={20} className={item.color} />
+                </div>
+                <div className="text-sm font-semibold text-white mb-1">{item.title}</div>
+                <div className="text-[11px] text-dark-400 leading-relaxed">{item.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <a
+              href="#download"
+              onClick={(e) => { e.preventDefault(); scrollToSection("download"); }}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-dark-950 font-semibold text-sm btn-press"
+            >
+              立即下载
+              <Monitor size={16} />
+            </a>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal threshold={0.2} className="hidden sm:block">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-10 text-[10px] sm:text-[11px] text-dark-400">
             <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
               <Monitor size={12} className="text-brand-400" /> Windows 原生应用

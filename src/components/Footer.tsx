@@ -15,7 +15,8 @@ const footerLinks = {
   ],
   关于: [
     { label: "关于Quiddity", href: "#hero" },
-    { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
+    { label: "QQ邮箱", href: "mailto:jiu0919@agent.qq.com" },
+    { label: "163邮箱", href: "mailto:Qu9190agent@163.com" },
   ],
 };
 
@@ -43,11 +44,11 @@ export default function Footer() {
             <p className="text-xs text-dark-500 leading-relaxed mb-4 sm:mb-5 max-w-52">
               多模型 AI 桌面应用——你的专属 AI 伙伴。
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <a
-                href="mailto:jiu0919@agent.qq.com"
+                href="mailto:Qu9190agent@163.com"
                 className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
-                aria-label="Email"
+                aria-label="163 Email"
               >
                 <Mail size={15} />
               </a>

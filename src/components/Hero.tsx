@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
 
 function ParticleField() {
@@ -239,9 +239,7 @@ export default function Hero() {
         className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-6 sm:pb-8 shrink-0 animate-fade-in opacity-0"
         style={{ animationDelay: "1200ms" }}
       >
-        <span className="text-[10px] tracking-[0.2em] uppercase sm:block hidden">向下探索</span>
-        <span className="text-xs sm:text-sm tracking-wide sm:hidden block text-center px-6 leading-relaxed text-dark-400">建议使用PC来访问九语，以获得更好的体验</span>
-        <ChevronDown size={14} className="sm:block hidden animate-scroll-down" />
+        <span className="text-xs sm:text-sm tracking-wide text-center px-6 leading-relaxed text-dark-400">建议使用PC来访问九语，以获得更好的体验</span>
       </div>
     </section>
   );
