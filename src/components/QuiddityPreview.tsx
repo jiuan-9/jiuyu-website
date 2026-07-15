@@ -1,4 +1,4 @@
-﻿import { Sparkles, Bot, UserCheck, HeartHandshake, Layers, ShieldCheck, Wrench, Languages, Palette } from "lucide-react";
+import { Sparkles, Bot, UserCheck, HeartHandshake, Layers, ShieldCheck, Wrench, Languages, Palette } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const quiddityFeatures = [
@@ -46,26 +46,26 @@ const quiddityFeatures = [
 
 export default function QuiddityPreview() {
   return (
-    <section id="quiddity" className="py-24 md:py-32 relative overflow-hidden">
+    <section id="quiddity" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-950/80 to-dark-950" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-purple-500/[0.03] blur-[120px]" />
       <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-blue-500/[0.02] blur-[100px]" />
 
-      <div className="container relative z-10 mx-auto px-6 max-w-5xl">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 max-w-5xl">
         {/* Header */}
-        <ScrollReveal className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 mb-6">
+        <ScrollReveal className="text-center mb-8 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 sm:mb-6">
             <Sparkles size={12} className="text-purple-400" />
             <span className="text-[10px] font-semibold text-purple-400 tracking-wider">NEXT GENERATION</span>
           </div>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             下一代 AI 体验
             <br />
             <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
               Quiddity Agent
             </span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Quiddity Agent 是Quiddity正在打造的新一代 Agent AI 工具。
             支持自主任务规划、工具调用与流程自动化，从"对话助手"进化为"能独立干活的 AI 搭档"。
           </p>
@@ -73,16 +73,17 @@ export default function QuiddityPreview() {
 
         {/* Feature Grid */}
         <ScrollReveal threshold={0.15}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {quiddityFeatures.map((feature) => (
               <div
                 key={feature.title}
-                className="group p-5 rounded-2xl glass glow-border card-interactive flex flex-col items-center text-center"
+                className="group p-4 sm:p-5 rounded-2xl glass glow-border card-interactive flex flex-col items-center text-center"
               >
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-3 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all duration-300">
-                  <feature.icon size={18} className="text-purple-400" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all duration-300">
+                  <feature.icon size={16} className="sm:hidden text-purple-400" />
+                  <feature.icon size={18} className="hidden sm:block text-purple-400" />
                 </div>
-                <h3 className="text-sm font-semibold text-white mb-1.5">{feature.title}</h3>
+                <h3 className="text-sm font-semibold text-white mb-1 sm:mb-1.5">{feature.title}</h3>
                 <p className="text-[11px] text-dark-400 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
@@ -90,9 +91,9 @@ export default function QuiddityPreview() {
         </ScrollReveal>
 
         {/* CTA */}
-        <ScrollReveal threshold={0.2} className="mt-12 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 px-8 py-5 rounded-2xl glass glow-border">
-            <div className="text-left">
+        <ScrollReveal threshold={0.2} className="mt-8 sm:mt-12 text-center">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl glass glow-border w-full sm:w-auto max-w-md mx-auto">
+            <div className="text-center sm:text-left">
               <div className="text-sm font-semibold text-white">Quiddity Agent · 开发中</div>
               <div className="text-xs text-dark-400 mt-0.5">2027年前上线，敬请期待</div>
             </div>

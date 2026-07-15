@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Code, BookOpen, Palette, MessageCircle } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
@@ -168,21 +168,21 @@ export default function UseCases() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
-    <section id="usecases" className="py-24 md:py-32 relative">
+    <section id="usecases" className="py-16 sm:py-24 md:py-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950" />
 
-      <div className="container relative z-10 mx-auto px-6">
-        <ScrollReveal className="text-center mb-14">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Use Cases</span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-10 sm:mb-14">
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">Use Cases</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             Quiddity<span className="text-gradient"> 能做什么</span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             不止聊天，更是工作、学习和生活中的得力助手
           </p>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5 max-w-5xl mx-auto">
           {useCases.map((item, index) => (
             <ScrollReveal key={item.title} threshold={0.1}>
               <ExpandableCard

@@ -10,24 +10,24 @@ const stats = [
 
 export default function Stats() {
   return (
-    <section className="py-20 md:py-28 relative overflow-hidden">
+    <section className="py-16 sm:py-20 md:py-28 relative overflow-hidden">
       <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-500/[0.08] to-transparent" />
-      <div className="container relative z-10 mx-auto px-6">
-        <ScrollReveal className="text-center mb-14">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Platform</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-10 sm:mb-14">
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">Platform</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
             平台<span className="text-gradient"> 能力</span>
           </h2>
         </ScrollReveal>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto">
           {stats.map((stat, index) => (
             <ScrollReveal key={stat.label} threshold={0.3}>
               <div className="text-center group" style={{ transitionDelay: `${index * 100}ms` }}>
-                <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-2 tracking-tight min-h-[2.5rem] flex items-center justify-center">
+                <div className="text-2xl sm:text-3xl md:text-5xl font-bold text-white mb-1 sm:mb-2 tracking-tight min-h-[2rem] sm:min-h-[2.5rem] flex items-center justify-center">
                   <CountUp end={stat.value} suffix={stat.suffix} />
                 </div>
                 <div className="text-sm font-semibold text-dark-200 mb-1">{stat.label}</div>
-                <div className="text-xs text-dark-400 leading-relaxed">{stat.sublabel}</div>
+                <div className="text-[11px] sm:text-xs text-dark-400 leading-relaxed px-1">{stat.sublabel}</div>
               </div>
             </ScrollReveal>
           ))}

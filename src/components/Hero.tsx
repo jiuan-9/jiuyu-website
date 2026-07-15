@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -147,19 +147,19 @@ export default function Hero() {
         style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)", backgroundSize: "80px 80px" }}
       />
 
-      <div className="container relative z-10 mx-auto px-6 text-center flex-1 flex flex-col items-center justify-center pt-20">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 text-center flex-1 flex flex-col items-center justify-center pt-16 sm:pt-20">
         {/* Badge */}
         <div
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs text-dark-300 mb-8 animate-fade-in opacity-0"
+          className="inline-flex items-center gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full glass text-[11px] sm:text-xs text-dark-300 mb-6 sm:mb-8 animate-fade-in opacity-0"
           style={{ animationDelay: "0ms" }}
         >
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-400 animate-pulse" />
           v1.1.0 · 已发布
         </div>
 
         {/* Main title */}
         <h1
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
+          className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-bold text-white mb-4 sm:mb-6 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
           style={{ animationDelay: "200ms" }}
         >
           Quiddity
@@ -167,7 +167,7 @@ export default function Hero() {
 
         {/* Subtitle */}
         <p
-          className="text-lg sm:text-xl md:text-2xl text-dark-300 mb-2 max-w-2xl mx-auto animate-fade-in-up opacity-0"
+          className="text-base sm:text-xl md:text-2xl text-dark-300 mb-2 max-w-2xl mx-auto animate-fade-in-up opacity-0"
           style={{ animationDelay: "350ms" }}
         >
           你的<span className="text-gradient font-semibold"> 专属 AI 伙伴</span>
@@ -175,36 +175,36 @@ export default function Hero() {
 
         {/* Typewriter */}
         <div
-          className="text-sm sm:text-base text-dark-400 mb-8 max-w-xl mx-auto h-7 flex items-center justify-center animate-fade-in-up opacity-0"
+          className="text-xs sm:text-base text-dark-400 mb-6 sm:mb-8 max-w-xl mx-auto h-6 sm:h-7 flex items-center justify-center animate-fade-in-up opacity-0 px-4"
           style={{ animationDelay: "500ms" }}
         >
-          <span>{typewriterText}</span>
-          <span className="inline-block w-[2px] h-4 ml-1 bg-brand-400 animate-pulse" />
+          <span className="leading-snug">{typewriterText}</span>
+          <span className="inline-block w-[2px] h-3 sm:h-4 ml-1 bg-brand-400 animate-pulse" />
         </div>
 
         {/* CTA buttons */}
         <div
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 animate-fade-in-up opacity-0"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 animate-fade-in-up opacity-0 w-full max-w-sm sm:max-w-none"
           style={{ animationDelay: "800ms" }}
         >
           <a
             href="#download"
             onClick={(e) => { e.preventDefault(); scrollToSection("download"); }}
-            className="group inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5 btn-press"
+            className="group inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full bg-white text-dark-950 font-semibold text-sm transition-all duration-300 hover:shadow-xl hover:shadow-white/20 hover:-translate-y-0.5 btn-press w-full sm:w-auto"
           >
             下载 Windows 版
             <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
           </a>
           <a
             href="#/demo"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-500 hover:border-brand-500/30 hover:bg-white/5"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-500 hover:border-brand-500/30 hover:bg-white/5 w-full sm:w-auto"
           >
             在线体验
           </a>
           <a
             href="#features"
             onClick={(e) => { e.preventDefault(); scrollToSection("features"); }}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full glass text-dark-300 hover:text-dark-200 text-sm transition-all duration-500 hover:border-brand-500/20"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full glass text-dark-300 hover:text-dark-200 text-sm transition-all duration-500 hover:border-brand-500/20 w-full sm:w-auto"
           >
             了解更多
           </a>
@@ -212,43 +212,36 @@ export default function Hero() {
 
         {/* Key selling points */}
         <div
-          className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-dark-500 animate-fade-in opacity-0"
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] sm:text-xs text-dark-500 animate-fade-in opacity-0 px-2"
           style={{ animationDelay: "900ms" }}
         >
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            接入 11 家 AI 服务商
+            11 家服务商
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            支持图片上传
+            图片上传
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            AES 加密存储
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            多会话管理
+            加密存储
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
             完全免费
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-            Windows 10+
           </span>
         </div>
 
       </div>
 
       <div
-        className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-8 shrink-0 animate-fade-in opacity-0"
+        className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-6 sm:pb-8 shrink-0 animate-fade-in opacity-0"
         style={{ animationDelay: "1200ms" }}
       >
-        <span className="text-[10px] tracking-[0.25em] uppercase">向下探索</span>
-        <ChevronDown size={14} className="animate-scroll-down" />
+        <span className="text-[10px] tracking-[0.2em] uppercase sm:block hidden">向下探索</span>
+        <span className="text-xs sm:text-sm tracking-wide sm:hidden block text-center px-6 leading-relaxed text-dark-400">建议使用PC来访问九语，以获得更好的体验</span>
+        <ChevronDown size={14} className="sm:block hidden animate-scroll-down" />
       </div>
     </section>
   );

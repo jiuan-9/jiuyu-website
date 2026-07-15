@@ -40,18 +40,18 @@ export default function ProviderShowcase() {
   }, []);
 
   return (
-    <section className="py-16 md:py-20 relative overflow-hidden">
+    <section className="py-12 sm:py-16 md:py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-dark-950 via-transparent to-dark-950 z-10 pointer-events-none" />
 
-      <div className="container relative z-20 mx-auto px-6">
-        <ScrollReveal className="text-center mb-10">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
+      <div className="container relative z-20 mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-8 sm:mb-10">
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
             Multi-Provider
           </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3">
             接入<span className="text-gradient"> 11 家</span> AI 服务商
           </h2>
-          <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base">
+          <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
             一个应用汇聚主流 AI 平台，无需反复切换，随心选择你喜欢的模型
           </p>
         </ScrollReveal>
@@ -59,15 +59,15 @@ export default function ProviderShowcase() {
         <div className="relative max-w-3xl mx-auto">
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-hidden py-2"
+            className="flex gap-3 sm:gap-4 overflow-x-hidden py-2"
             style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}
           >
             {[...providers, ...providers].map((provider, index) => (
               <div
                 key={`${provider.name}-${index}`}
-                className="flex-shrink-0 flex items-center gap-3 px-5 py-3 rounded-xl glass border border-white/[0.04] hover:border-brand-500/20 transition-colors duration-300"
+                className="flex-shrink-0 flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl glass border border-white/[0.04] hover:border-brand-500/20 transition-colors duration-300"
               >
-                <div className="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-brand-500/10 flex items-center justify-center">
                   <span className="text-xs font-bold text-brand-400">
                     {provider.name.charAt(0)}
                   </span>

@@ -55,6 +55,19 @@ body {
   .animate-float {
     animation-duration: 8s !important;
   }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
 
 @media (min-width: 768px) {

@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -88,20 +88,20 @@ function FAQAccordion({ item }: { item: FAQItem }) {
 
 export default function FAQ() {
   return (
-    <section id="faq" className="py-24 md:py-32 relative">
+    <section id="faq" className="py-16 sm:py-24 md:py-32 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-transparent" />
-      <div className="container relative z-10 mx-auto px-6">
-        <ScrollReveal className="text-center mb-14">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">FAQ</span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-10 sm:mb-14">
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">FAQ</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             常见<span className="text-gradient"> 问题</span>
           </h2>
-          <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             关于Quiddity，你可能想知道的都在这里
           </p>
         </ScrollReveal>
         <ScrollReveal threshold={0.1}>
-          <div className="max-w-2xl mx-auto glass rounded-2xl glow-border p-6 md:p-8">
+          <div className="max-w-2xl mx-auto glass rounded-2xl glow-border p-4 sm:p-6 md:p-8">
             {faqs.map((faq) => (
               <FAQAccordion key={faq.question} item={faq} />
             ))}

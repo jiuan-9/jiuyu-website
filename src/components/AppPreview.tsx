@@ -1,4 +1,4 @@
-﻿import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
+import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
@@ -201,42 +201,44 @@ function AppMockup() {
 
 export default function AppPreview() {
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/70 to-dark-950" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] rounded-full bg-brand-500/[0.025] blur-[150px]" />
 
-      <div className="container relative z-10 mx-auto px-6">
-        <ScrollReveal className="text-center mb-14">
-          <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <ScrollReveal className="text-center mb-10 sm:mb-14">
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
             Interface
           </span>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             看看<span className="text-gradient"> Quiddity</span>长什么样
           </h2>
-          <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base">
+          <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
             简洁直观的桌面界面——左边会话、右边聊天，上手只需 3 秒
           </p>
-          <p className="text-xs text-dark-500 mt-3">
+          <p className="text-[11px] sm:text-xs text-dark-500 mt-2 sm:mt-3">
             点击左侧会话切换预览不同场景
           </p>
         </ScrollReveal>
 
         <ScrollReveal threshold={0.1}>
-          <div className="max-w-5xl mx-auto">
-            <AppMockup />
+          <div className="max-w-5xl mx-auto overflow-x-auto">
+            <div className="min-w-[640px]">
+              <AppMockup />
+            </div>
           </div>
         </ScrollReveal>
 
         <ScrollReveal threshold={0.2}>
-          <div className="flex flex-wrap items-center justify-center gap-3 mt-10 text-[11px] text-dark-400">
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
-              <Monitor size={13} className="text-brand-400" /> Windows 原生应用
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-10 text-[10px] sm:text-[11px] text-dark-400">
+            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
+              <Monitor size={12} className="text-brand-400" /> Windows 原生应用
             </span>
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
-              <Settings size={13} className="text-brand-400" /> 便携版，免安装
+            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
+              <Settings size={12} className="text-brand-400" /> 便携版，免安装
             </span>
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full glass">
-              <Sun size={13} className="text-brand-400" /> 深色 / 浅色主题
+            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
+              <Sun size={12} className="text-brand-400" /> 深色 / 浅色主题
             </span>
           </div>
         </ScrollReveal>
