@@ -1,10 +1,10 @@
-﻿import { defineConfig } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/quiddity-website/',
+  base: './',
   build: {
     outDir: 'docs',
     sourcemap: false,
