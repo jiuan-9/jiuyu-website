@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { ArrowLeft, Globe, Zap, Shield, Code, Palette, Layers } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,7 +10,7 @@ const milestones = [
     date: "2026.07.08",
     label: "正式启航",
     description:
-      "九语 1.0.0 官网正式部署上线，同步开放安装包下载。首版即带来 AI 人设精调引擎，支持十一家国内主流 AI 服务商、62 款大语言模型。",
+      "Quiddity 1.0.0 官网正式部署上线，同步开放安装包下载。首版即带来 AI 人设精调引擎，支持十一家国内主流 AI 服务商、62 款大语言模型。",
     highlights: [
       { icon: Globe, text: "官网上线 & 开放下载" },
       { icon: Palette, text: "AI 人设精调引擎" },
@@ -62,7 +62,7 @@ export default function Timeline() {
             </button>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white">版本历程</h1>
-              <p className="text-xs text-dark-500">记录九语从诞生到进化的每一步</p>
+              <p className="text-xs text-dark-500">记录Quiddity从诞生到进化的每一步</p>
             </div>
           </div>
 

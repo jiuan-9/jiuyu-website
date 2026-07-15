@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+﻿import { useEffect, useState, useCallback, useRef } from "react";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -162,7 +162,7 @@ export default function Hero() {
           className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white mb-6 tracking-tight animate-fade-in-up opacity-0 leading-[1.05]"
           style={{ animationDelay: "200ms" }}
         >
-          九语
+          Quiddity
         </h1>
 
         {/* Subtitle */}

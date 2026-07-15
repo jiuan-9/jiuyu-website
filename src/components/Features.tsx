@@ -1,4 +1,4 @@
-import { MessageSquare, Users, Palette, Shield, Eye, Zap, Sparkles, ShieldCheck, UserCog, Repeat, Code } from "lucide-react";
+﻿import { MessageSquare, Users, Palette, Shield, Eye, Zap, Sparkles, ShieldCheck, UserCog, Repeat, Code } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const features = [
@@ -50,7 +50,7 @@ export default function Features() {
         <ScrollReveal className="text-center mb-14">
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Features</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            为什么选择<span className="text-gradient"> 九语</span>
+            为什么选择<span className="text-gradient"> Quiddity</span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
             从底层构建的桌面 AI 体验，每个细节都精心打磨

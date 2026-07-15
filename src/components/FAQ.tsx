@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+﻿import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -9,12 +9,12 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
   {
-    question: "九语是什么？",
-    answer: "九语是一款 Windows 桌面 AI 应用（v1.0.0），支持接入 DeepSeek、通义千问、Kimi 等多家 AI 服务商。你可以自由切换模型、自定义 AI 人设、管理无限会话。所有数据加密存储在本地。",
+    question: "Quiddity是什么？",
+    answer: "Quiddity是一款 Windows 桌面 AI 应用（v1.0.0），支持接入 DeepSeek、通义千问、Kimi 等多家 AI 服务商。你可以自由切换模型、自定义 AI 人设、管理无限会话。所有数据加密存储在本地。",
   },
   {
-    question: "九语需要付费吗？",
-    answer: "九语桌面端完全免费，无需注册账号。你只需要自行准备所用 AI 服务商的 API Key 即可使用。",
+    question: "Quiddity需要付费吗？",
+    answer: "Quiddity桌面端完全免费，无需注册账号。你只需要自行准备所用 AI 服务商的 API Key 即可使用。",
   },
   {
     question: "我的对话数据安全吗？",
@@ -22,7 +22,7 @@ const faqs: FAQItem[] = [
   },
   {
     question: "如何获取和配置 API Key？",
-    answer: "在你使用的 AI 服务商官网注册并获取 API Key，然后在九语设置界面中粘贴即可。配置好的密钥会加密保存在本地。",
+    answer: "在你使用的 AI 服务商官网注册并获取 API Key，然后在Quiddity设置界面中粘贴即可。配置好的密钥会加密保存在本地。",
   },
   {
     question: "移动端什么时候上线？",
@@ -97,7 +97,7 @@ export default function FAQ() {
             常见<span className="text-gradient"> 问题</span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
-            关于九语，你可能想知道的都在这里
+            关于Quiddity，你可能想知道的都在这里
           </p>
         </ScrollReveal>
         <ScrollReveal threshold={0.1}>

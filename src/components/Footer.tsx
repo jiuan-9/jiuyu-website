@@ -1,4 +1,4 @@
-import { Mail, Heart } from "lucide-react";
+﻿import { Mail, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -14,7 +14,7 @@ const footerLinks = {
     { label: "版本历程", href: "#/timeline" },
   ],
   关于: [
-    { label: "关于九语", href: "#hero" },
+    { label: "关于Quiddity", href: "#hero" },
     { label: "邮箱联系", href: "mailto:jiu0919@agent.qq.com" },
   ],
 };
@@ -38,7 +38,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-2 md:col-span-1">
             <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-2xl font-bold text-white mb-3 hover:text-brand-400 transition-colors">
-              九语
+              Quiddity
             </a>
             <p className="text-xs text-dark-500 leading-relaxed mb-5 max-w-52">
               多模型 AI 桌面应用——你的专属 AI 伙伴。
@@ -72,7 +72,7 @@ export default function Footer() {
         <div className="border-t border-white/[0.04] py-6 mb-2">
           <div className="text-[11px] text-dark-500 leading-relaxed max-w-5xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
             <span className="text-dark-400 font-semibold">免责声明：</span>
-            九语是一款基于第三方大语言模型 API 的 AI 聊天桌面应用，<span className="text-dark-300 font-semibold">目前尚未进行任何法律备案</span>。
+            Quiddity是一款基于第三方大语言模型 API 的 AI 聊天桌面应用，<span className="text-dark-300 font-semibold">目前尚未进行任何法律备案</span>。
             使用本软件时请遵守相关法律法规，包括但不限于
             <a href="https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《生成式人工智能服务管理暂行办法》</a>
             <a href="https://www.cac.gov.cn/2025-03/14/c_1796715804888045.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《人工智能拟人化互动服务管理暂行办法》</a>
@@ -96,9 +96,9 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="text-xs text-dark-500">&copy; 2026 九语. All rights reserved.</span>
+          <span className="text-xs text-dark-500">&copy; 2026 Quiddity. All rights reserved.</span>
           <span className="flex items-center gap-1 text-xs text-dark-500">
-            Made with <Heart size={11} className="text-red-400" /> by 九语开发者
+            Made with <Heart size={11} className="text-red-400" /> by Quiddity开发者
           </span>
         </div>
       </div>

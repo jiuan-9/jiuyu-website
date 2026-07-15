@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+﻿import { useState, useRef, useEffect } from "react";
 import { Code, BookOpen, Palette, MessageCircle } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
@@ -39,7 +39,7 @@ const useCases = [
       { role: "user" as Role, text: "帮我写一段面向 Z 世代用户的 AI 产品 slogan" },
       { role: "ai" as Role, text: "几个方向供你参考：\n\n「不设限，才无限」—— 简洁有力，暗示 AI 没有边界\n「你的智能，你做主」—— 强调用户掌控\n「聪明，无需条件」—— 暗示免费/易得\n\n你倾向哪种调性？我可以针对性地深化。" },
       { role: "user" as Role, text: "第一个方向不错，帮我展开写一段产品描述" },
-      { role: "ai" as Role, text: "好的。「不设限，才无限。」\n\n在这个信息过载的时代，你需要的不是又一个工具，而是一个真正懂你的伙伴。九语接入主流 AI，自由切换模型，精调 AI 人设——你的创造力，从此不受限。" },
+      { role: "ai" as Role, text: "好的。「不设限，才无限。」\n\n在这个信息过载的时代，你需要的不是又一个工具，而是一个真正懂你的伙伴。Quiddity接入主流 AI，自由切换模型，精调 AI 人设——你的创造力，从此不受限。" },
     ],
   },
   {
@@ -175,7 +175,7 @@ export default function UseCases() {
         <ScrollReveal className="text-center mb-14">
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Use Cases</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            九语<span className="text-gradient"> 能做什么</span>
+            Quiddity<span className="text-gradient"> 能做什么</span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
             不止聊天，更是工作、学习和生活中的得力助手

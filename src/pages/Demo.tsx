@@ -1,4 +1,4 @@
-// ── 九语桌面端 · 在线体验页 ──
+﻿// ── Quiddity桌面端 · 在线体验页 ──
 // 重构后：聊天逻辑抽离到 useChat，消息渲染交给 ChatMessage/CodeBlock
 
 import { useState, useRef, useEffect } from "react";
@@ -50,7 +50,7 @@ const PROVIDERS: ProviderConfig[] = [
 
 const WELCOME_MESSAGE: Message = {
   role: "assistant",
-  content: `你好！这是九语 (v${CURRENT_VERSION}) 的在线体验版。
+  content: `你好！这是Quiddity (v${CURRENT_VERSION}) 的在线体验版。
 
 请在左侧配置 API Key 和参数后开始对话。
 
@@ -184,7 +184,7 @@ export default function Demo() {
   // ── 版本检测 ──
 
   useEffect(() => {
-    const lastDismissed = localStorage.getItem("jiuyu-update-dismissed");
+    const lastDismissed = localStorage.getItem("quiddity-update-dismissed");
     fetch("/version.json")
       .then((res) => res.json())
       .then((data) => {
@@ -206,7 +206,7 @@ export default function Demo() {
 
   const dismissUpdate = () => {
     if (updateInfo) {
-      localStorage.setItem("jiuyu-update-dismissed", updateInfo.version);
+      localStorage.setItem("quiddity-update-dismissed", updateInfo.version);
     }
     setUpdateInfo(null);
   };
@@ -246,9 +246,9 @@ export default function Demo() {
   // ── 手动检查更新 ──
 
   const checkForUpdates = () => {
-    const lastDismissed = localStorage.getItem("jiuyu-update-dismissed");
+    const lastDismissed = localStorage.getItem("quiddity-update-dismissed");
     // 清除忽略记录，强制重新检测
-    localStorage.removeItem("jiuyu-update-dismissed");
+    localStorage.removeItem("quiddity-update-dismissed");
     fetch("/version.json")
       .then((res) => res.json())
       .then((data) => {
@@ -261,7 +261,7 @@ export default function Demo() {
           alert("已是最新版 v" + CURRENT_VERSION);
         }
       })
-      .catch(() => alert("无法检查更新，请前往九语官网查看"));
+      .catch(() => alert("无法检查更新，请前往Quiddity官网查看"));
   };
 
   // ── 侧边栏内容 ──
@@ -410,7 +410,7 @@ export default function Demo() {
           </button>
           <button
             onClick={() => {
-              localStorage.removeItem("jiuyu-update-dismissed");
+              localStorage.removeItem("quiddity-update-dismissed");
               setUpdateInfo({
                 version: "1.2.0",
                 downloadUrl: "#download",
@@ -426,7 +426,7 @@ export default function Demo() {
 
       <div className="px-4 py-2.5 border-t border-white/[0.06]">
         <p className="text-[9px] text-dark-500 leading-relaxed">
-          九语桌面端 v{CURRENT_VERSION} 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
+          Quiddity桌面端 v{CURRENT_VERSION} 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
         </p>
       </div>
     </>
@@ -444,7 +444,7 @@ export default function Demo() {
           </a>
           <div className="flex items-center gap-2">
             <Zap size={13} className="text-brand-400" />
-            <span className="text-[11px] font-medium text-dark-200">九语桌面端 · 在线体验</span>
+            <span className="text-[11px] font-medium text-dark-200">Quiddity桌面端 · 在线体验</span>
             <span className="hidden sm:inline text-[10px] text-dark-500 ml-1">v{CURRENT_VERSION}</span>
           </div>
         </div>

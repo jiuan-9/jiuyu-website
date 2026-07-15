@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +70,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between h-16 px-6">
         <a href="#hero" onClick={(e) => handleNav("#hero", e)} className="flex items-center gap-2.5 group">
           <span className="text-2xl font-bold text-white tracking-wide transition-colors group-hover:text-brand-400">
-            九语
+            Quiddity
           </span>
         </a>
 

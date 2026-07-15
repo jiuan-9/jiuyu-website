@@ -1,4 +1,4 @@
-import { Sparkles, Bot, UserCheck, HeartHandshake, Layers, ShieldCheck, Wrench, Languages, Palette } from "lucide-react";
+﻿import { Sparkles, Bot, UserCheck, HeartHandshake, Layers, ShieldCheck, Wrench, Languages, Palette } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const quiddityFeatures = [
@@ -35,7 +35,7 @@ const quiddityFeatures = [
   {
     icon: Layers,
     title: "无限会话保留",
-    desc: "延续九语上一代的无限会话、多模型切换等经典功能，体验不打折。",
+    desc: "延续Quiddity上一代的无限会话、多模型切换等经典功能，体验不打折。",
   },
   {
     icon: HeartHandshake,
@@ -66,7 +66,7 @@ export default function QuiddityPreview() {
             </span>
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm md:text-base">
-            Quiddity Agent 是九语正在打造的新一代 Agent AI 工具。
+            Quiddity Agent 是Quiddity正在打造的新一代 Agent AI 工具。
             支持自主任务规划、工具调用与流程自动化，从"对话助手"进化为"能独立干活的 AI 搭档"。
           </p>
         </ScrollReveal>

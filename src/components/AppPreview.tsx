@@ -1,4 +1,4 @@
-import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
+﻿import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
@@ -78,7 +78,7 @@ function AppMockup() {
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <span className="text-[13px] font-medium text-dark-300 tracking-[0.5px]">九语</span>
+          <span className="text-[13px] font-medium text-dark-300 tracking-[0.5px]">Quiddity</span>
         </div>
         <div className="flex items-center gap-1 shrink-0">
           <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
@@ -211,7 +211,7 @@ export default function AppPreview() {
             Interface
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            看看<span className="text-gradient"> 九语</span>长什么样
+            看看<span className="text-gradient"> Quiddity</span>长什么样
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base">
             简洁直观的桌面界面——左边会话、右边聊天，上手只需 3 秒

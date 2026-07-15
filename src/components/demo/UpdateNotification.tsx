@@ -1,4 +1,4 @@
-// ── 更新通知气泡组件 ──
+﻿// ── 更新通知气泡组件 ──
 // 检测到新版本后弹出，30 秒自动消失
 // 用户可以在侧边栏设置中点击"检查更新"手动跳转下载
 
@@ -71,7 +71,7 @@ export default function UpdateNotification({
               </button>
             </div>
             <p className="text-[11px] text-dark-400 leading-relaxed mb-3">
-              九语 <span className="text-brand-400 font-medium">v{version}</span> 已发布，建议更新以获取最新功能。
+              Quiddity <span className="text-brand-400 font-medium">v{version}</span> 已发布，建议更新以获取最新功能。
             </p>
             <a
               href={downloadUrl}

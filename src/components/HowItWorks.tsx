@@ -1,11 +1,11 @@
-import { Download, Settings, MessageSquare, Zap } from "lucide-react";
+﻿import { Download, Settings, MessageSquare, Zap } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 const steps = [
   {
     icon: Download,
     title: "下载安装",
-    description: "下载九语桌面客户端，无需安装，解压即可运行",
+    description: "下载Quiddity桌面客户端，无需安装，解压即可运行",
   },
   {
     icon: Settings,

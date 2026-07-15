@@ -1,4 +1,4 @@
-import { Download, Monitor, Smartphone, Globe, Sparkles } from "lucide-react";
+﻿import { Download, Monitor, Smartphone, Globe, Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 export default function DownloadSection() {
@@ -11,7 +11,7 @@ export default function DownloadSection() {
         <ScrollReveal>
           <span className="inline-block text-xs tracking-[0.2em] uppercase text-brand-400 mb-4">Download</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            获取<span className="text-gradient"> 九语</span>
+            获取<span className="text-gradient"> Quiddity</span>
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm md:text-base mb-14 leading-relaxed">
             桌面端完全免费，无需注册即可使用。内置自动更新检测，随时保持最新版本。
@@ -22,7 +22,7 @@ export default function DownloadSection() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 max-w-2xl mx-auto">
             {/* Desktop */}
             <a
-              href="https://jiuan-9.github.io/jiuyu-website/downloads/Jiuyu-1.1.0.exe"
+              href="https://jiuan-9.github.io/quiddity-website/downloads/Quiddity-1.1.0.exe"
               className="group flex items-center gap-3 px-5 py-4 rounded-xl glass glow-border-strong w-full sm:w-auto sm:min-w-[220px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/25"
             >
               <div className="w-9 h-9 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors shrink-0">
