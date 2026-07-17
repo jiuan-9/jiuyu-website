@@ -127,6 +127,14 @@ function useTypewriter(texts: string[], typingSpeed = 50, deleteSpeed = 25, paus
 export default function Hero() {
   const typewriterText = useTypewriter(typewriterTexts);
   const parallax = useParallax(0.008);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section
@@ -239,7 +247,11 @@ export default function Hero() {
         className="relative z-10 flex flex-col items-center gap-2 text-dark-500 pb-6 sm:pb-8 shrink-0 animate-fade-in opacity-0"
         style={{ animationDelay: "1200ms" }}
       >
-        <span className="text-xs sm:text-sm tracking-wide text-center px-6 leading-relaxed text-dark-400">建议使用PC来访问九语，以获得更好的体验</span>
+        {isMobile ? (
+          <span className="text-xs sm:text-sm tracking-wide text-center px-6 leading-relaxed text-dark-400">建议使用PC来访问九语，以获得更好的体验</span>
+        ) : (
+          <span className="text-xs sm:text-sm tracking-wide text-center px-6 leading-relaxed text-dark-400">向下探索</span>
+        )}
       </div>
     </section>
   );
