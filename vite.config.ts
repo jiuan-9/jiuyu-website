@@ -9,11 +9,26 @@ export default defineConfig({
     outDir: 'docs',
     sourcemap: false,
     minify: 'terser',
+    cssMinify: true,
+    reportCompressedSize: false,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'lucide': ['lucide-react'],
+          'zustand': ['zustand'],
+        },
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+      },
+    },
     terserOptions: {
       compress: {
         drop_console: false,
         drop_debugger: true,
-        passes: 2,
+        passes: 3,
+        pure_funcs: ['console.log', 'console.info'],
       },
       mangle: {
         toplevel: true,
