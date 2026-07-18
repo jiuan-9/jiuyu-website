@@ -4,7 +4,6 @@ import { Routes, Route } from "react-router-dom";
 const Home = lazy(() => import("@/pages/Home"));
 const Demo = lazy(() => import("@/pages/Demo"));
 const Timeline = lazy(() => import("@/pages/Timeline"));
-const AnnouncementAdmin = lazy(() => import("@/pages/AnnouncementAdmin"));
 
 function Loading() {
   return (
@@ -27,7 +26,6 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/timeline" element={<Timeline />} />
-        <Route path="/admin/announcements" element={<AnnouncementAdmin />} />
       </Routes>
     </Suspense>
   );

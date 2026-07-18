@@ -17,8 +17,6 @@ interface AnnouncementsData {
 
 type CategoryType = "important" | "latest";
 
-const STORAGE_KEY = "quiddity_announcements";
-
 export default function Announcements() {
   const [data, setData] = useState<AnnouncementsData>({ important: [], latest: [] });
   const [loading, setLoading] = useState(true);
@@ -38,47 +36,22 @@ export default function Announcements() {
       return true;
     };
 
-    const loadData = async () => {
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          const json = JSON.parse(stored);
-          const filteredImportant = json.important.filter(isValidItem);
-          const filteredLatest = json.latest.filter(isValidItem);
-          const filteredData = { important: filteredImportant, latest: filteredLatest };
-          setData(filteredData);
-          setLoading(false);
-          if (filteredImportant.length > 0) {
-            setSelectedId(filteredImportant[0].id);
-          } else if (filteredLatest.length > 0) {
-            setSelectedId(filteredLatest[0].id);
-            setActiveCategory("latest");
-          }
-          return;
+    fetch(`${import.meta.env.BASE_URL}announcements.json`)
+      .then((res) => res.json())
+      .then((json: AnnouncementsData) => {
+        const filteredImportant = json.important.filter(isValidItem);
+        const filteredLatest = json.latest.filter(isValidItem);
+        const filteredData = { important: filteredImportant, latest: filteredLatest };
+        setData(filteredData);
+        setLoading(false);
+        if (filteredImportant.length > 0) {
+          setSelectedId(filteredImportant[0].id);
+        } else if (filteredLatest.length > 0) {
+          setSelectedId(filteredLatest[0].id);
+          setActiveCategory("latest");
         }
-      } catch (e) {
-        console.error("Failed to read from localStorage:", e);
-      }
-
-      fetch(`${import.meta.env.BASE_URL}announcements.json`)
-        .then((res) => res.json())
-        .then((json: AnnouncementsData) => {
-          const filteredImportant = json.important.filter(isValidItem);
-          const filteredLatest = json.latest.filter(isValidItem);
-          const filteredData = { important: filteredImportant, latest: filteredLatest };
-          setData(filteredData);
-          setLoading(false);
-          if (filteredImportant.length > 0) {
-            setSelectedId(filteredImportant[0].id);
-          } else if (filteredLatest.length > 0) {
-            setSelectedId(filteredLatest[0].id);
-            setActiveCategory("latest");
-          }
-        })
-        .catch(() => setLoading(false));
-    };
-
-    loadData();
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const currentList = activeCategory === "important" ? data.important : data.latest;
