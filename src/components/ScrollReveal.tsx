@@ -1,28 +1,12 @@
-import { useScrollReveal } from "@/hooks/useScrollReveal";
-
-interface ScrollRevealProps {
-  children: React.ReactNode;
-  className?: string;
-  threshold?: number;
-}
-
-export default function ScrollReveal({
-  children,
-  className = "",
-  threshold = 0.15,
-}: ScrollRevealProps) {
-  const { ref, isVisible } = useScrollReveal(threshold);
-
-  return (
-    <div
-      ref={ref}
-      className={`scroll-reveal transition-[transform,opacity] [transition-duration:var(--reveal-duration,800ms)] ease-out ${
-        isVisible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 [transform:translateY(var(--reveal-distance,32px))]"
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
+﻿/**
+ * ScrollReveal - 兼容性封装
+ * v2.1: 底层已迁移到 Framer Motion 实现 (src/components/animation/ScrollReveal.tsx)
+ * 此文件仅作 re-export，保持向后兼容（10+ 业务组件从此处导入）
+ *
+ * 新增能力（由底层提供）：
+ *   - variants / delay / once / as 等可选参数
+ *   - prefers-reduced-motion 自动降级
+ *   - GPU 加速（transform/opacity only）
+ */
+export { default } from "@/components/animation/ScrollReveal";
+export type { ScrollRevealProps } from "@/components/animation/ScrollReveal";

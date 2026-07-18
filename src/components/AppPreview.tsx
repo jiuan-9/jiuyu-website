@@ -1,4 +1,4 @@
-import { Monitor, MessageSquare, Settings, Plus, Search, MoreVertical, Sun, Image, HelpCircle, Shield, Zap, Layers, Palette } from "lucide-react";
+import { Monitor, Settings, Search, MoreVertical, Sun, Image, Shield, Zap, Layers, Palette } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";

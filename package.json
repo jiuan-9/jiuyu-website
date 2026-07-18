@@ -1,17 +1,36 @@
 {
-  "name": "trae-project",
+  "name": "quiddity-website",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "description": "Quiddity AI 桌面应用官方网站（黑+蓝主色 + 14 类动画 + 中英双语 + 公告管理系统）",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "preview": "vite preview",
-    "check": "tsc -b --noEmit"
+    "check": "tsc -b --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lighthouse": "lhci autorun",
+    "admin": "vite --port 5174 --mode admin",
+    "admin:publish": "tsx scripts/admin/cli.ts publish",
+    "prebuild": "npm run sync:downloads && npm run sync:version",
+    "sync:downloads": "tsx scripts/sync-downloads.ts",
+    "sync:version": "tsx scripts/sync-version.ts",
+    "sync:from-quiddity": "tsx scripts/sync-from-quiddity.ts",
+    "check:links": "tsx scripts/check-links.ts",
+    "check:fps": "tsx scripts/check-fps.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "framer-motion": "^11.18.2",
     "lucide-react": "^0.511.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -21,6 +40,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@playwright/test": "^1.61.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^22.15.30",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -31,12 +54,16 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "jsdom": "^24.1.3",
     "postcss": "^8.5.3",
+    "prettier": "^3.9.5",
     "tailwindcss": "^3.4.17",
     "terser": "^5.48.0",
+    "tsx": "^4.23.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^2.1.9"
   }
 }

@@ -1,10 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: './',
   build: {
     outDir: 'dist',
     sourcemap: false,
@@ -16,6 +16,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'framer-motion': ['framer-motion'],
           'lucide': ['lucide-react'],
           'zustand': ['zustand'],
         },
@@ -25,10 +26,10 @@ export default defineConfig({
     },
     terserOptions: {
       compress: {
-        drop_console: false,
+        drop_console: true,
         drop_debugger: true,
         passes: 3,
-        pure_funcs: ['console.log', 'console.info'],
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
       },
       mangle: {
         toplevel: true,
@@ -38,8 +39,13 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
-    react({}),
-    tsconfigPaths()
-  ],
-})
+  plugins: [react({}), tsconfigPaths()],
+  server: {
+    port: 5174,
+    strictPort: false,
+  },
+  preview: {
+    port: 4173,
+    strictPort: true,
+  },
+});

@@ -1,8 +1,25 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * Tailwind 配置（TypeScript 版）
+ *
+ * 设计哲学：
+ *   - 颜色：单一来源在 src/styles/tokens.css，此处通过 var(--token) 引用
+ *   - 黑+蓝主题（参考 Nanfu 流畅感，但用黑蓝配色而非红黄）
+ *   - 动画：Framer Motion 是主引擎；CSS keyframes 仅作为"静态规则"
+ *     Phase 4 会逐步移除大部分 keyframes，业务组件迁移到 framer-motion variants
+ *
+ * 旧 tailwind.config.js 保留为 .bak 以便回退（如需），但 Vite 会优先读取 .ts
+ */
 
-export default {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  // 阶段 D：让所有 hover: 变体只在支持 hover 的设备生效
+  // 触摸设备（手机/平板）自动跳过 hover 样式，避免 sticky hover bug
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     container: {
       center: true,
@@ -10,6 +27,7 @@ export default {
     },
     extend: {
       colors: {
+        /** 品牌主色：蓝（与 tokens.css 对齐） */
         brand: {
           50: "#eefbff",
           100: "#d4f5ff",
@@ -23,6 +41,7 @@ export default {
           900: "#0b4f7e",
           950: "#0a324f",
         },
+        /** 深色系（背景与文本） */
         dark: {
           50: "#f0f1f6",
           100: "#d6d9e6",
@@ -37,6 +56,7 @@ export default {
           950: "#0a0e1a",
           999: "#000000",
         },
+        /** 辅助色 */
         accent: {
           purple: {
             50: "#faf5ff",
@@ -66,25 +86,25 @@ export default {
       },
       fontFamily: {
         sans: [
-          '"PingFang SC"',
-          '"Microsoft YaHei"',
-          '"Noto Sans SC"',
+          "PingFang SC",
+          "Microsoft YaHei",
+          "Noto Sans SC",
           "-apple-system",
           "BlinkMacSystemFont",
           "sans-serif",
         ],
         display: [
-          '"PingFang SC"',
-          '"Microsoft YaHei"',
-          '"Noto Sans SC"',
+          "PingFang SC",
+          "Microsoft YaHei",
+          "Noto Sans SC",
           "-apple-system",
           "BlinkMacSystemFont",
           "sans-serif",
         ],
         mono: [
-          '"JetBrains Mono"',
-          '"Fira Code"',
-          '"Cascadia Code"',
+          "JetBrains Mono",
+          "Fira Code",
+          "Cascadia Code",
           "Consolas",
           "Monaco",
           "monospace",
@@ -106,10 +126,10 @@ export default {
         "9xl": ["6.5rem", { lineHeight: "0.9" }],
       },
       spacing: {
-        "18": "4.5rem",
-        "88": "22rem",
-        "128": "32rem",
-        "144": "36rem",
+        18: "4.5rem",
+        88: "22rem",
+        128: "32rem",
+        144: "36rem",
       },
       transitionDuration: {
         600: "600ms",
@@ -120,22 +140,37 @@ export default {
         2000: "2000ms",
       },
       transitionTimingFunction: {
-        "spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
-        "smooth": "cubic-bezier(0.16, 1, 0.3, 1)",
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        smooth: "cubic-bezier(0.16, 1, 0.3, 1)",
+        "out-quad": "var(--ease-out-quad)",
+        "out-cubic": "var(--ease-out-cubic)",
+        "out-quart": "var(--ease-out-quart)",
+        "out-expo": "var(--ease-out-expo)",
+        "out-back": "var(--ease-out-back)",
       },
       animation: {
+        // ============ 实际在用 ============
         float: "float 6s ease-in-out infinite",
         "float-slow": "float 10s ease-in-out infinite",
         "float-fast": "float 4s ease-in-out infinite",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
-        "fade-in-up": "fade-in-up 0.8s ease-out forwards",
         "fade-in": "fade-in 0.6s ease-out forwards",
-        "fade-in-right": "fade-in-right 0.8s ease-out forwards",
-        "fade-in-left": "fade-in-left 0.8s ease-out forwards",
         "scale-in": "scale-in 0.5s ease-out forwards",
         "scale-in-slow": "scale-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-        "gradient-flow": "gradient-flow 8s ease infinite",
+        "gradient-shift": "gradient-flow 8s ease infinite",
         "gradient-flow-slow": "gradient-flow 15s ease infinite",
+        "pulse-slow": "pulse-slow 3s ease-in-out infinite",
+        "stagger-1": "fade-in-up 0.6s ease-out 0.1s forwards",
+        "stagger-2": "fade-in-up 0.6s ease-out 0.2s forwards",
+        "stagger-3": "fade-in-up 0.6s ease-out 0.3s forwards",
+        "stagger-4": "fade-in-up 0.6s ease-out 0.4s forwards",
+        "stagger-5": "fade-in-up 0.6s ease-out 0.5s forwards",
+        "stagger-6": "fade-in-up 0.6s ease-out 0.6s forwards",
+
+        // ============ 兼容旧代码（Phase 4 移除） ============
+        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "fade-in-up": "fade-in-up 0.8s ease-out forwards",
+        "fade-in-right": "fade-in-right 0.8s ease-out forwards",
+        "fade-in-left": "fade-in-left 0.8s ease-out forwards",
         "scroll-down": "scroll-down 2s ease-in-out infinite",
         shimmer: "shimmer 3s ease-in-out infinite",
         "border-glow": "border-glow 4s ease-in-out infinite",
@@ -154,17 +189,15 @@ export default {
         "rotate-in": "rotate-in 0.5s ease-out forwards",
         "blur-in": "blur-in 0.8s ease-out forwards",
         "skew-in": "skew-in 0.6s ease-out forwards",
-        "stagger-1": "fade-in-up 0.6s ease-out 0.1s forwards",
-        "stagger-2": "fade-in-up 0.6s ease-out 0.2s forwards",
-        "stagger-3": "fade-in-up 0.6s ease-out 0.3s forwards",
-        "stagger-4": "fade-in-up 0.6s ease-out 0.4s forwards",
-        "stagger-5": "fade-in-up 0.6s ease-out 0.5s forwards",
-        "stagger-6": "fade-in-up 0.6s ease-out 0.6s forwards",
       },
       keyframes: {
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-20px)" },
+        },
+        "pulse-slow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.5" },
         },
         "pulse-glow": {
           "0%, 100%": { boxShadow: "0 0 30px rgba(20, 176, 255, 0.15)" },
@@ -230,7 +263,10 @@ export default {
         },
         "text-glow": {
           "0%, 100%": { textShadow: "0 0 10px rgba(20, 176, 255, 0.3)" },
-          "50%": { textShadow: "0 0 30px rgba(20, 176, 255, 0.6), 0 0 50px rgba(20, 176, 255, 0.3)" },
+          "50%": {
+            textShadow:
+              "0 0 30px rgba(20, 176, 255, 0.6), 0 0 50px rgba(20, 176, 255, 0.3)",
+          },
         },
         "slide-up": {
           from: { opacity: "0", transform: "translateY(30px)" },
@@ -291,12 +327,13 @@ export default {
         "brand-glow": "0 0 40px rgba(20, 176, 255, 0.15)",
         "brand-glow-strong": "0 0 60px rgba(20, 176, 255, 0.25)",
         "card-elevated": "0 25px 50px -12px rgba(0, 0, 0, 0.4)",
-        "card-hover": "0 35px 70px -15px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 176, 255, 0.08)",
+        "card-hover":
+          "0 35px 70px -15px rgba(0, 0, 0, 0.5), 0 0 40px rgba(20, 176, 255, 0.08)",
       },
       perspective: {
-        "1000": "1000px",
-        "1200": "1200px",
-        "1500": "1500px",
+        1000: "1000px",
+        1200: "1200px",
+        1500: "1500px",
       },
       zIndex: {
         60: "60",
@@ -309,3 +346,5 @@ export default {
   },
   plugins: [],
 };
+
+export default config;

@@ -12,10 +12,8 @@ type TokenType =
   | "punctuation"
   | "plain";
 
-interface Token {
-  type: TokenType;
-  value: string;
-}
+// Token type structure (preserved for future tokenization extension)
+// interface Token { type: TokenType; value: string; }
 
 // Tailwind class 映射
 const TOKEN_CLASS: Record<TokenType, string> = {

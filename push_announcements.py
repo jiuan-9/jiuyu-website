@@ -362,36 +362,71 @@ def main():
         print_warn("没有检测到文件变更，跳过提交")
     else:
         print_info("添加文件到暂存区...")
-        returncode, output = run_command(
-            'git add -A',
-            SCRIPT_DIR,
-            timeout=30,
-            show_output=False,
-        )
-        if returncode != 0:
-            print_error(f"git add 失败：{output}")
+        # 显式列出本次推送需要提交的文件，避免误提交敏感文件（.env / credentials / 大体积二进制）
+        # 仅与公告 / 构建产物 / 元数据相关的路径进入暂存区
+        explicit_paths = [
+            "public/announcements.json",   # 公告数据
+            "public/version.json",         # 版本元数据
+            "public/downloads.json",       # 下载链接
+            "docs",                        # GitHub Pages 部署目录（构建产物）
+            "dist",                        # 构建产物（部分 CI 直接读 dist）
+        ]
+        # 仅添加实际存在的路径，避免 git 报错
+        existing_paths = [
+            p for p in explicit_paths
+            if (SCRIPT_DIR / p).exists()
+        ]
+        committed = False
+        if not existing_paths:
+            print_warn("没有可提交的目标文件，跳过提交")
+        else:
+            add_cmd = "git add -- " + " ".join(existing_paths)
+            returncode, output = run_command(
+                add_cmd,
+                SCRIPT_DIR,
+                timeout=30,
+                show_output=False,
+            )
+            if returncode != 0:
+                print_error(f"git add 失败：{output}")
+                print()
+                input("按回车键退出...")
+                sys.exit(1)
+            print_success(f"已添加到暂存区：{', '.join(existing_paths)}")
+
+            # 检查暂存区是否真的有内容（避免 git commit "nothing to commit" 报错）
+            check_cmd = "git diff --cached --quiet"
+            rc, _ = run_command(check_cmd, SCRIPT_DIR, timeout=10, show_output=False)
+            if rc == 0:
+                print_warn("暂存区为空（指定路径无变更），跳过提交")
+            else:
+                # 生成提交信息
+                now = datetime.now().strftime("%Y-%m-%d %H:%M")
+                commit_msg = f"更新公告 [{now}] - 重要{imp_count}条 / 最新{lat_count}条"
+                print_info(f"提交变更: {commit_msg}")
+                returncode, output = run_command(
+                    f'git commit -m "{commit_msg}"',
+                    SCRIPT_DIR,
+                    timeout=30,
+                    show_output=False,
+                )
+                if returncode != 0:
+                    print_error(f"git commit 失败：{output}")
+                    print()
+                    input("按回车键退出...")
+                    sys.exit(1)
+                print_success("提交成功")
+                committed = True
+
+        # 若未实际提交（无变更），跳过推送步骤
+        if not committed:
+            print_warn("本次没有产生新提交，跳过推送步骤")
+            print()
+            print_header("✓ 完成（无变更）")
+            print_info("本地构建已完成，但没有需要推送的更改。")
             print()
             input("按回车键退出...")
-            sys.exit(1)
-        print_success("文件已添加到暂存区")
-
-        # 生成提交信息
-        now = datetime.now().strftime("%Y-%m-%d %H:%M")
-        commit_msg = f"更新公告 [{now}] - 重要{imp_count}条 / 最新{lat_count}条"
-
-        print_info(f"提交变更: {commit_msg}")
-        returncode, output = run_command(
-            f'git commit -m "{commit_msg}"',
-            SCRIPT_DIR,
-            timeout=30,
-            show_output=False,
-        )
-        if returncode != 0:
-            print_error(f"git commit 失败：{output}")
-            print()
-            input("按回车键退出...")
-            sys.exit(1)
-        print_success("提交成功")
+            sys.exit(0)
 
     # 步骤 7: 推送到 GitHub
     print_step(7, 7, "推送到 GitHub")

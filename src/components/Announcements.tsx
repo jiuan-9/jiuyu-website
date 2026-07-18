@@ -71,7 +71,8 @@ export default function Announcements() {
   };
 
   if (loading) return null;
-  if (data.important.length === 0 && data.latest.length === 0) return null;
+  // 注意：即使两个分类都为空，也渲染整个公告区（显示"暂无公告"提示）
+  // 用户反馈"如果没有新闻，则显示暂时没有新闻，不要像现在这样不可见"
 
   return (
     <section id="announcements" className="py-16 sm:py-20 md:py-24 relative overflow-hidden">
@@ -105,17 +106,24 @@ export default function Announcements() {
                         handleSelect(data.important[0], "important");
                       }
                     }}
+                    disabled={data.important.length === 0}
+                    aria-disabled={data.important.length === 0}
                     className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
-                      activeCategory === "important"
-                        ? "text-brand-400 bg-brand-500/[0.04]"
-                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                      data.important.length === 0
+                        ? "text-dark-600 cursor-not-allowed"
+                        : activeCategory === "important"
+                          ? "text-brand-400 bg-brand-500/[0.04]"
+                          : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
                     }`}
                   >
                     <span className="flex items-center justify-center gap-1.5">
                       <Sparkles size={13} />
                       重要公告
+                      {data.important.length === 0 && (
+                        <span className="text-[9px] text-dark-600">暂无</span>
+                      )}
                     </span>
-                    {activeCategory === "important" && (
+                    {activeCategory === "important" && data.important.length > 0 && (
                       <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
                     )}
                   </button>
@@ -126,17 +134,24 @@ export default function Announcements() {
                         handleSelect(data.latest[0], "latest");
                       }
                     }}
+                    disabled={data.latest.length === 0}
+                    aria-disabled={data.latest.length === 0}
                     className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
-                      activeCategory === "latest"
-                        ? "text-white bg-white/[0.03]"
-                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                      data.latest.length === 0
+                        ? "text-dark-600 cursor-not-allowed"
+                        : activeCategory === "latest"
+                          ? "text-white bg-white/[0.03]"
+                          : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
                     }`}
                   >
                     <span className="flex items-center justify-center gap-1.5">
                       <Clock size={13} />
                       最新公告
+                      {data.latest.length === 0 && (
+                        <span className="text-[9px] text-dark-600">暂无</span>
+                      )}
                     </span>
-                    {activeCategory === "latest" && (
+                    {activeCategory === "latest" && data.latest.length > 0 && (
                       <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                     )}
                   </button>
@@ -145,7 +160,7 @@ export default function Announcements() {
                 {/* 公告列表 */}
                 <div className="flex-1 overflow-y-auto chat-scroll p-3 sm:p-4 max-h-[300px] md:max-h-none">
                   <div className="space-y-1">
-                    {currentList.map((item, index) => (
+                    {currentList.map((item) => (
                       <button
                         key={`${activeCategory}-${item.id}`}
                         onClick={() => handleSelect(item, activeCategory)}
@@ -245,6 +260,11 @@ export default function Announcements() {
                         {selectedItem.content || "暂无详细内容"}
                       </div>
                     </>
+                  ) : currentList.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-dark-500 text-sm gap-2">
+                      <Megaphone size={28} className="opacity-30" />
+                      <span>该分类暂无公告，敬请期待</span>
+                    </div>
                   ) : (
                     <div className="h-full flex items-center justify-center text-dark-500 text-sm">
                       请从左侧选择一条公告查看详情

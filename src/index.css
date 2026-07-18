@@ -67,6 +67,12 @@
   scroll-behavior: smooth;
 }
 
+/* 修复：导航跳转后 section 顶部被 fixed Navbar 遮挡，视觉上"没反应" */
+/* scroll-margin-top 让 scrollIntoView 自动留出 Navbar 高度空间 */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 body {
   margin: 0;
   background: var(--color-background);
@@ -145,6 +151,116 @@ button:focus-visible {
   a:active {
     transform: scale(0.97);
     transition: transform 0.1s ease;
+  }
+}
+
+/* ============ 阶段 D：移动端 / 触摸设备全局优化 ============ */
+
+/* 移除 iOS/Android 点击高亮（避免蓝色 flash） */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 防止双击缩放延迟（form/button 可立即响应） */
+button,
+a[role="button"],
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/* 触摸设备最小目标尺寸 ≥44px（WCAG 2.1 AA 推荐） */
+@media (hover: none) and (pointer: coarse) {
+  button:not([aria-disabled="true"]),
+  a[role="button"]:not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]) {
+    /* 仅当元素未显式设置 min-h/min-w 时生效（不破坏现有设计） */
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 移动端禁用文本选择（按钮、导航等 UI 元素），保留内容可选 */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  nav,
+  [role="navigation"],
+  [role="tab"],
+  .btn-press {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* 长链接在窄屏自动换行，避免横向溢出 */
+@media (max-width: 640px) {
+  p,
+  li,
+  h1,
+  h2,
+  h3 {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+}
+
+/* ============ 阶段 D：ProviderShowcase marquee 滚动动画 ============ */
+/* CSS 无限滚动（替代 JS rAF，性能更好且 hover 暂停平滑） */
+.provider-marquee-track {
+  overflow: hidden;
+  padding: 0.75rem 0;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+.provider-marquee-content {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  padding: 0.75rem 0;
+  animation: provider-marquee 40s linear infinite;
+}
+
+/* hover 时暂停（含子元素的 hover，所以放在 track 上） */
+.provider-marquee-track:hover .provider-marquee-content {
+  animation-play-state: paused;
+}
+
+@keyframes provider-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* 滚动一半距离（因为内容被复制了一份） */
+    transform: translateX(-50%);
+  }
+}
+
+/* prefers-reduced-motion：禁用动画，改为静态 flex wrap */
+@media (prefers-reduced-motion: reduce) {
+  .provider-marquee-content {
+    animation: none;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* 移动端：触摸滑动 + 较快动画 */
+@media (hover: none) and (pointer: coarse) {
+  .provider-marquee-content {
+    animation-duration: 30s;
   }
 }
 

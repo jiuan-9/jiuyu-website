@@ -1,11 +1,12 @@
-﻿import { StrictMode } from 'react'
+﻿﻿﻿import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
+import { FocusProvider } from './lib/focus-context'
 import App from './App'
 import './index.css'
 
 console.log(
-  '%c Quiddity Quiddity %c v1.0.0 ',
+  '%c Quiddity Quiddity %c v1.1.0 ',
   'color: #fff; background: #7c3aed; padding: 4px 8px; border-radius: 4px 0 0 4px; font-weight: bold;',
   'color: #7c3aed; background: #1a1a2e; padding: 4px 8px; border-radius: 0 4px 4px 0;',
 );
@@ -18,7 +19,9 @@ console.log(
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HashRouter>
-      <App />
+      <FocusProvider>
+        <App />
+      </FocusProvider>
     </HashRouter>
   </StrictMode>,
 )

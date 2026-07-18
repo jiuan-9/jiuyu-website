@@ -1,4 +1,4 @@
-﻿// ── Quiddity桌面端 · 在线体验页 ──
+// ── Quiddity桌面端 · 在线体验页 ──
 // 重构后：聊天逻辑抽离到 useChat，消息渲染交给 ChatMessage/CodeBlock
 
 import { useState, useRef, useEffect } from "react";

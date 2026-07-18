@@ -1,0 +1,513 @@
+/**
+ * Quiddity 设计 Tokens
+ * 单一事实来源 — 所有视觉属性的"宪法"
+ *
+ * 使用方式：
+ *   1. 在 Tailwind 中通过 var(--token-name) 引用
+ *   2. 在 inline style 中直接使用 var(--token-name)
+ *   3. 在 JS 中通过 getComputedStyle 读取（仅限必要场景）
+ *
+ * 主题：黑 + 蓝（参考 Nanfu 的流畅/高级/简洁感，但用黑蓝配色而非红黄）
+ * 严禁在组件中硬编码颜色 — 一切颜色来自 tokens
+ */
+
+:root {
+  /* ============ 颜色：黑蓝主题 ============ */
+  --color-bg-base: #050810; /* 全局最深背景 */
+  --color-bg-elevated: #0a0e1a; /* 卡片/面板背景 */
+  --color-bg-surface: #11152a; /* 悬浮元素背景 */
+  --color-bg-overlay: rgba(5, 8, 16, 0.72); /* 模糊层背景 */
+
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-default: rgba(255, 255, 255, 0.10);
+  --color-border-strong: rgba(20, 176, 255, 0.30);
+  --color-border-focus: rgba(20, 176, 255, 0.60);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #b3b8d0;
+  --color-text-tertiary: #6a6f9d;
+  --color-text-muted: #494670;
+  --color-text-inverse: #050810;
+
+  /* 品牌主色（蓝） */
+  --color-brand-50: #eefbff;
+  --color-brand-100: #d4f5ff;
+  --color-brand-200: #b2eeff;
+  --color-brand-300: #7de4ff;
+  --color-brand-400: #40d0ff;
+  --color-brand-500: #14b0ff;
+  --color-brand-600: #0090e8;
+  --color-brand-700: #0072bc;
+  --color-brand-800: #066099;
+  --color-brand-900: #0b4f7e;
+  --color-brand-950: #0a324f;
+
+  /* 辅助色（紫色，仅用于 Quiddity Agent 区） */
+  --color-accent-purple-400: #c084fc;
+  --color-accent-purple-500: #a855f7;
+  --color-accent-purple-600: #9333ea;
+  --color-accent-purple-700: #7c3aed;
+
+  /* 辅助色（青色，仅用于点缀） */
+  --color-accent-cyan-400: #22d3ee;
+  --color-accent-cyan-500: #06b6d4;
+
+  /* 状态色 */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #14b0ff;
+
+  /* 渐变 */
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--color-brand-500) 0%,
+    var(--color-brand-700) 100%
+  );
+  --gradient-brand-bright: linear-gradient(
+    135deg,
+    var(--color-brand-400) 0%,
+    var(--color-brand-600) 50%,
+    var(--color-accent-purple-500) 100%
+  );
+  --gradient-text: linear-gradient(
+    135deg,
+    var(--color-brand-300) 0%,
+    var(--color-brand-500) 50%,
+    var(--color-accent-purple-400) 100%
+  );
+  --gradient-glass: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.01) 100%
+  );
+
+  /* ============ 间距（4px 基线） ============ */
+  --space-0: 0;
+  --space-1: 0.25rem; /* 4px */
+  --space-2: 0.5rem; /* 8px */
+  --space-3: 0.75rem; /* 12px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-8: 2rem; /* 32px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+  --space-32: 8rem; /* 128px */
+  --space-40: 10rem; /* 160px */
+
+  /* 容器宽度 */
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1440px;
+
+  /* ============ 字号（流体排版） ============ */
+  --font-xs: 0.75rem; /* 12px */
+  --font-sm: 0.875rem; /* 14px */
+  --font-base: 1rem; /* 16px */
+  --font-lg: 1.125rem; /* 18px */
+  --font-xl: 1.25rem; /* 20px */
+  --font-2xl: 1.5rem; /* 24px */
+  --font-3xl: 1.875rem; /* 30px */
+  --font-4xl: 2.25rem; /* 36px */
+  --font-5xl: 3rem; /* 48px */
+  --font-6xl: 3.75rem; /* 60px */
+  --font-7xl: 4.5rem; /* 72px */
+
+  --lh-tight: 1.1;
+  --lh-snug: 1.3;
+  --lh-normal: 1.5;
+  --lh-relaxed: 1.625;
+  --lh-loose: 2;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ============ 圆角 ============ */
+  --radius-sm: 0.375rem; /* 6px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-3xl: 2rem; /* 32px */
+  --radius-full: 9999px;
+
+  /* ============ 阴影 ============ */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+
+  --shadow-glow-sm: 0 0 20px rgba(20, 176, 255, 0.15);
+  --shadow-glow-md: 0 0 40px rgba(20, 176, 255, 0.20);
+  --shadow-glow-lg: 0 0 60px rgba(20, 176, 255, 0.30);
+  --shadow-glow-brand: 0 0 40px rgba(20, 176, 255, 0.25);
+
+  /* 阴影层级系统（v2.1：z 轴空间感） */
+  --shadow-elev-1: 0 1px 2px rgba(0, 0, 0, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-elev-2: 0 2px 4px rgba(0, 0, 0, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.25);
+  --shadow-elev-3: 0 4px 8px rgba(0, 0, 0, 0.35),
+    0 6px 12px rgba(0, 0, 0, 0.3);
+  --shadow-elev-4: 0 8px 16px rgba(0, 0, 0, 0.4),
+    0 12px 24px rgba(0, 0, 0, 0.35);
+  --shadow-elev-5: 0 16px 32px rgba(0, 0, 0, 0.45),
+    0 24px 48px rgba(0, 0, 0, 0.4);
+  --shadow-elev-6: 0 24px 48px rgba(0, 0, 0, 0.5),
+    0 40px 72px rgba(0, 0, 0, 0.45);
+
+  /* 品牌光晕（与阴影叠加，营造科技感） */
+  --shadow-glow-xs: 0 0 10px rgba(20, 176, 255, 0.10);
+  --shadow-glow-xl: 0 0 80px rgba(20, 176, 255, 0.40);
+  --shadow-glow-2xl: 0 0 120px rgba(20, 176, 255, 0.50);
+  --shadow-glow-purple: 0 0 40px rgba(168, 85, 247, 0.25);
+  --shadow-glow-cyan: 0 0 40px rgba(34, 211, 238, 0.25);
+
+  /* 复合阴影：阴影 + 光晕，用于 Hero 元素 */
+  --shadow-hero-primary: 0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(20, 176, 255, 0.25);
+  --shadow-hero-accent: 0 20px 50px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(168, 85, 247, 0.20);
+  --shadow-card-hover: 0 35px 70px -15px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(20, 176, 255, 0.12);
+
+  /* ============ 动画曲线（流畅感的核心） ============ */
+  /* ease-out 系列：进入动画用，开始快结束慢，符合自然感知 */
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ease-in-out 系列：状态过渡用 */
+  --ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* spring 系列：弹性反馈用 */
+  --ease-spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring-hard: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+  /* 精细 bezier 曲线（v2.1 新增，丰富动画表现力） */
+  --ease-sharp: cubic-bezier(0.4, 0, 0.6, 1); /* 锐利：用于状态切换 */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1); /* 平滑：用于位移 */
+  --ease-dramatic: cubic-bezier(0.87, 0, 0.13, 1); /* 戏剧：用于强调 */
+  --ease-bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 弹跳：用于趣味反馈 */
+  --ease-elastic-out: cubic-bezier(0.16, 1.5, 0.3, 1); /* 弹性出：过冲后回弹 */
+  --ease-silk: cubic-bezier(0.25, 0.1, 0.25, 1); /* 丝绸：极致顺滑 */
+  --ease-cinematic: cubic-bezier(0.7, 0, 0.3, 1); /* 电影：缓慢推进加速 */
+
+  /* Spring 物理参数（用于 Framer Motion transition.type = "spring"） */
+  --spring-stiffness-gentle: 120; /* 轻柔弹簧（卡片悬停） */
+  --spring-stiffness-snappy: 300; /* 灵动弹簧（按钮反馈） */
+  --spring-stiffness-firm: 500; /* 坚定弹簧（页面切换） */
+  --spring-stiffness-bouncy: 800; /* 弹跳弹簧（趣味元素） */
+  --spring-damping-low: 8; /* 低阻尼：高弹跳 */
+  --spring-damping-medium: 18; /* 中阻尼：微弹 */
+  --spring-damping-high: 30; /* 高阻尼：无回弹 */
+  --spring-mass-light: 0.6; /* 轻质量：响应快 */
+  --spring-mass-normal: 1; /* 标准质量 */
+  --spring-mass-heavy: 1.4; /* 重质量：惯性大 */
+
+  /* ============ 动画时长 ============ */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 800ms;
+  --duration-slowest: 1200ms;
+  --duration-cinematic: 2000ms;
+
+  /* ============ z-index 层级 ============ */
+  --z-base: 0;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-fixed: 1200;
+  --z-modal-backdrop: 1300;
+  --z-modal: 1400;
+  --z-popover: 1500;
+  --z-toast: 1600;
+  --z-tooltip: 1700;
+  --z-max: 9999;
+
+  /* ============ 断点（与 Tailwind 对齐） ============ */
+  --bp-sm: 640px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --bp-2xl: 1536px;
+
+  /* ============ 字体 ============ */
+  --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, Monaco,
+    monospace;
+
+  /* ============ ScrollReveal 默认参数（供 ScrollReveal 组件用） ============ */
+  --reveal-duration: 800ms;
+  --reveal-distance: 32px;
+  --reveal-easing: var(--ease-out-quart);
+
+  /* ============ 模糊 ============ */
+  --blur-sm: 4px;
+  --blur-md: 8px;
+  --blur-lg: 12px;
+  --blur-xl: 16px;
+  --blur-2xl: 24px;
+  --blur-3xl: 40px;
+
+  /* ============ 焦点环 ============ */
+  --focus-ring: 0 0 0 2px var(--color-bg-base), 0 0 0 4px var(--color-brand-500);
+
+  /* ============ GPU 加速规则（流畅度保障） ============ */
+  /* 仅 transform 与 opacity 触发合成层，避免 layout/paint 抖动 */
+  --gpu-accelerated: translateZ(0);
+  --will-change-transform: transform;
+  --will-change-opacity: opacity;
+  --will-change-both: transform, opacity;
+
+  /* CSS Containment：隔离独立子树，避免重排扩散 */
+  --contain-layout: layout;
+  --contain-paint: paint;
+  --contain-strict: strict;
+}
+
+/**
+ * Reduced Motion 偏好（无障碍 + 性能降级）
+ * 用户在系统设置中开启"减少动画"时，自动降级
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 1ms;
+    --duration-fast: 1ms;
+    --duration-normal: 1ms;
+    --duration-slow: 1ms;
+    --duration-slower: 1ms;
+    --duration-slowest: 1ms;
+    --duration-cinematic: 1ms;
+    --reveal-duration: 1ms;
+    --reveal-distance: 0;
+  }
+}
+
+/**
+ * 120Hz / 144Hz 显示器适配
+ * 在高刷新率屏幕上，部分动画需要更长 duration 才不显得过快
+ */
+@media (screen and (min-refresh-rate: 100)) {
+  :root {
+    --reveal-duration: 1000ms;
+  }
+}
+
+/* ============ 粒子场参数（v2.1：丰富动画的视觉密度） ============ */
+:root {
+  --particle-color-primary: rgba(20, 176, 255, 0.6);
+  --particle-color-secondary: rgba(168, 85, 247, 0.4);
+  --particle-color-tertiary: rgba(34, 211, 238, 0.4);
+  --particle-color-dim: rgba(255, 255, 255, 0.15);
+  --particle-size-xs: 1px;
+  --particle-size-sm: 2px;
+  --particle-size-md: 3px;
+  --particle-size-lg: 4px;
+  --particle-count-sparse: 30;
+  --particle-count-normal: 60;
+  --particle-count-dense: 120;
+  --particle-drift-distance: 40px;
+  --particle-drift-duration: 18s;
+}
+
+/* ============ 涟漪 / 声波 / 形变参数 ============ */
+:root {
+  --ripple-color: rgba(20, 176, 255, 0.35);
+  --ripple-max-scale: 4;
+  --ripple-duration: 800ms;
+
+  --soundwave-bar-count: 32;
+  --soundwave-bar-width: 3px;
+  --soundwave-bar-gap: 2px;
+  --soundwave-bar-min-height: 4px;
+  --soundwave-bar-max-height: 32px;
+  --soundwave-animation-duration: 1200ms;
+
+  --morph-blob-duration: 12s;
+  --morph-blob-border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+}
+
+/* ============ 3D 透视参数 ============ */
+:root {
+  --perspective-near: 400px;
+  --perspective-mid: 1000px;
+  --perspective-far: 2000px;
+  --tilt-max-angle: 12deg;
+  --tilt-glare-opacity: 0.15;
+}
+
+/* ============ 视差参数 ============ */
+:root {
+  --parallax-layer-near: 0.3; /* 近层移动比例：随滚动移动 30% */
+  --parallax-layer-mid: 0.15; /* 中层：15% */
+  --parallax-layer-far: 0.05; /* 远层：5% */
+  --parallax-smooth: 0.4; /* lerp 平滑因子，0=无平滑，1=瞬时 */
+}
+
+/* ============ 文字逐字动画 ============ */
+:root {
+  --text-split-stagger: 0.025s; /* 字符间延迟 */
+  --text-split-duration: 0.5s;
+  --text-split-distance: 12px;
+}
+
+/* ============ Marquee 跑马灯 ============ */
+:root {
+  --marquee-duration: 30s;
+  --marquee-gap: 2rem;
+}
+
+/* ============ GPU 内存上限（避免过度使用导致掉帧） ============ */
+:root {
+  --gpu-layer-limit: 16; /* 同屏最多合成层数（v2.1 流畅度保障） */
+}
+
+/* ============ v2.1 新增 Keyframes：纯 CSS 动画库（不依赖 JS） ============ */
+@keyframes quiddity-particle-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(15px, -10px) scale(1.1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-10px, -20px) scale(0.9);
+    opacity: 0.5;
+  }
+  75% {
+    transform: translate(-20px, -5px) scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes quiddity-shimmer-x {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes quiddity-pulse-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@keyframes quiddity-morph-blob {
+  0%,
+  100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: rotate(0deg) scale(1);
+  }
+  33% {
+    border-radius: 70% 30% 46% 54% / 30% 60% 40% 70%;
+    transform: rotate(120deg) scale(1.05);
+  }
+  66% {
+    border-radius: 30% 70% 70% 30% / 60% 30% 70% 40%;
+    transform: rotate(240deg) scale(0.95);
+  }
+}
+
+@keyframes quiddity-soundwave {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes quiddity-text-glitch {
+  0%,
+  100% {
+    transform: translate(0);
+    text-shadow: none;
+  }
+  20% {
+    transform: translate(-2px, 1px);
+    text-shadow: 2px 0 var(--color-brand-500), -2px 0 var(--color-accent-purple-500);
+  }
+  40% {
+    transform: translate(2px, -1px);
+    text-shadow: -2px 0 var(--color-brand-500), 2px 0 var(--color-accent-purple-500);
+  }
+  60% {
+    transform: translate(-1px, 0);
+    text-shadow: 1px 0 var(--color-brand-300), -1px 0 var(--color-accent-cyan-400);
+  }
+  80% {
+    transform: translate(1px, 1px);
+    text-shadow: -1px 0 var(--color-brand-300), 1px 0 var(--color-accent-cyan-400);
+  }
+}
+
+@keyframes quiddity-gradient-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes quiddity-float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes quiddity-rotate-3d {
+  0% {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  100% {
+    transform: rotateY(360deg) rotateX(360deg);
+  }
+}
+
+@keyframes quiddity-fade-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

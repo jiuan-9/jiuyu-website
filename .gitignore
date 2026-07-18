@@ -1,9 +1,30 @@
-node_modules/
-dist/
-dist-ssr/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Build output
+dist
+dist-ssr
+build
 *.local
 
-# Editor
+# Test artifacts
+coverage
+playwright-report
+test-results
+.lhci
+
+# Editor directories and folders
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -14,9 +35,26 @@ dist-ssr/
 *.sln
 *.sw?
 
-# OS
-Thumbs.db
+# Environment
+.env
+.env.local
+.env.*.local
 
-# Python
+# Misc
+.cache
+.parcel-cache
+*.tsbuildinfo
+.tmp
+tmp
+
+# Python (legacy announcement system)
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.pytest_cache/
+
+# OS
+Thumbs.db

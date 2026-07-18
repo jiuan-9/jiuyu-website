@@ -1,26 +1,40 @@
-import { Mail, Heart, Github, Twitter } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { scrollToSection } from "@/lib/scroll";
+/**
+ * Footer — 页脚
+ *
+ * v2.1 重构：
+ *   - 移除内联 15+ 法律链接段落（UX 灾难），改为指向 /legal 页面的入口
+ *   - 使用 content/footer-links 的双语内容
+ *   - 使用 useI18n 切换语言
+ *   - 动态版权年份
+ *   - 保留品牌标识与社交链接
+ */
 
-const footerLinks = {
-  产品: [
-    { label: "功能特色", href: "#features" },
-    { label: "应用场景", href: "#usecases" },
-    { label: "在线体验", href: "#/demo" },
-    { label: "下载应用", href: "#download" },
-  ],
-  支持: [
-    { label: "常见问题", href: "#faq" },
-    { label: "版本历程", href: "#/timeline" },
-  ],
-  关于: [
-    { label: "关于Quiddity", href: "#hero" },
-    { label: "联系邮箱", href: "mailto:qu9190agent@163.com" },
-  ],
-};
+import { Mail, Github, Twitter, Scale, ArrowRight, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/store/i18n";
+import { scrollToSection } from "@/lib/scroll";
+import {
+  footerLinks,
+  footerSlogan,
+  footerDescription,
+  footerSocial,
+  footerCopyright,
+  footerMadeWith,
+  footerAdminLink,
+  disclaimerTitle,
+  disclaimerIntro,
+  disclaimerHighlight,
+} from "@/content/footer-links";
+
+const LEGAL_LINK_TEXT = {
+  zh: "查看完整法律信息",
+  en: "View Full Legal Information",
+} as const;
 
 export default function Footer() {
+  const { t } = useI18n();
   const navigate = useNavigate();
+  const year = new Date().getFullYear();
 
   const handleLink = (href: string, e: React.MouseEvent) => {
     if (href.startsWith("mailto:")) return;
@@ -34,52 +48,79 @@ export default function Footer() {
 
   return (
     <footer className="py-12 sm:py-16 border-t border-white/[0.04] relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-      <div className="absolute top-0 left-1/4 w-[400px] h-[200px] rounded-full bg-brand-500/[0.02] blur-[150px]" />
-      <div className="absolute top-0 right-1/4 w-[400px] h-[200px] rounded-full bg-purple-500/[0.02] blur-[150px]" />
-      
+      {/* 背景层 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[400px] h-[200px] rounded-full bg-brand-500/[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[400px] h-[200px] rounded-full bg-purple-500/[0.02] blur-[150px] pointer-events-none" />
+
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        {/* 主网格 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 mb-8 sm:mb-12">
+          {/* 品牌区 */}
           <div className="col-span-2 md:col-span-1">
-            <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors group">
+            <a
+              href="#hero"
+              onClick={(e) => handleLink("#hero", e)}
+              className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors group"
+            >
               Quiddity
               <span className="inline-block w-0 h-[2px] bg-gradient-to-r from-brand-500 to-brand-400 group-hover:w-full transition-all duration-300 ml-1" />
             </a>
             <p className="text-xs text-dark-500 leading-relaxed mb-2.5 max-w-52">
-              多模型 AI 桌面应用——你的专属 AI 伙伴。
+              {t(footerDescription)}
             </p>
             <div className="flex items-center gap-2 mb-4 sm:mb-5">
               <span className="w-6 h-px bg-gradient-to-r from-brand-500/50 via-brand-400/30 to-transparent" />
               <p className="text-xs text-dark-400 tracking-[0.2em] font-light">
-                知所不尽，往复不止
+                {t(footerSlogan)}
               </p>
             </div>
+            {/* 邮箱 */}
             <div className="flex items-center gap-3 mb-4">
               <a
-                href="mailto:qu9190agent@163.com"
+                href={footerSocial.email}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 transition-all group"
               >
                 <Mail size={14} className="text-dark-400 group-hover:text-brand-400 transition-colors" />
-                <span className="text-xs text-dark-400 group-hover:text-dark-200 transition-colors">qu9190agent@163.com</span>
+                <span className="text-xs text-dark-400 group-hover:text-dark-200 transition-colors">
+                  qu9190agent@163.com
+                </span>
               </a>
             </div>
+            {/* 社交 */}
             <div className="flex items-center gap-2">
-              <a href="#" className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group">
+              <a
+                href={footerSocial.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group"
+              >
                 <Github size={14} className="text-dark-500 group-hover:text-brand-400 transition-colors" />
               </a>
-              <a href="#" className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group">
+              <a
+                href={footerSocial.twitter}
+                className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group"
+              >
                 <Twitter size={14} className="text-dark-500 group-hover:text-brand-400 transition-colors" />
               </a>
             </div>
           </div>
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h4 className="text-sm font-semibold text-dark-200 mb-3 sm:mb-4 group">{category}</h4>
+
+          {/* 链接分组 */}
+          {footerLinks.map((group) => (
+            <div key={group.category.en}>
+              <h4 className="text-sm font-semibold text-dark-200 mb-3 sm:mb-4">
+                {t(group.category)}
+              </h4>
               <ul className="flex flex-col gap-2 sm:gap-2.5">
-                {links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href} onClick={(e) => handleLink(link.href, e)} className="text-xs text-dark-500 hover:text-dark-300 transition-colors group inline-flex items-center gap-1">
-                      {link.label}
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleLink(link.href, e)}
+                      className="text-xs text-dark-500 hover:text-dark-300 transition-colors group inline-flex items-center gap-1"
+                    >
+                      {t(link.label)}
                       <span className="w-0 h-[1px] bg-brand-400 group-hover:w-2 transition-all duration-200" />
                     </a>
                   </li>
@@ -88,39 +129,62 @@ export default function Footer() {
             </div>
           ))}
         </div>
-        
-        {/* 免责声明 */}
+
+        {/* 法律入口（替代原 15+ 链接段落） */}
         <div className="border-t border-white/[0.04] py-4 sm:py-6 mb-2">
-          <div className="text-[10px] sm:text-[11px] text-dark-500 leading-relaxed max-w-5xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
-            <span className="text-dark-400 font-semibold">免责声明：</span>
-            Quiddity是一款基于第三方大语言模型 API 的 AI 聊天桌面应用，<span className="text-dark-300 font-semibold">目前尚未进行任何法律备案</span>。
-            使用本软件时请遵守相关法律法规，包括但不限于
-            <a href="https://www.cac.gov.cn/2023-07/13/c_1690898327029107.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《生成式人工智能服务管理暂行办法》</a>
-            <a href="https://www.cac.gov.cn/2025-03/14/c_1796715804888045.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《人工智能拟人化互动服务管理暂行办法》</a>
-            <a href="https://www.cac.gov.cn/2021-12/31/c_1648887370382482.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《互联网信息服务算法推荐管理规定》</a>
-            <a href="https://www.npc.gov.cn/npc/c30834/201611/7c4d7e2c62d042d380b54e19e8b74068.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国网络安全法》</a>
-            <a href="https://www.npc.gov.cn/npc/c30834/202106/9dfc6cf54f6b421597da6e72e6880880.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国数据安全法》</a>
-            <a href="https://www.npc.gov.cn/npc/c30834/202108/0d2752b77d534b418f19b509b565ed66.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国个人信息保护法》</a>
-            <a href="https://www.npc.gov.cn/npc/c30834/202112/f73d7c95c9a448be9a4d58391450187e.shtml" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国科学技术进步法》</a>
-            <a href="https://www.gov.cn/zhengce/content/2023-10/24/content_6912294.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《未成年人网络保护条例》</a>
-            <a href="https://www.gov.cn/zhengce/content/2023-02/17/content_5742864.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《互联网信息服务管理办法》</a>
-            <a href="https://www.gov.cn/zhengce/content/2023-07/20/content_6899369.htm" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《中华人民共和国电信条例》</a>
-            <a href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">GitHub 服务条款与可接受使用政策</a>
-            <a href="https://www.copyright.gov/legislation/dmca.pdf" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《数字千年版权法（DMCA）》</a>
-            <a href="https://www.ecfr.gov/current/title-15/chapter-VII/subchapter-C" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《美国出口管制条例（EAR）》</a>
-            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024PC0016" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《欧盟人工智能法案（EU AI Act）》</a>
-            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《通用数据保护条例（GDPR）》</a>
-            <a href="https://www.wipo.int/treaties/en/" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《世界知识产权组织（WIPO）相关条约》</a>及
-            <a href="https://www.wipo.int/treaties/en/text.jsp?file_id=283698" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 underline underline-offset-1">《伯尔尼公约》</a>。
-            本软件仅供学习交流使用，用户需自行承担使用风险，开发者不对因使用本软件产生的任何直接或间接损失承担责任。
+          <button
+            onClick={() => navigate("/legal")}
+            className="group flex items-center gap-3 mx-auto text-center"
+          >
+            <div className="w-8 h-8 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
+              <Scale size={14} className="text-brand-400" />
+            </div>
+            <div className="text-left">
+              <div className="text-xs font-semibold text-dark-200 group-hover:text-brand-300 transition-colors">
+                {t(disclaimerTitle)}
+              </div>
+              <div className="text-[10px] text-dark-500 leading-relaxed max-w-md">
+                {t(disclaimerIntro)}
+                <span className="text-amber-400/80">{t(disclaimerHighlight)}</span>
+                {"..."}
+              </div>
+            </div>
+            <ArrowRight
+              size={14}
+              className="text-dark-500 group-hover:text-brand-400 group-hover:translate-x-1 transition-all"
+            />
+          </button>
+          <div className="text-center mt-2">
+            <span className="text-[10px] text-brand-400/70 hover:text-brand-400 transition-colors">
+              {t(LEGAL_LINK_TEXT)}
+            </span>
           </div>
         </div>
 
-        <div className="pt-6 sm:pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
-          <span className="text-[11px] sm:text-xs text-dark-500">&copy; 2026 Quiddity. All rights reserved.</span>
-          <span className="flex items-center gap-1 text-[11px] sm:text-xs text-dark-500">
-            Made with <Heart size={11} className="text-red-400 animate-pulse" /> by Quiddity开发者
+        {/* 版权 */}
+        <div className="pt-6 sm:pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-3">
+          <span className="text-[11px] sm:text-xs text-dark-500">
+            {typeof footerCopyright.zh === "function"
+              ? footerCopyright.zh(year)
+              : footerCopyright.zh}
+            {" / "}
+            {typeof footerCopyright.en === "function"
+              ? footerCopyright.en(year)
+              : footerCopyright.en}
           </span>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/admin")}
+              className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dark-600 hover:text-brand-400 transition-colors group"
+              title={t(footerAdminLink)}
+            >
+              <Shield size={11} className="group-hover:scale-110 transition-transform" />
+              {t(footerAdminLink)}
+            </button>
+            <span className="text-[11px] sm:text-xs text-dark-500">
+              {t(footerMadeWith)}
+            </span>
+          </div>
         </div>
       </div>
     </footer>

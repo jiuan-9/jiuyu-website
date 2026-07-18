@@ -13,6 +13,7 @@ import QuiddityPreview from "@/components/QuiddityPreview";
 import DownloadSection from "@/components/Download";
 import Footer from "@/components/Footer";
 import Announcements from "@/components/Announcements";
+import { ScrollProgress, FilmGrain } from "@/components/animation";
 
 function Divider() {
   return <div className="section-divider max-w-4xl mx-auto" />;
@@ -50,8 +51,13 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-dark-950">
+    <main className="min-h-screen bg-dark-950 relative">
+      {/* 滚动进度可视化：顶部进度条 + 侧边章节导航点（CursorGlow 已移除：用户反馈"更浮夸、虚假"） */}
+      <ScrollProgress />
+      {/* 全局微噪点纹理层（阶段 C："做实"关键，模拟胶片颗粒，零 rAF 开销，移动端自动禁用） */}
+      <FilmGrain opacity={0.045} />
       <Navbar />
+      {/* 内容流直接排列（移除 GlobalTilt 3D 倾斜：用户反馈"太晃了"，破坏稳重感） */}
       <Hero />
       <Divider />
       <Announcements />

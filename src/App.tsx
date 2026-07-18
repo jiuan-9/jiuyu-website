@@ -4,6 +4,9 @@ import { Routes, Route } from "react-router-dom";
 const Home = lazy(() => import("@/pages/Home"));
 const Demo = lazy(() => import("@/pages/Demo"));
 const Timeline = lazy(() => import("@/pages/Timeline"));
+const Legal = lazy(() => import("@/pages/legal/Legal"));
+const Announcements = lazy(() => import("@/pages/Announcements"));
+const Admin = lazy(() => import("@/pages/admin/Admin"));
 
 function Loading() {
   return (
@@ -26,6 +29,9 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/timeline" element={<Timeline />} />
+        <Route path="/legal" element={<Legal />} />
+        <Route path="/announcements" element={<Announcements />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Suspense>
   );
