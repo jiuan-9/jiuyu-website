@@ -14,7 +14,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { scrollToSection } from "@/lib/scroll";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useI18n } from "@/store/i18n";
 import { MagneticButton } from "@/components/animation";
 import { navLinks as navLinksContent, navCta } from "@/content/nav-links";
@@ -28,6 +28,7 @@ export default function Navbar() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 入场触发
   useEffect(() => {
@@ -60,14 +61,40 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /**
+   * 处理导航点击：
+   * - `#/xxx` 是路由跳转（如 #/demo → navigate("/demo")）
+   * - `#xxx` 是同页锚点（如 #features → scrollToSection("features")）
+   *
+   * 关键修复：当用户在子路由（/demo /admin 等）下点击同页锚点时，
+   * 目标 section 在 Home 页才存在，必须先 navigate("/") 回 Home，
+   * 等 Home 渲染完成后再 scrollToSection。
+   * 这就是用户反馈"按了顶部按键后按那几个导航键依然没反应"的根因。
+   */
   const handleNav = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
     setMobileOpen(false);
     if (href.startsWith("#/")) {
       navigate(href.slice(1));
-    } else {
-      scrollToSection(href.slice(1));
+      return;
     }
+
+    const sectionId = href.slice(1);
+
+    // 当前已在 Home：直接滚动
+    if (location.pathname === "/") {
+      scrollToSection(sectionId);
+      return;
+    }
+
+    // 当前在子路由：先回 Home，下一帧（路由切换 + Home 渲染完成）后滚动
+    // 用 rAF 双重等待：第一次等 React 渲染 Home，第二次确保 DOM 中 section 已挂载
+    navigate("/");
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToSection(sectionId);
+      });
+    });
   };
 
   const isActive = (link: (typeof navLinksContent)[number]) => {
