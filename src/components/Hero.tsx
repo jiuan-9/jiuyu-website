@@ -181,6 +181,18 @@ export default function Hero() {
           你的<span className="text-gradient font-semibold"> 专属 AI 伙伴</span>
         </p>
 
+        {/* Brand slogan */}
+        <div
+          className="flex items-center gap-3 mb-5 sm:mb-6 animate-fade-in-up opacity-0"
+          style={{ animationDelay: "420ms" }}
+        >
+          <span className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-brand-500/40" />
+          <span className="text-xs sm:text-sm text-dark-400 tracking-[0.3em] font-light">
+            知所不尽 · 往复不止
+          </span>
+          <span className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-brand-500/40" />
+        </div>
+
         {/* Typewriter */}
         <div
           className="text-xs sm:text-base text-dark-400 mb-6 sm:mb-8 max-w-xl mx-auto h-6 sm:h-7 flex items-center justify-center animate-fade-in-up opacity-0 px-4"

@@ -68,6 +68,10 @@ export default function QuiddityPreview() {
           <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Quiddity Agent 是Quiddity正在打造的新一代 Agent AI 工具。
             支持自主任务规划、工具调用与流程自动化，从"对话助手"进化为"能独立干活的 AI 搭档"。
+            <br className="hidden sm:block" />
+            <span className="text-dark-500 text-xs sm:text-sm mt-2 inline-block">
+              秉承「知所不尽，往复不止」的信念，持续探索 AI 的更多可能。
+            </span>
           </p>
         </ScrollReveal>
 
