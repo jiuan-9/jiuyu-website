@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { Sparkles, Bot, UserCheck, HeartHandshake, Layers, ShieldCheck, Wrench, Languages, Palette } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -44,18 +45,64 @@ const quiddityFeatures = [
   },
 ];
 
+function FeatureCard({ feature }: { feature: (typeof quiddityFeatures)[number] }) {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) / 20;
+    const y = (e.clientY - rect.top - rect.height / 2) / 20;
+    setMousePosition({ x, y });
+  };
+
+  return (
+    <div
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setMousePosition({ x: 0, y: 0 });
+      }}
+      className="group p-4 sm:p-5 rounded-2xl glass glow-border flex flex-col items-center text-center overflow-hidden"
+      style={{
+        transform: isHovered ? `perspective(1000px) rotateY(${mousePosition.x}deg) rotateX(${-mousePosition.y}deg) scale(1.03)` : "perspective(1000px) rotateY(0) rotateX(0) scale(1)",
+        transition: "transform 0.3s ease-out, border-color 0.5s ease",
+      }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      <div className="relative mb-2 sm:mb-3">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-gradient-to-br from-purple-500/20 to-blue-500/15 transition-all duration-500">
+          <feature.icon size={18} className="sm:hidden text-purple-400" />
+          <feature.icon size={20} className="hidden sm:block text-purple-400" />
+        </div>
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/30 to-blue-500/20 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
+      </div>
+      
+      <h3 className="text-sm font-semibold text-white mb-1 sm:mb-1.5 group-hover:text-purple-300 transition-colors relative z-10">{feature.title}</h3>
+      <p className="text-[11px] text-dark-400 leading-relaxed group-hover:text-dark-300 transition-colors relative z-10">{feature.desc}</p>
+      
+      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    </div>
+  );
+}
+
 export default function QuiddityPreview() {
   return (
     <section id="quiddity" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-950/80 to-dark-950" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-purple-500/[0.03] blur-[120px]" />
-      <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full bg-blue-500/[0.02] blur-[100px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-purple-500/[0.03] blur-[180px] animate-pulse-slow" />
+      <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/[0.02] blur-[150px] animate-pulse-slow" style={{ animationDelay: "2s" }} />
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 max-w-5xl">
         {/* Header */}
         <ScrollReveal className="text-center mb-8 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 sm:mb-6">
-            <Sparkles size={12} className="text-purple-400" />
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 sm:mb-6 group hover:border-purple-500/30 transition-colors">
+            <Sparkles size={12} className="text-purple-400 animate-pulse" />
             <span className="text-[10px] font-semibold text-purple-400 tracking-wider">NEXT GENERATION</span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
@@ -75,17 +122,7 @@ export default function QuiddityPreview() {
         <ScrollReveal threshold={0.15}>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
             {quiddityFeatures.map((feature) => (
-              <div
-                key={feature.title}
-                className="group p-4 sm:p-5 rounded-2xl glass glow-border card-interactive flex flex-col items-center text-center"
-              >
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-500/10 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all duration-300">
-                  <feature.icon size={16} className="sm:hidden text-purple-400" />
-                  <feature.icon size={18} className="hidden sm:block text-purple-400" />
-                </div>
-                <h3 className="text-sm font-semibold text-white mb-1 sm:mb-1.5">{feature.title}</h3>
-                <p className="text-[11px] text-dark-400 leading-relaxed">{feature.desc}</p>
-              </div>
+              <FeatureCard key={feature.title} feature={feature} />
             ))}
           </div>
         </ScrollReveal>
@@ -93,27 +130,28 @@ export default function QuiddityPreview() {
         {/* Brand Slogan Divider */}
         <ScrollReveal threshold={0.2} className="mt-10 sm:mt-14 md:mt-16">
           <div className="flex items-center justify-center gap-4 sm:gap-6">
-            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-r from-transparent to-purple-500/30" />
+            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-r from-transparent via-purple-500/30 to-purple-500/50" />
             <div className="text-center">
-              <p className="text-sm sm:text-base md:text-lg text-dark-300 tracking-[0.2em] font-light whitespace-nowrap">
+              <p className="text-sm sm:text-base md:text-lg text-dark-300 tracking-[0.3em] font-light whitespace-nowrap group-hover:text-white transition-colors">
                 知所不尽 · 往复不止
               </p>
               <p className="text-[10px] sm:text-xs text-dark-500 mt-1.5 tracking-wider">
                 持续探索 AI 的更多可能
               </p>
             </div>
-            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-l from-transparent to-purple-500/30" />
+            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-l from-transparent via-purple-500/30 to-purple-500/50" />
           </div>
         </ScrollReveal>
 
         {/* CTA */}
         <ScrollReveal threshold={0.2} className="mt-8 sm:mt-12 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl glass glow-border w-full sm:w-auto max-w-md mx-auto">
-            <div className="text-center sm:text-left">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl glass glow-border w-full sm:w-auto max-w-md mx-auto relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/[0.02] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="text-center sm:text-left relative z-10">
               <div className="text-sm font-semibold text-white">Quiddity Agent · 开发中</div>
               <div className="text-xs text-dark-400 mt-0.5">2027年前上线，敬请期待</div>
             </div>
-            <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity whitespace-nowrap">
+            <button className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:from-purple-400 hover:to-blue-400 transition-all duration-300 hover:scale-105 whitespace-nowrap shadow-lg shadow-purple-500/20">
               预约体验
             </button>
           </div>

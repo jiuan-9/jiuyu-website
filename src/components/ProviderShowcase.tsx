@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 
 const providers = [
@@ -17,6 +17,7 @@ const providers = [
 
 export default function ProviderShowcase() {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -24,24 +25,27 @@ export default function ProviderShowcase() {
 
     let animationId: number;
     let scrollPos = 0;
-    const speed = 0.4;
+    const speed = 0.6;
 
     const animate = () => {
-      scrollPos += speed;
-      if (scrollPos >= el.scrollWidth / 2) {
-        scrollPos = 0;
+      if (!isHovering) {
+        scrollPos += speed;
+        if (scrollPos >= el.scrollWidth / 2) {
+          scrollPos = 0;
+        }
+        el.scrollLeft = scrollPos;
       }
-      el.scrollLeft = scrollPos;
       animationId = requestAnimationFrame(animate);
     };
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [isHovering]);
 
   return (
     <section className="py-12 sm:py-16 md:py-20 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-dark-950 via-transparent to-dark-950 z-10 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-brand-500/[0.02] blur-[150px]" />
 
       <div className="container relative z-20 mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-8 sm:mb-10">
@@ -56,28 +60,50 @@ export default function ProviderShowcase() {
           </p>
         </ScrollReveal>
 
-        <div className="relative max-w-3xl mx-auto">
+        <div 
+          className="relative max-w-4xl mx-auto"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-dark-950 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-dark-950 to-transparent z-10 pointer-events-none" />
+          
           <div
             ref={scrollRef}
-            className="flex gap-3 sm:gap-4 overflow-x-hidden py-2"
-            style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}
+            className="flex gap-3 sm:gap-4 overflow-x-hidden py-3 cursor-pointer"
+            style={{ maskImage: "linear-gradient(to right, transparent, black 8%, black 92%, transparent)" }}
           >
             {[...providers, ...providers].map((provider, index) => (
               <div
                 key={`${provider.name}-${index}`}
-                className="flex-shrink-0 flex items-center gap-2.5 sm:gap-3 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl glass border border-white/[0.04] hover:border-brand-500/20 transition-colors duration-300"
+                className="flex-shrink-0 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl glass border border-white/[0.04] hover:border-brand-500/30 hover:bg-brand-500/5 transition-all duration-300 hover:-translate-y-1 group"
               >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-brand-500/10 flex items-center justify-center">
-                  <span className="text-xs font-bold text-brand-400">
-                    {provider.name.charAt(0)}
-                  </span>
+                <div className="relative">
+                  <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
+                    <span className="text-xs font-bold text-brand-400">
+                      {provider.name.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="absolute inset-0 rounded-lg bg-brand-500/20 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-300" />
                 </div>
                 <div className="text-left">
-                  <div className="text-sm font-medium text-white whitespace-nowrap">{provider.name}</div>
+                  <div className="text-sm font-medium text-white whitespace-nowrap group-hover:text-brand-300 transition-colors">{provider.name}</div>
                   <div className="text-[10px] text-dark-500 whitespace-nowrap">{provider.model}</div>
                 </div>
               </div>
             ))}
+          </div>
+          
+          <div className="text-center mt-4">
+            <span className="text-[10px] text-dark-500 flex items-center justify-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+              </svg>
+              鼠标悬停暂停滚动
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 18l-6-6 6-6"/>
+              </svg>
+            </span>
           </div>
         </div>
       </div>

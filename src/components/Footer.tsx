@@ -1,4 +1,4 @@
-import { Mail, Heart } from "lucide-react";
+import { Mail, Heart, Github, Twitter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/lib/scroll";
 
@@ -23,7 +23,7 @@ export default function Footer() {
   const navigate = useNavigate();
 
   const handleLink = (href: string, e: React.MouseEvent) => {
-    if (href.startsWith("mailto:")) return; // let native mailto work
+    if (href.startsWith("mailto:")) return;
     e.preventDefault();
     if (href.startsWith("#/")) {
       navigate(href.slice(1));
@@ -33,38 +33,54 @@ export default function Footer() {
   };
 
   return (
-    <footer className="py-12 sm:py-16 border-t border-white/[0.04] relative">
-      <div className="container mx-auto px-4 sm:px-6">
+    <footer className="py-12 sm:py-16 border-t border-white/[0.04] relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute top-0 left-1/4 w-[400px] h-[200px] rounded-full bg-brand-500/[0.02] blur-[150px]" />
+      <div className="absolute top-0 right-1/4 w-[400px] h-[200px] rounded-full bg-purple-500/[0.02] blur-[150px]" />
+      
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 mb-8 sm:mb-12">
           <div className="col-span-2 md:col-span-1">
-            <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors">
+            <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors group">
               Quiddity
+              <span className="inline-block w-0 h-[2px] bg-gradient-to-r from-brand-500 to-brand-400 group-hover:w-full transition-all duration-300 ml-1" />
             </a>
             <p className="text-xs text-dark-500 leading-relaxed mb-2.5 max-w-52">
               多模型 AI 桌面应用——你的专属 AI 伙伴。
             </p>
             <div className="flex items-center gap-2 mb-4 sm:mb-5">
-              <span className="w-5 h-px bg-gradient-to-r from-brand-500/50 to-transparent" />
-              <p className="text-xs text-dark-400 tracking-widest font-light">
+              <span className="w-6 h-px bg-gradient-to-r from-brand-500/50 via-brand-400/30 to-transparent" />
+              <p className="text-xs text-dark-400 tracking-[0.2em] font-light">
                 知所不尽，往复不止
               </p>
             </div>
-            <a
-              href="mailto:qu9190agent@163.com"
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 transition-all group"
-            >
-              <Mail size={14} className="text-dark-400 group-hover:text-brand-400 transition-colors" />
-              <span className="text-xs text-dark-400 group-hover:text-dark-200 transition-colors">qu9190agent@163.com</span>
-            </a>
+            <div className="flex items-center gap-3 mb-4">
+              <a
+                href="mailto:qu9190agent@163.com"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 transition-all group"
+              >
+                <Mail size={14} className="text-dark-400 group-hover:text-brand-400 transition-colors" />
+                <span className="text-xs text-dark-400 group-hover:text-dark-200 transition-colors">qu9190agent@163.com</span>
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <a href="#" className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group">
+                <Github size={14} className="text-dark-500 group-hover:text-brand-400 transition-colors" />
+              </a>
+              <a href="#" className="w-8 h-8 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 flex items-center justify-center transition-all group">
+                <Twitter size={14} className="text-dark-500 group-hover:text-brand-400 transition-colors" />
+              </a>
+            </div>
           </div>
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-sm font-semibold text-dark-200 mb-3 sm:mb-4">{category}</h4>
+              <h4 className="text-sm font-semibold text-dark-200 mb-3 sm:mb-4 group">{category}</h4>
               <ul className="flex flex-col gap-2 sm:gap-2.5">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} onClick={(e) => handleLink(link.href, e)} className="text-xs text-dark-500 hover:text-dark-300 transition-colors">
+                    <a href={link.href} onClick={(e) => handleLink(link.href, e)} className="text-xs text-dark-500 hover:text-dark-300 transition-colors group inline-flex items-center gap-1">
                       {link.label}
+                      <span className="w-0 h-[1px] bg-brand-400 group-hover:w-2 transition-all duration-200" />
                     </a>
                   </li>
                 ))}
@@ -72,6 +88,7 @@ export default function Footer() {
             </div>
           ))}
         </div>
+        
         {/* 免责声明 */}
         <div className="border-t border-white/[0.04] py-4 sm:py-6 mb-2">
           <div className="text-[10px] sm:text-[11px] text-dark-500 leading-relaxed max-w-5xl text-center mx-auto opacity-70 hover:opacity-100 transition-opacity">
@@ -102,7 +119,7 @@ export default function Footer() {
         <div className="pt-6 sm:pt-8 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
           <span className="text-[11px] sm:text-xs text-dark-500">&copy; 2026 Quiddity. All rights reserved.</span>
           <span className="flex items-center gap-1 text-[11px] sm:text-xs text-dark-500">
-            Made with <Heart size={11} className="text-red-400" /> by Quiddity开发者
+            Made with <Heart size={11} className="text-red-400 animate-pulse" /> by Quiddity开发者
           </span>
         </div>
       </div>

@@ -11,6 +11,8 @@ const useCases = [
     title: "编程助手",
     subtitle: "调试、学习、优化——专属技术顾问",
     color: "from-blue-500/20 to-cyan-500/5",
+    iconBg: "from-blue-500/20 to-cyan-500/10",
+    iconColor: "text-blue-400",
     messages: [
       { role: "user" as Role, text: "帮我写一个 Python 脚本，自动整理桌面文件" },
       { role: "ai" as Role, text: "好的。我帮你写一个脚本，按文件扩展名自动分类到不同文件夹。支持自定义规则，可设为开机自启或手动运行。" },
@@ -23,6 +25,8 @@ const useCases = [
     title: "学习伴侣",
     subtitle: "用通俗语言讲透复杂概念",
     color: "from-purple-500/20 to-pink-500/5",
+    iconBg: "from-purple-500/20 to-pink-500/10",
+    iconColor: "text-purple-400",
     messages: [
       { role: "user" as Role, text: "什么是量子纠缠？用简单的比喻解释" },
       { role: "ai" as Role, text: "想象你有两只手套，一左一右。把它们分别装进两个盒子，打乱后随机寄到北京和上海。当你在北京打开盒子看到左手套的瞬间，你就立刻知道上海那只一定是右手套——无论距离多远。量子纠缠也是类似，两个粒子的状态始终关联。" },
@@ -35,6 +39,8 @@ const useCases = [
     title: "创作灵感",
     subtitle: "文案、点子、策划——突破创意瓶颈",
     color: "from-orange-500/20 to-yellow-500/5",
+    iconBg: "from-orange-500/20 to-yellow-500/10",
+    iconColor: "text-orange-400",
     messages: [
       { role: "user" as Role, text: "帮我写一段面向 Z 世代用户的 AI 产品 slogan" },
       { role: "ai" as Role, text: "几个方向供你参考：\n\n「不设限，才无限」—— 简洁有力，暗示 AI 没有边界\n「你的智能，你做主」—— 强调用户掌控\n「聪明，无需条件」—— 暗示免费/易得\n\n你倾向哪种调性？我可以针对性地深化。" },
@@ -47,6 +53,8 @@ const useCases = [
     title: "日常陪伴",
     subtitle: "聊天、倾诉、解闷——随时在你身边",
     color: "from-green-500/20 to-emerald-500/5",
+    iconBg: "from-green-500/20 to-emerald-500/10",
+    iconColor: "text-green-400",
     messages: [
       { role: "user" as Role, text: "推荐几部冷门但特别好看的科幻电影" },
       { role: "ai" as Role, text: "推荐这几部：\n🎬 《月球》(2009) — 孤独宇航员的困境，反转惊艳\n🎬 《降临》(2016) — 语言学+外星人的神作\n🎬 《机械姬》(2014) — 图灵测试的极致演绎\n🎬 《她》(2013) — AI 与人的情感连接，温暖又深刻" },
@@ -56,27 +64,27 @@ const useCases = [
   },
 ];
 
-function ChatBubble({ text, role }: { text: string; role: Role }) {
+function ChatBubble({ text, role, index }: { text: string; role: Role; index: number }) {
   return (
-    <div className={`flex items-start gap-1.5 ${role === "user" ? "justify-end" : ""}`}>
+    <div className={`flex items-start gap-1.5 ${role === "user" ? "justify-end" : ""} animate-slide-in-up`} style={{ animationDelay: `${index * 100}ms` }}>
       {role === "ai" && (
-        <div className="w-5 h-5 rounded-md bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">九</div>
+        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 shadow-lg shadow-brand-500/30">九</div>
       )}
       <div className="max-w-[82%] min-w-0">
         {parseContent(text).map((seg, si) =>
           seg.type === "code" ? (
-            <div key={si} className="my-1 rounded-lg overflow-hidden border border-white/[0.08] bg-[#0d1117]">
-              <div className="flex items-center justify-between px-2.5 py-1 border-b border-white/[0.04] bg-[#161b22]/80">
-                <span className="text-[8px] text-dark-500 font-medium">{seg.language || "代码"}</span>
+            <div key={si} className="my-2 rounded-xl overflow-hidden border border-white/[0.08] bg-[#0d1117] shadow-lg">
+              <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.04] bg-[#161b22]/80">
+                <span className="text-[9px] text-dark-500 font-medium">{seg.language || "代码"}</span>
               </div>
-              <pre className="px-2.5 py-1.5 text-[9px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
+              <pre className="px-3 py-2 text-[10px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
                 <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
               </pre>
             </div>
           ) : (
-            <div key={si} className={`p-2.5 rounded-xl text-[11px] leading-snug whitespace-pre-wrap break-words ${
+            <div key={si} className={`p-3 rounded-xl text-xs leading-relaxed whitespace-pre-wrap break-words transition-all duration-300 hover:scale-[1.01] ${
               role === "user"
-                ? "rounded-tr-sm bg-brand-500/10 border border-brand-500/10 text-dark-200"
+                ? "rounded-tr-sm bg-gradient-to-br from-brand-500/20 to-brand-600/15 border border-brand-500/20 text-dark-200"
                 : "rounded-tl-sm bg-white/[0.03] border border-white/[0.04] text-dark-300"
             }`}>
               {seg.content}
@@ -85,7 +93,7 @@ function ChatBubble({ text, role }: { text: string; role: Role }) {
         )}
       </div>
       {role === "user" && (
-        <div className="w-5 h-5 rounded-md bg-dark-700 flex items-center justify-center text-white text-[9px] font-bold shrink-0 mt-0.5">你</div>
+        <div className="w-6 h-6 rounded-lg bg-dark-700/80 border border-white/[0.08] flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5">你</div>
       )}
     </div>
   );
@@ -112,33 +120,39 @@ function ExpandableCard({
 
   return (
     <div
-      className={`relative rounded-2xl glass glow-border transition-all duration-500 ${
-        isOpen ? "border-brand-500/25 shadow-lg shadow-brand-500/5" : "hover:border-brand-500/20"
+      className={`relative rounded-2xl glass glow-border transition-all duration-500 overflow-hidden ${
+        isOpen ? "border-brand-500/30 shadow-xl shadow-brand-500/10" : "hover:border-brand-500/20"
       }`}
+      style={{ animationDelay: `${index * 100}ms` }}
     >
+      <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 ${isOpen ? "opacity-30" : ""} transition-opacity duration-500`} />
+      
       <button
         onClick={() => onToggle(isOpen ? null : index)}
-        className="w-full text-left p-5 cursor-pointer"
+        className="w-full text-left p-5 cursor-pointer relative z-10"
       >
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
-            isOpen ? "bg-brand-500/20 scale-105" : "bg-brand-500/10"
-          }`}>
-            <item.icon size={20} className="text-brand-400" />
+          <div className={`relative`}>
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 shrink-0 ${
+              isOpen ? `bg-gradient-to-br ${item.iconBg} scale-110` : `bg-dark-800`
+            }`}>
+              <item.icon size={22} className={item.iconColor} />
+            </div>
+            <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.iconBg} blur-lg opacity-0 ${isOpen ? "opacity-50" : ""} transition-opacity duration-500`} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+              <h3 className="text-base font-semibold text-white">{item.title}</h3>
               <span className="hidden sm:inline text-[11px] text-dark-500">—</span>
-              <span className="hidden sm:inline text-[11px] text-dark-400">{item.subtitle}</span>
+              <span className="hidden sm:inline text-xs text-dark-400">{item.subtitle}</span>
             </div>
             <p className="text-[10px] text-dark-500 mt-0.5 sm:hidden">{item.subtitle}</p>
           </div>
-          <div className={`flex items-center gap-1 text-[10px] font-medium transition-colors shrink-0 ${
+          <div className={`flex items-center gap-1.5 text-xs font-medium transition-colors shrink-0 ${
             isOpen ? "text-brand-400" : "text-dark-500"
           }`}>
             <span>{isOpen ? "收起" : "展开预览"}</span>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               className={`transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`}>
               <path d="M9 18l6-6-6-6"/>
             </svg>
@@ -146,16 +160,15 @@ function ExpandableCard({
         </div>
       </button>
 
-      {/* Expandable body — JS-measured height for reliable animation */}
       <div
         className="overflow-hidden transition-all duration-500 ease-out"
         style={{ height: `${height}px` }}
       >
-        <div ref={contentRef} className="px-5 pb-5">
-          <div className={`h-px mb-4 bg-gradient-to-r ${item.color} from-30% to-transparent`} />
+        <div ref={contentRef} className="px-5 pb-5 relative z-10">
+          <div className={`h-[1px] mb-4 bg-gradient-to-r ${item.color} from-20% via-50% to-transparent`} />
           <div className="space-y-3">
             {item.messages.map((msg, i) => (
-              <ChatBubble key={i} text={msg.text} role={msg.role} />
+              <ChatBubble key={i} text={msg.text} role={msg.role} index={i} />
             ))}
           </div>
         </div>
@@ -168,8 +181,10 @@ export default function UseCases() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
-    <section id="usecases" className="py-16 sm:py-24 md:py-32 relative">
+    <section id="usecases" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950" />
+      <div className="absolute top-1/2 left-1/4 w-[500px] h-[400px] rounded-full bg-brand-500/[0.02] blur-[150px]" />
+      <div className="absolute top-1/3 right-1/4 w-[400px] h-[300px] rounded-full bg-purple-500/[0.02] blur-[120px]" />
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-10 sm:mb-14">
