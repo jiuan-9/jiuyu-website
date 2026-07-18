@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Megaphone, Sparkles, Clock, ChevronRight, X, Calendar, Tag } from "lucide-react";
+import { Megaphone, Sparkles, Clock, Calendar, Tag } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
 interface AnnouncementItem {
@@ -15,122 +15,14 @@ interface AnnouncementsData {
   latest: AnnouncementItem[];
 }
 
-interface DetailModalProps {
-  item: AnnouncementItem | null;
-  isImportant?: boolean;
-  onClose: () => void;
-}
-
-function DetailModal({ item, isImportant, onClose }: DetailModalProps) {
-  useEffect(() => {
-    if (item) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [item]);
-
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleEsc);
-    return () => window.removeEventListener("keydown", handleEsc);
-  }, [onClose]);
-
-  if (!item) return null;
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      {/* 背景遮罩 */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" />
-
-      {/* 弹窗内容 */}
-      <div
-        className="relative w-full max-w-lg glass-strong glow-border-strong rounded-2xl overflow-hidden animate-scale-in"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* 顶部装饰 */}
-        <div
-          className={`h-1.5 w-full ${
-            isImportant
-              ? "bg-gradient-to-r from-brand-500 via-brand-400 to-brand-500"
-              : "bg-gradient-to-r from-dark-600 via-dark-400 to-dark-600"
-          }`}
-        />
-
-        {/* 关闭按钮 */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] flex items-center justify-center text-dark-400 hover:text-white transition-all z-10"
-          aria-label="关闭"
-        >
-          <X size={16} />
-        </button>
-
-        <div className="p-5 sm:p-6 md:p-7">
-          {/* 标签和日期 */}
-          <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-            {item.tag && isImportant && (
-              <span className="px-2.5 py-0.5 rounded-md bg-brand-500/15 text-[10px] font-bold text-brand-400 tracking-wider">
-                {item.tag}
-              </span>
-            )}
-            {isImportant && !item.tag && (
-              <span className="px-2.5 py-0.5 rounded-md bg-brand-500/15 text-[10px] font-bold text-brand-400 tracking-wider">
-                重要公告
-              </span>
-            )}
-            {!isImportant && (
-              <span className="px-2.5 py-0.5 rounded-md bg-white/[0.04] text-[10px] font-medium text-dark-400 tracking-wider">
-                最新公告
-              </span>
-            )}
-            <span className="flex items-center gap-1 text-[11px] text-dark-500">
-              <Calendar size={11} />
-              {item.date}
-            </span>
-          </div>
-
-          {/* 标题 */}
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-5 leading-snug">
-            {item.title}
-          </h3>
-
-          {/* 分隔线 */}
-          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4 sm:mb-5" />
-
-          {/* 内容 */}
-          <div className="text-sm text-dark-300 leading-relaxed whitespace-pre-wrap max-h-[40vh] overflow-y-auto pr-2 chat-scroll">
-            {item.content || "暂无详细内容"}
-          </div>
-        </div>
-
-        {/* 底部 */}
-        <div className="px-5 sm:px-6 md:px-7 pb-5 sm:pb-6 md:pb-7">
-          <button
-            onClick={onClose}
-            className="w-full py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] text-dark-300 hover:text-white text-sm font-medium transition-all border border-white/[0.06] hover:border-white/[0.12]"
-          >
-            我知道了
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+type CategoryType = "important" | "latest";
 
 export default function Announcements() {
   const [data, setData] = useState<AnnouncementsData>({ important: [], latest: [] });
   const [loading, setLoading] = useState(true);
-  const [selectedItem, setSelectedItem] = useState<AnnouncementItem | null>(null);
-  const [selectedIsImportant, setSelectedIsImportant] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<CategoryType>("important");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}announcements.json`)
@@ -138,17 +30,30 @@ export default function Announcements() {
       .then((json: AnnouncementsData) => {
         setData(json);
         setLoading(false);
+        if (json.important.length > 0) {
+          setSelectedId(json.important[0].id);
+        } else if (json.latest.length > 0) {
+          setSelectedId(json.latest[0].id);
+          setActiveCategory("latest");
+        }
       })
       .catch(() => setLoading(false));
   }, []);
 
-  const openDetail = (item: AnnouncementItem, isImportant: boolean) => {
-    setSelectedItem(item);
-    setSelectedIsImportant(isImportant);
-  };
+  const currentList = activeCategory === "important" ? data.important : data.latest;
+  const selectedItem = currentList.find((item) => item.id === selectedId) || null;
 
-  const closeDetail = () => {
-    setSelectedItem(null);
+  const handleSelect = (item: AnnouncementItem, category: CategoryType) => {
+    if (activeCategory !== category) {
+      setActiveCategory(category);
+    }
+    if (selectedId !== item.id) {
+      setIsSwitching(true);
+      setTimeout(() => {
+        setSelectedId(item.id);
+        setIsSwitching(false);
+      }, 150);
+    }
   };
 
   if (loading) return null;
@@ -173,107 +78,179 @@ export default function Announcements() {
           </p>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
-          {/* 重要公告 */}
-          <div className="lg:col-span-2">
-            <ScrollReveal threshold={0.1}>
-              <div className="glass glow-border rounded-2xl p-5 sm:p-6 h-full relative overflow-hidden group hover:border-brand-500/20 transition-all duration-500">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-brand-500/10 to-transparent rounded-bl-full pointer-events-none" />
-                <div className="flex items-center gap-2.5 mb-4 sm:mb-5">
-                  <div className="w-8 h-8 rounded-lg bg-brand-500/15 flex items-center justify-center">
-                    <Sparkles size={16} className="text-brand-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">重要公告</h3>
-                    <p className="text-[11px] text-dark-500">Important Notices</p>
-                  </div>
+        <ScrollReveal threshold={0.1}>
+          <div className="glass glow-border rounded-2xl overflow-hidden max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row min-h-[480px]">
+              {/* 左侧目录区 */}
+              <div className="w-full md:w-[32%] lg:w-[28%] border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col">
+                {/* 分类标题 */}
+                <div className="flex border-b border-white/[0.06]">
+                  <button
+                    onClick={() => {
+                      if (data.important.length > 0) {
+                        handleSelect(data.important[0], "important");
+                      }
+                    }}
+                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
+                      activeCategory === "important"
+                        ? "text-brand-400 bg-brand-500/[0.04]"
+                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                    }`}
+                  >
+                    <span className="flex items-center justify-center gap-1.5">
+                      <Sparkles size={13} />
+                      重要公告
+                    </span>
+                    {activeCategory === "important" && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
+                    )}
+                  </button>
+                  <div className="w-px bg-white/[0.06]" />
+                  <button
+                    onClick={() => {
+                      if (data.latest.length > 0) {
+                        handleSelect(data.latest[0], "latest");
+                      }
+                    }}
+                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
+                      activeCategory === "latest"
+                        ? "text-white bg-white/[0.03]"
+                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                    }`}
+                  >
+                    <span className="flex items-center justify-center gap-1.5">
+                      <Clock size={13} />
+                      最新公告
+                    </span>
+                    {activeCategory === "latest" && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                    )}
+                  </button>
                 </div>
 
-                <div className="space-y-3">
-                  {data.important.slice(0, 3).map((item, index) => (
-                    <button
-                      key={item.id}
-                      onClick={() => openDetail(item, true)}
-                      className="group/item w-full text-left p-3.5 sm:p-4 rounded-xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.04] hover:border-brand-500/15 transition-all duration-300"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="flex flex-col items-center gap-1.5 pt-0.5 shrink-0">
-                          <span className="px-2 py-0.5 rounded-md bg-brand-500/15 text-[9px] font-bold text-brand-400 tracking-wider">
-                            {item.tag || "重要"}
+                {/* 公告列表 */}
+                <div className="flex-1 overflow-y-auto chat-scroll p-2 sm:p-3 max-h-[300px] md:max-h-none">
+                  <div className="space-y-1">
+                    {currentList.map((item, index) => (
+                      <button
+                        key={`${activeCategory}-${item.id}`}
+                        onClick={() => handleSelect(item, activeCategory)}
+                        className={`group w-full text-left p-3 sm:p-3.5 rounded-xl transition-all duration-300 ${
+                          selectedId === item.id && activeCategory === activeCategory
+                            ? "bg-white/[0.05] border border-white/[0.08]"
+                            : "hover:bg-white/[0.03] border border-transparent"
+                        }`}
+                      >
+                        <div className="flex items-start gap-2.5">
+                          {/* 选中指示器 */}
+                          <div className="flex flex-col items-center pt-1.5 shrink-0">
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                                selectedId === item.id
+                                  ? activeCategory === "important"
+                                    ? "bg-brand-400 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                                    : "bg-white/70"
+                                  : "bg-dark-600"
+                              }`}
+                            />
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <h4
+                              className={`text-xs sm:text-[13px] font-medium mb-1 line-clamp-2 transition-colors duration-300 ${
+                                selectedId === item.id
+                                  ? "text-white"
+                                  : "text-dark-300 group-hover:text-dark-100"
+                              }`}
+                            >
+                              {item.title}
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              {activeCategory === "important" && item.tag && (
+                                <span className="px-1.5 py-px rounded bg-brand-500/15 text-[9px] font-bold text-brand-400 tracking-wider">
+                                  {item.tag}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-dark-600 flex items-center gap-1">
+                                <Calendar size={9} />
+                                {item.date}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    {currentList.length === 0 && (
+                      <div className="py-8 text-center text-xs text-dark-500">暂无公告</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 右侧内容区 */}
+              <div className="flex-1 flex flex-col relative">
+                {/* 内容区装饰 */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-500/[0.06] to-transparent rounded-bl-full pointer-events-none opacity-60" />
+
+                <div
+                  className={`flex-1 p-5 sm:p-7 md:p-8 transition-all duration-300 ${
+                    isSwitching ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
+                  }`}
+                >
+                  {selectedItem ? (
+                    <>
+                      {/* 标签和分类 */}
+                      <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-5">
+                        {activeCategory === "important" ? (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-500/15 text-[11px] font-bold text-brand-400 tracking-wide">
+                            <Tag size={11} />
+                            {selectedItem.tag || "重要公告"}
                           </span>
-                          <span className="text-[10px] text-dark-600">{item.date}</span>
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h4 className="text-sm font-medium text-dark-100 mb-1 group-hover/item:text-white transition-colors line-clamp-1">
-                            {item.title}
-                          </h4>
-                          <p className="text-xs text-dark-400 leading-relaxed line-clamp-2">
-                            {item.content}
-                          </p>
-                        </div>
-                        <ChevronRight
-                          size={14}
-                          className="text-dark-600 group-hover/item:text-brand-400 group-hover/item:translate-x-0.5 transition-all shrink-0 mt-1 opacity-0 group-hover/item:opacity-100"
-                        />
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] text-[11px] font-medium text-dark-300 tracking-wide">
+                            <Clock size={11} />
+                            最新公告
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1.5 text-[11px] text-dark-500">
+                          <Calendar size={11} />
+                          {selectedItem.date}
+                        </span>
                       </div>
-                    </button>
-                  ))}
-                  {data.important.length === 0 && (
-                    <div className="py-8 text-center text-xs text-dark-500">暂无重要公告</div>
+
+                      {/* 标题 */}
+                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6 leading-snug">
+                        {selectedItem.title}
+                      </h3>
+
+                      {/* 分隔线 */}
+                      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4 sm:mb-6" />
+
+                      {/* 内容 */}
+                      <div className="text-sm sm:text-[15px] text-dark-300 leading-relaxed whitespace-pre-wrap max-h-[320px] overflow-y-auto chat-scroll pr-2">
+                        {selectedItem.content || "暂无详细内容"}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-dark-500 text-sm">
+                      请从左侧选择一条公告查看详情
+                    </div>
                   )}
                 </div>
-              </div>
-            </ScrollReveal>
-          </div>
 
-          {/* 最新公告 */}
-          <div className="lg:col-span-1">
-            <ScrollReveal threshold={0.1}>
-              <div className="glass rounded-2xl p-5 sm:p-6 h-full border border-white/[0.05] hover:border-white/[0.08] transition-all duration-500">
-                <div className="flex items-center gap-2.5 mb-4 sm:mb-5">
-                  <div className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center">
-                    <Clock size={16} className="text-dark-300" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-white">最新公告</h3>
-                    <p className="text-[11px] text-dark-500">Latest Updates</p>
+                {/* 底部装饰线 */}
+                <div className="h-px bg-gradient-to-r from-transparent via-white/5 to-transparent mx-5 sm:mx-7 md:mx-8" />
+                <div className="px-5 sm:px-7 md:px-8 py-3 sm:py-4">
+                  <div className="flex items-center justify-between text-[11px] text-dark-600">
+                    <span>共 {currentList.length} 条公告</span>
+                    <span>当前第 {currentList.findIndex((i) => i.id === selectedId) + 1 || 0} 条</span>
                   </div>
                 </div>
-
-                <div className="space-y-1.5">
-                  {data.latest.slice(0, 5).map((item, index) => (
-                    <button
-                      key={item.id}
-                      onClick={() => openDetail(item, false)}
-                      className="group/item w-full text-left p-3 rounded-lg hover:bg-white/[0.03] transition-all duration-300"
-                    >
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-1 h-1 rounded-full bg-dark-600 group-hover/item:bg-brand-400 transition-colors mt-2 shrink-0" />
-                        <div className="min-w-0 flex-1">
-                          <h4 className="text-xs font-medium text-dark-300 group-hover/item:text-white transition-colors line-clamp-2 mb-1">
-                            {item.title}
-                          </h4>
-                          <span className="text-[10px] text-dark-600">{item.date}</span>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                  {data.latest.length === 0 && (
-                    <div className="py-6 text-center text-xs text-dark-500">暂无最新公告</div>
-                  )}
-                </div>
               </div>
-            </ScrollReveal>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
-
-      {/* 详情弹窗 */}
-      <DetailModal
-        item={selectedItem}
-        isImportant={selectedIsImportant}
-        onClose={closeDetail}
-      />
     </section>
   );
 }
