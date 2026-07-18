@@ -25,15 +25,22 @@ export default function Announcements() {
   const [isSwitching, setIsSwitching] = useState(false);
 
   useEffect(() => {
+    const isValidItem = (item: AnnouncementItem) => {
+      if (!item.title || !item.title.trim()) return false;
+      if (!item.content || !item.content.trim()) return false;
+      const title = item.title.trim();
+      if (title.includes("**")) return false;
+      if (title.startsWith("- ")) return false;
+      if (title.includes("：") && title.length < 10) return false;
+      if (title === "---") return false;
+      return true;
+    };
+
     fetch(`${import.meta.env.BASE_URL}announcements.json`)
       .then((res) => res.json())
       .then((json: AnnouncementsData) => {
-        const filteredImportant = json.important.filter(
-          (item) => item.title && item.title.trim() && item.content && item.content.trim()
-        );
-        const filteredLatest = json.latest.filter(
-          (item) => item.title && item.title.trim() && item.content && item.content.trim()
-        );
+        const filteredImportant = json.important.filter(isValidItem);
+        const filteredLatest = json.latest.filter(isValidItem);
         const filteredData = { important: filteredImportant, latest: filteredLatest };
         setData(filteredData);
         setLoading(false);
