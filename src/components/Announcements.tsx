@@ -60,7 +60,7 @@ export default function Announcements() {
   if (data.important.length === 0 && data.latest.length === 0) return null;
 
   return (
-    <section id="announcements" className="py-12 sm:py-16 md:py-20 relative overflow-hidden">
+    <section id="announcements" className="py-16 sm:py-20 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/60 to-dark-950" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-brand-500/[0.03] blur-[120px] pointer-events-none" />
 
@@ -129,13 +129,13 @@ export default function Announcements() {
                 </div>
 
                 {/* 公告列表 */}
-                <div className="flex-1 overflow-y-auto chat-scroll p-2 sm:p-3 max-h-[300px] md:max-h-none">
+                <div className="flex-1 overflow-y-auto chat-scroll p-3 sm:p-4 max-h-[300px] md:max-h-none">
                   <div className="space-y-1">
                     {currentList.map((item, index) => (
                       <button
                         key={`${activeCategory}-${item.id}`}
                         onClick={() => handleSelect(item, activeCategory)}
-                        className={`group w-full text-left p-3 sm:p-3.5 rounded-xl transition-all duration-300 ${
+                        className={`group w-full text-left p-3.5 sm:p-4 rounded-xl transition-all duration-300 ${
                           selectedId === item.id && activeCategory === activeCategory
                             ? "bg-white/[0.05] border border-white/[0.08]"
                             : "hover:bg-white/[0.03] border border-transparent"
@@ -193,7 +193,7 @@ export default function Announcements() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-500/[0.06] to-transparent rounded-bl-full pointer-events-none opacity-60" />
 
                 <div
-                  className={`flex-1 p-5 sm:p-7 md:p-8 transition-all duration-300 ${
+                  className={`flex-1 p-6 sm:p-8 md:p-10 transition-all duration-300 ${
                     isSwitching ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
                   }`}
                 >

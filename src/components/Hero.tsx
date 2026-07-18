@@ -183,14 +183,14 @@ export default function Hero() {
 
         {/* Brand slogan */}
         <div
-          className="flex items-center gap-3 mb-5 sm:mb-6 animate-fade-in-up opacity-0"
+          className="flex items-center gap-4 sm:gap-6 mb-7 sm:mb-9 animate-fade-in-up opacity-0"
           style={{ animationDelay: "420ms" }}
         >
-          <span className="w-8 sm:w-12 h-px bg-gradient-to-r from-transparent to-brand-500/40" />
-          <span className="text-xs sm:text-sm text-dark-400 tracking-[0.3em] font-light">
+          <span className="w-12 sm:w-20 h-px bg-gradient-to-r from-transparent to-brand-500/50" />
+          <span className="text-sm sm:text-base md:text-lg text-dark-300 tracking-[0.25em] font-light">
             知所不尽 · 往复不止
           </span>
-          <span className="w-8 sm:w-12 h-px bg-gradient-to-l from-transparent to-brand-500/40" />
+          <span className="w-12 sm:w-20 h-px bg-gradient-to-l from-transparent to-brand-500/50" />
         </div>
 
         {/* Typewriter */}

@@ -40,12 +40,15 @@ export default function Footer() {
             <a href="#hero" onClick={(e) => handleLink("#hero", e)} className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors">
               Quiddity
             </a>
-            <p className="text-xs text-dark-500 leading-relaxed mb-3 max-w-52">
+            <p className="text-xs text-dark-500 leading-relaxed mb-2.5 max-w-52">
               多模型 AI 桌面应用——你的专属 AI 伙伴。
             </p>
-            <p className="text-[11px] text-dark-600 tracking-wider mb-4 sm:mb-5 font-light">
-              知所不尽，往复不止
-            </p>
+            <div className="flex items-center gap-2 mb-4 sm:mb-5">
+              <span className="w-5 h-px bg-gradient-to-r from-brand-500/50 to-transparent" />
+              <p className="text-xs text-dark-400 tracking-widest font-light">
+                知所不尽，往复不止
+              </p>
+            </div>
             <a
               href="mailto:qu9190agent@163.com"
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 transition-all group"

@@ -68,10 +68,6 @@ export default function QuiddityPreview() {
           <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
             Quiddity Agent 是Quiddity正在打造的新一代 Agent AI 工具。
             支持自主任务规划、工具调用与流程自动化，从"对话助手"进化为"能独立干活的 AI 搭档"。
-            <br className="hidden sm:block" />
-            <span className="text-dark-500 text-xs sm:text-sm mt-2 inline-block">
-              秉承「知所不尽，往复不止」的信念，持续探索 AI 的更多可能。
-            </span>
           </p>
         </ScrollReveal>
 
@@ -91,6 +87,22 @@ export default function QuiddityPreview() {
                 <p className="text-[11px] text-dark-400 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+        </ScrollReveal>
+
+        {/* Brand Slogan Divider */}
+        <ScrollReveal threshold={0.2} className="mt-10 sm:mt-14 md:mt-16">
+          <div className="flex items-center justify-center gap-4 sm:gap-6">
+            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-r from-transparent to-purple-500/30" />
+            <div className="text-center">
+              <p className="text-sm sm:text-base md:text-lg text-dark-300 tracking-[0.2em] font-light whitespace-nowrap">
+                知所不尽 · 往复不止
+              </p>
+              <p className="text-[10px] sm:text-xs text-dark-500 mt-1.5 tracking-wider">
+                持续探索 AI 的更多可能
+              </p>
+            </div>
+            <span className="w-12 sm:w-20 md:w-28 h-px bg-gradient-to-l from-transparent to-purple-500/30" />
           </div>
         </ScrollReveal>
 
