@@ -1,0 +1,7 @@
+官网地址：https://jiuan-9.github.io/quiddity-website/
+经过cdn的网址：https://quiddity-3by.pages.dev/（主用）
+GitHub 仓库：https://github.com/jiuan-9/quiddity-website
+联系邮箱：qu9190agent@163.com（反馈邮箱）
+应用位置 | `d:\Quiddity\` 
+安装包位置 | `d:\Quiddity\dist\Quiddity 1.0.0.exe`（约 69MB） |
+下载地址 | https://github.com/jiuan-9/quiddity-website/releases/download/v1.0.0/Quiddity-1.0.0.exe |

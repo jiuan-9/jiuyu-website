@@ -12,6 +12,7 @@ import FAQ from "@/components/FAQ";
 import QuiddityPreview from "@/components/QuiddityPreview";
 import DownloadSection from "@/components/Download";
 import Footer from "@/components/Footer";
+import Announcements from "@/components/Announcements";
 
 function Divider() {
   return <div className="section-divider max-w-4xl mx-auto" />;
@@ -52,6 +53,8 @@ export default function Home() {
     <main className="min-h-screen bg-dark-950">
       <Navbar />
       <Hero />
+      <Divider />
+      <Announcements />
       <Divider />
       <Features />
       <Divider />

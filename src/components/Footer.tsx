@@ -15,8 +15,7 @@ const footerLinks = {
   ],
   关于: [
     { label: "关于Quiddity", href: "#hero" },
-    { label: "QQ邮箱", href: "mailto:jiu0919@agent.qq.com" },
-    { label: "163邮箱", href: "mailto:Qu9190agent@163.com" },
+    { label: "联系邮箱", href: "mailto:qu9190agent@163.com" },
   ],
 };
 
@@ -44,15 +43,13 @@ export default function Footer() {
             <p className="text-xs text-dark-500 leading-relaxed mb-4 sm:mb-5 max-w-52">
               多模型 AI 桌面应用——你的专属 AI 伙伴。
             </p>
-            <div className="flex items-center gap-2">
-              <a
-                href="mailto:Qu9190agent@163.com"
-                className="w-8 h-8 rounded-lg bg-white/[0.03] flex items-center justify-center text-dark-500 hover:text-white hover:bg-white/[0.06] transition-colors"
-                aria-label="163 Email"
-              >
-                <Mail size={15} />
-              </a>
-            </div>
+            <a
+              href="mailto:qu9190agent@163.com"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.04] hover:border-brand-500/20 transition-all group"
+            >
+              <Mail size={14} className="text-dark-400 group-hover:text-brand-400 transition-colors" />
+              <span className="text-xs text-dark-400 group-hover:text-dark-200 transition-colors">qu9190agent@163.com</span>
+            </a>
           </div>
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
