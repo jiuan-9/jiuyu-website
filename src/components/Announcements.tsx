@@ -98,32 +98,34 @@ export default function Announcements() {
             <div className="flex flex-col md:flex-row min-h-[480px]">
               {/* 左侧目录区 */}
               <div className="w-full md:w-[32%] lg:w-[28%] border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col">
-                {/* 分类标题 */}
+                {/* 分类标题 —— v3.0 重写：空分类也可点击进入，显示"暂无公告" */}
+                {/* 用户反馈："公告栏不要只写个空，不能点进去" */}
                 <div className="flex border-b border-white/[0.06]">
                   <button
                     onClick={() => {
                       if (data.important.length > 0) {
                         handleSelect(data.important[0], "important");
+                      } else {
+                        // 空分类也可点击：切换到该分类，显示"暂无公告"
+                        setActiveCategory("important");
+                        setSelectedId(null);
                       }
                     }}
-                    disabled={data.important.length === 0}
-                    aria-disabled={data.important.length === 0}
-                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
-                      data.important.length === 0
-                        ? "text-dark-600 cursor-not-allowed"
-                        : activeCategory === "important"
-                          ? "text-brand-400 bg-brand-500/[0.04]"
-                          : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative cursor-pointer border-0 bg-transparent ${
+                      activeCategory === "important"
+                        ? "text-brand-400 bg-brand-500/[0.04]"
+                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
                     }`}
                   >
                     <span className="flex items-center justify-center gap-1.5">
                       <Sparkles size={13} />
                       重要公告
                       {data.important.length === 0 && (
-                        <span className="text-[9px] text-dark-600">暂无</span>
+                        <span className="text-[9px] text-dark-600 ml-1">（暂无）</span>
                       )}
                     </span>
-                    {activeCategory === "important" && data.important.length > 0 && (
+                    {/* 选中态下划线：即使为空也显示 */}
+                    {activeCategory === "important" && (
                       <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
                     )}
                   </button>
@@ -132,26 +134,27 @@ export default function Announcements() {
                     onClick={() => {
                       if (data.latest.length > 0) {
                         handleSelect(data.latest[0], "latest");
+                      } else {
+                        // 空分类也可点击：切换到该分类，显示"暂无公告"
+                        setActiveCategory("latest");
+                        setSelectedId(null);
                       }
                     }}
-                    disabled={data.latest.length === 0}
-                    aria-disabled={data.latest.length === 0}
-                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative ${
-                      data.latest.length === 0
-                        ? "text-dark-600 cursor-not-allowed"
-                        : activeCategory === "latest"
-                          ? "text-white bg-white/[0.03]"
-                          : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
+                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative cursor-pointer border-0 bg-transparent ${
+                      activeCategory === "latest"
+                        ? "text-white bg-white/[0.03]"
+                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
                     }`}
                   >
                     <span className="flex items-center justify-center gap-1.5">
                       <Clock size={13} />
                       最新公告
                       {data.latest.length === 0 && (
-                        <span className="text-[9px] text-dark-600">暂无</span>
+                        <span className="text-[9px] text-dark-600 ml-1">（暂无）</span>
                       )}
                     </span>
-                    {activeCategory === "latest" && data.latest.length > 0 && (
+                    {/* 选中态下划线：即使为空也显示 */}
+                    {activeCategory === "latest" && (
                       <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
                     )}
                   </button>
@@ -261,9 +264,19 @@ export default function Announcements() {
                       </div>
                     </>
                   ) : currentList.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-dark-500 text-sm gap-2">
-                      <Megaphone size={28} className="opacity-30" />
-                      <span>该分类暂无公告，敬请期待</span>
+                    <div className="h-full flex flex-col items-center justify-center text-dark-500 py-12 gap-4">
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-full bg-brand-500/5 blur-2xl" />
+                        <Megaphone size={48} className="opacity-30 relative" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-medium text-dark-400 mb-1">
+                          该分类暂无公告
+                        </div>
+                        <div className="text-xs text-dark-600">
+                          敬请期待，我们会尽快发布新内容
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="h-full flex items-center justify-center text-dark-500 text-sm">
