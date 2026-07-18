@@ -28,12 +28,19 @@ export default function Announcements() {
     fetch(`${import.meta.env.BASE_URL}announcements.json`)
       .then((res) => res.json())
       .then((json: AnnouncementsData) => {
-        setData(json);
+        const filteredImportant = json.important.filter(
+          (item) => item.title && item.title.trim() && item.content && item.content.trim()
+        );
+        const filteredLatest = json.latest.filter(
+          (item) => item.title && item.title.trim() && item.content && item.content.trim()
+        );
+        const filteredData = { important: filteredImportant, latest: filteredLatest };
+        setData(filteredData);
         setLoading(false);
-        if (json.important.length > 0) {
-          setSelectedId(json.important[0].id);
-        } else if (json.latest.length > 0) {
-          setSelectedId(json.latest[0].id);
+        if (filteredImportant.length > 0) {
+          setSelectedId(filteredImportant[0].id);
+        } else if (filteredLatest.length > 0) {
+          setSelectedId(filteredLatest[0].id);
           setActiveCategory("latest");
         }
       })

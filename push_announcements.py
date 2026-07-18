@@ -52,49 +52,50 @@ def print_step(step_num, total, text):
 
 
 def parse_announcements(md_content: str) -> dict:
-    """解析 Markdown 公告文档"""
+    """解析公告文档"""
 
     def parse_section(content: str, has_tag: bool = False) -> list:
         items = []
-        pattern = r"###\s*公告\s*\d+\s*\n(.*?)(?=\n###\s*公告|\Z)"
+        pattern = r"###\s*公告\s*\d+\s*\n(.*?)(?=\n###\s*公告|\n---|\Z)"
         matches = re.findall(pattern, content, re.DOTALL)
 
         for idx, match in enumerate(matches):
             item = {"id": idx + 1}
 
-            title_match = re.search(r"-\s*\*\*标题\*\*[：:]\s*(.+?)\s*\n", match)
+            title_match = re.search(r"^标题[：:]\s*(.*?)\s*$", match, re.MULTILINE)
             if title_match:
                 item["title"] = title_match.group(1).strip()
             else:
-                item["title"] = f"公告{idx + 1}"
+                item["title"] = ""
 
-            date_match = re.search(r"-\s*\*\*日期\*\*[：:]\s*(.+?)\s*\n", match)
+            date_match = re.search(r"^日期[：:]\s*(.*?)\s*$", match, re.MULTILINE)
             if date_match:
                 item["date"] = date_match.group(1).strip()
             else:
                 item["date"] = ""
 
             if has_tag:
-                tag_match = re.search(r"-\s*\*\*标签\*\*[：:]\s*(.+?)\s*\n", match)
+                tag_match = re.search(r"^标签[：:]\s*(.*?)\s*$", match, re.MULTILINE)
                 if tag_match:
                     item["tag"] = tag_match.group(1).strip()
 
             content_match = re.search(
-                r"-\s*\*\*内容\*\*[：:]\s*\n(.*?)(?=\n---|\n###\s*公告|\Z)",
+                r"^内容[：:]\s*\n(.*?)(?=\n---|\n###\s*公告|\Z)",
                 match,
-                re.DOTALL,
+                re.DOTALL | re.MULTILINE,
             )
             if content_match:
                 content_text = content_match.group(1).strip()
                 lines = content_text.split("\n")
-                cleaned_lines = [line.strip() for line in lines]
-                while cleaned_lines and not cleaned_lines[-1]:
+                cleaned_lines = [line.rstrip() for line in lines]
+                while cleaned_lines and not cleaned_lines[-1].strip():
                     cleaned_lines.pop()
                 item["content"] = "\n".join(cleaned_lines).strip()
             else:
                 item["content"] = ""
 
-            items.append(item)
+            if item["title"] and item["content"]:
+                items.append(item)
 
         return items
 
