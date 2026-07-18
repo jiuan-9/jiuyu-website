@@ -5,3 +5,4 @@ GitHub 仓库：https://github.com/jiuan-9/quiddity-website
 应用位置 | `d:\Quiddity\` 
 安装包位置 | `d:\Quiddity\dist\Quiddity 1.0.0.exe`（约 69MB） |
 下载地址 | https://github.com/jiuan-9/quiddity-website/releases/download/v1.0.0/Quiddity-1.0.0.exe |
+注意，此网站GitHub的域名是jiuyu，而主用网址是Quiddity，这个是重命名过的（应用改名了）
