@@ -4,6 +4,9 @@
   "version": "2.0.0",
   "description": "Quiddity AI 桌面应用官方网站（黑+蓝主色 + 14 类动画 + 中英双语 + 公告管理系统）",
   "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -20,7 +23,7 @@
     "test:e2e:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
     "admin": "vite --port 5174 --mode admin",
-    "prebuild": "node -e \"try{require('child_process').execSync('npm run sync:downloads && npm run sync:version',{stdio:'inherit'})}catch(e){console.log('\\\\n[prebuild] ⚠ sync failed (acceptable in CI/cloud env), continuing with existing JSON files...\\\\n')}\"",
+    "prebuild": "node scripts/prebuild.js",
     "sync:downloads": "tsx scripts/sync-downloads.ts",
     "sync:version": "tsx scripts/sync-version.ts",
     "sync:from-quiddity": "tsx scripts/sync-from-quiddity.ts",
