@@ -130,23 +130,28 @@ quiddity-website/
 网站不再提供 `/admin` 页面。公告管理、GitHub 数据查看与一键部署已迁移到独立的桌面应用：
 
 ```
-D:\Quiddity-Agent\管理后台\
-├── main.py           # CustomTkinter 桌面应用入口
-├── start.bat         # Windows 启动脚本
-├── config_store.py   # 本地配置持久化
-├── github_client.py  # GitHub API 封装
-├── announcements.py  # 公告增删查改
-├── deployer.py       # 部署流程封装
-└── requirements.txt  # Python 依赖
+D:\quiddity-website\管理后台\
+├── main.py              # CustomTkinter 桌面应用入口
+├── start.bat            # 本目录启动脚本
+├── config_store.py      # 本地配置持久化
+├── github_client.py     # GitHub API 封装
+├── announcements.py     # 公告增删查改
+├── deployer.py          # 部署流程封装
+└── requirements.txt     # Python 依赖
 ```
+
+网站根目录还提供了 `启动管理后台.bat`，双击即可启动。
 
 启动方式：
 
 ```bash
-cd "D:\Quiddity-Agent\管理后台"
+# 方式一：根目录启动脚本（推荐）
+双击 D:\quiddity-website\启动管理后台.bat
+
+# 方式二：命令行
+cd "D:\quiddity-website\管理后台"
 pip install -r requirements.txt
 python main.py
-# 或双击 start.bat
 ```
 
 ## 关键特性

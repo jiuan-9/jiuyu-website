@@ -1,0 +1,1550 @@
+"""
+Quiddity Admin — 独立桌面管理后台
+
+基于 CustomTkinter 构建，替代网站内的 /admin 路由。
+功能：
+  - GitHub 实时数据（Stars / Forks / Issues / 总下载量 / 最新版本）
+  - 公告管理（增删查改 announcements.json）
+  - 一键推送（sync → build → git add → commit → push）
+  - 应用设置（项目根目录、GitHub 仓库、Token、窗口尺寸）
+  - 实时日志反馈
+
+依赖：customtkinter
+
+启动：
+  python main.py
+  或双击 start.bat
+"""
+
+from __future__ import annotations
+
+import os
+import queue
+import sys
+import threading
+import webbrowser
+from datetime import datetime
+from pathlib import Path
+from tkinter import filedialog, messagebox
+
+import customtkinter as ctk
+
+# 确保同目录模块可被导入
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+from announcements import AnnouncementItem, AnnouncementStore
+from config_store import load_config, save_config
+from deployer import (
+    build_website,
+    full_deploy,
+    git_log_recent,
+    git_status,
+    sync_downloads,
+    sync_version,
+)
+from github_client import (
+    GitHubAPIError,
+    GitHubClient,
+    GitHubFullStats,
+    RateLimitExceededError,
+    format_count,
+    format_file_size,
+    format_relative_time,
+)
+
+
+# ====================================================================
+# 全局配置
+# ====================================================================
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
+
+COLOR_BG = "#0a0e1a"
+COLOR_BG_PANEL = "#0f1623"
+COLOR_BG_CARD = "#1a1f2e"
+COLOR_BG_HOVER = "#252a3a"
+COLOR_BORDER = "#2a3041"
+COLOR_ACCENT = "#14b0ff"
+COLOR_ACCENT_DARK = "#0072bc"
+COLOR_SUCCESS = "#22c55e"
+COLOR_WARNING = "#f59e0b"
+COLOR_ERROR = "#ef4444"
+COLOR_TEXT = "#ffffff"
+COLOR_TEXT_MUTED = "#8a91b4"
+COLOR_TEXT_DIM = "#555884"
+
+AUTO_REFRESH_INTERVAL = 300  # 秒
+
+
+# ====================================================================
+# 应用主窗口
+# ====================================================================
+
+class QuiddityAdminApp(ctk.CTk):
+    """主窗口：左侧导航 + 右侧内容区"""
+
+    def __init__(self):
+        super().__init__()
+
+        # ------------------- 加载配置 -------------------
+        self.config = load_config()
+        self.project_root = Path(self.config.project_root)
+        self.github_repo = self.config.github_repo
+        self.github_token = self.config.github_token
+
+        # ------------------- 状态 -------------------
+        self.github_client = GitHubClient(repo=self.github_repo, token=self.github_token)
+        self.github_stats: GitHubFullStats | None = None
+        self.is_busy = False
+        self.log_queue: queue.Queue[str] = queue.Queue()
+        self._auto_refresh_enabled = True
+        self.ann_store = AnnouncementStore(self.project_root / "public" / "announcements.json")
+
+        # ------------------- 窗口配置 -------------------
+        self.title("Quiddity Admin")
+        width = max(1000, self.config.window_width)
+        height = max(700, self.config.window_height)
+        self.geometry(f"{width}x{height}")
+        self.minsize(1000, 700)
+        self.configure(fg_color=COLOR_BG)
+
+        # ------------------- 布局 -------------------
+        self._build_layout()
+        self._refresh_github_threaded()
+        self._poll_log_queue()
+        self._start_auto_refresh()
+
+    # ====================================================================
+    # 布局
+    # ====================================================================
+
+    def _build_layout(self):
+        self.grid_columnconfigure(0, weight=0, minsize=200)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.sidebar = ctk.CTkFrame(self, fg_color=COLOR_BG_PANEL, corner_radius=0)
+        self.sidebar.grid(row=0, column=0, sticky="nsw")
+        self._build_sidebar()
+
+        self.content_area = ctk.CTkFrame(self, fg_color=COLOR_BG, corner_radius=0)
+        self.content_area.grid(row=0, column=1, sticky="nsew")
+        self.content_area.grid_rowconfigure(0, weight=1)
+        self.content_area.grid_columnconfigure(0, weight=1)
+
+        self.pages: dict[str, ctk.CTkFrame] = {}
+        self._build_dashboard_page()
+        self._build_announcements_page()
+        self._build_deploy_page()
+        self._build_settings_page()
+        self._build_logs_page()
+
+        self._show_page("dashboard")
+
+    def _build_sidebar(self):
+        self.sidebar.grid_rowconfigure(10, weight=1)
+
+        title = ctk.CTkLabel(
+            self.sidebar,
+            text="Quiddity",
+            font=ctk.CTkFont(family="Consolas", size=22, weight="bold"),
+            text_color=COLOR_TEXT,
+        )
+        title.grid(row=0, column=0, padx=20, pady=(24, 4), sticky="w")
+
+        subtitle = ctk.CTkLabel(
+            self.sidebar,
+            text="Admin",
+            font=ctk.CTkFont(family="Consolas", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        )
+        subtitle.grid(row=1, column=0, padx=20, pady=(0, 24), sticky="w")
+
+        nav_items = [
+            ("dashboard", "▣  Dashboard", "实时数据"),
+            ("announcements", "✉  Announcements", "公告管理"),
+            ("deploy", "▶  Deploy", "推送操作"),
+            ("settings", "⚙  Settings", "应用设置"),
+            ("logs", "≡  Logs", "操作日志"),
+        ]
+        self.nav_buttons: dict[str, ctk.CTkButton] = {}
+        for i, (key, label, _hint) in enumerate(nav_items):
+            btn = ctk.CTkButton(
+                self.sidebar,
+                text=label,
+                anchor="w",
+                font=ctk.CTkFont(family="Microsoft YaHei", size=13),
+                fg_color="transparent",
+                hover_color=COLOR_BG_HOVER,
+                text_color=COLOR_TEXT_MUTED,
+                height=44,
+                corner_radius=8,
+                command=lambda k=key: self._show_page(k),
+            )
+            btn.grid(row=2 + i, column=0, padx=12, pady=4, sticky="ew")
+            self.nav_buttons[key] = btn
+
+        self.status_label = ctk.CTkLabel(
+            self.sidebar,
+            text="● Idle",
+            font=ctk.CTkFont(family="Consolas", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        )
+        self.status_label.grid(row=11, column=0, padx=20, pady=(0, 4), sticky="w")
+
+        self.sync_time_label = ctk.CTkLabel(
+            self.sidebar,
+            text="Last sync: —",
+            font=ctk.CTkFont(family="Consolas", size=10),
+            text_color=COLOR_TEXT_DIM,
+            anchor="w",
+        )
+        self.sync_time_label.grid(row=12, column=0, padx=20, pady=(0, 4), sticky="w")
+
+        version_label = ctk.CTkLabel(
+            self.sidebar,
+            text="v1.0.0",
+            font=ctk.CTkFont(family="Consolas", size=10),
+            text_color=COLOR_TEXT_DIM,
+            anchor="w",
+        )
+        version_label.grid(row=13, column=0, padx=20, pady=(0, 24), sticky="w")
+
+    def _show_page(self, page_key: str):
+        for key, page in self.pages.items():
+            if key == page_key:
+                page.grid(row=0, column=0, sticky="nsew")
+            else:
+                page.grid_forget()
+
+        for key, btn in self.nav_buttons.items():
+            if key == page_key:
+                btn.configure(fg_color=COLOR_ACCENT_DARK, text_color=COLOR_TEXT)
+            else:
+                btn.configure(fg_color="transparent", text_color=COLOR_TEXT_MUTED)
+
+    # ====================================================================
+    # Dashboard 页
+    # ====================================================================
+
+    def _build_dashboard_page(self):
+        page = ctk.CTkFrame(self.content_area, fg_color=COLOR_BG, corner_radius=0)
+        page.grid_rowconfigure(0, weight=0)
+        page.grid_rowconfigure(1, weight=1)
+        page.grid_columnconfigure(0, weight=1)
+
+        header = ctk.CTkFrame(page, fg_color="transparent")
+        header.grid(row=0, column=0, sticky="ew", padx=24, pady=(20, 8))
+        header.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            header,
+            text="GitHub 实时数据",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=20, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w")
+
+        ctk.CTkButton(
+            header,
+            text="↻  刷新数据",
+            width=120,
+            height=32,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            command=self._refresh_github_threaded,
+            fg_color=COLOR_ACCENT_DARK,
+            hover_color=COLOR_ACCENT,
+        ).grid(row=0, column=1, padx=(8, 0))
+
+        self.open_repo_btn = ctk.CTkButton(
+            header,
+            text="↗  打开仓库",
+            width=120,
+            height=32,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            command=self._on_open_repo,
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_ACCENT_DARK,
+            border_width=1,
+            text_color=COLOR_ACCENT,
+            hover_color=COLOR_BG_HOVER,
+        )
+        self.open_repo_btn.grid(row=0, column=2, padx=(8, 0))
+
+        body = ctk.CTkFrame(page, fg_color="transparent")
+        body.grid(row=1, column=0, sticky="nsew", padx=24, pady=(8, 24))
+        for c in range(4):
+            body.grid_columnconfigure(c, weight=1, uniform="stats")
+        body.grid_rowconfigure(3, weight=1)
+
+        self.stars_label = self._stat_card(body, "★  Stars", "—", 0, 0)
+        self.forks_label = self._stat_card(body, "⑂  Forks", "—", 0, 1)
+        self.issues_label = self._stat_card(body, "◉  Open Issues", "—", 0, 2)
+        self.downloads_label = self._stat_card(body, "↓  Total Downloads", "—", 0, 3)
+
+        self.latest_release_card = self._info_card(body, "Latest Release", "未获取", 1, 0, colspan=2)
+        self.last_push_card = self._info_card(body, "Last Push", "—", 1, 2, colspan=2)
+
+        asset_frame = ctk.CTkFrame(
+            body,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        asset_frame.grid(row=2, column=0, columnspan=4, sticky="nsew", pady=(8, 0))
+        asset_frame.grid_rowconfigure(1, weight=1)
+        asset_frame.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            asset_frame,
+            text="Release Assets",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=16, pady=(12, 4))
+
+        self.assets_list = ctk.CTkTextbox(
+            asset_frame,
+            height=160,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            fg_color="transparent",
+            text_color=COLOR_TEXT_MUTED,
+            wrap="word",
+            activate_scrollbars=True,
+        )
+        self.assets_list.grid(row=1, column=0, sticky="nsew", padx=12, pady=(0, 12))
+        self.assets_list.configure(state="disabled")
+
+        self.rate_limit_label = ctk.CTkLabel(
+            body,
+            text="API 速率限制：— / —",
+            font=ctk.CTkFont(family="Consolas", size=10),
+            text_color=COLOR_TEXT_DIM,
+            anchor="w",
+        )
+        self.rate_limit_label.grid(row=3, column=0, columnspan=4, sticky="sw", padx=4, pady=(8, 0))
+
+        self.pages["dashboard"] = page
+
+    def _stat_card(self, parent, label, value, row, col):
+        card = ctk.CTkFrame(
+            parent,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        card.grid(row=row, column=col, sticky="nsew", padx=4, pady=4)
+
+        ctk.CTkLabel(
+            card,
+            text=label,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        ).grid(row=0, column=0, sticky="w", padx=14, pady=(12, 4))
+
+        val = ctk.CTkLabel(
+            card,
+            text=value,
+            font=ctk.CTkFont(family="Consolas", size=28, weight="bold"),
+            text_color=COLOR_ACCENT,
+        )
+        val.grid(row=1, column=0, sticky="sw", padx=14, pady=(4, 14))
+        return val
+
+    def _info_card(self, parent, label, value, row, col, colspan=1):
+        card = ctk.CTkFrame(
+            parent,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        card.grid(row=row, column=col, columnspan=colspan, sticky="nsew", padx=4, pady=4)
+        card.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            card,
+            text=label,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=0, column=0, sticky="w", padx=14, pady=(12, 4))
+
+        val = ctk.CTkLabel(
+            card,
+            text=value,
+            font=ctk.CTkFont(family="Consolas", size=12),
+            text_color=COLOR_TEXT,
+            anchor="w",
+            justify="left",
+        )
+        val.grid(row=1, column=0, sticky="w", padx=14, pady=(4, 14))
+        return val
+
+    # ====================================================================
+    # Announcements 页
+    # ====================================================================
+
+    def _build_announcements_page(self):
+        page = ctk.CTkFrame(self.content_area, fg_color=COLOR_BG, corner_radius=0)
+        page.grid_columnconfigure(0, weight=1)
+        page.grid_rowconfigure(0, weight=0)
+        page.grid_rowconfigure(1, weight=1)
+
+        ctk.CTkLabel(
+            page,
+            text="公告管理",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=20, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=24, pady=(20, 8))
+
+        body = ctk.CTkFrame(page, fg_color="transparent")
+        body.grid(row=1, column=0, sticky="nsew", padx=24, pady=(0, 24))
+        body.grid_columnconfigure(0, weight=1, uniform="a")
+        body.grid_columnconfigure(1, weight=1, uniform="a")
+        body.grid_rowconfigure(0, weight=1)
+
+        # 左：列表
+        list_frame = ctk.CTkFrame(
+            body,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        list_frame.grid(row=0, column=0, sticky="nsew", padx=(0, 8))
+        list_frame.grid_rowconfigure(1, weight=1)
+        list_frame.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            list_frame,
+            text="现有公告",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=16, pady=(12, 4))
+
+        list_inner = ctk.CTkFrame(list_frame, fg_color="transparent")
+        list_inner.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
+        list_inner.grid_rowconfigure(1, weight=1)
+        list_inner.grid_columnconfigure(0, weight=1)
+
+        cat_frame = ctk.CTkFrame(list_inner, fg_color="transparent")
+        cat_frame.grid(row=0, column=0, sticky="ew", padx=4, pady=(0, 4))
+        cat_frame.grid_columnconfigure(1, weight=1)
+
+        ctk.CTkLabel(
+            cat_frame,
+            text="分类：",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        ).grid(row=0, column=0, padx=(4, 4))
+
+        self.ann_category_var = ctk.StringVar(value="important")
+        cat_menu = ctk.CTkOptionMenu(
+            cat_frame,
+            values=["important (重要公告)", "latest (最新公告)"],
+            variable=self.ann_category_var,
+            command=self._on_ann_category_change,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            dropdown_font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            fg_color=COLOR_BG_CARD,
+            button_color=COLOR_ACCENT_DARK,
+            button_hover_color=COLOR_ACCENT,
+            text_color=COLOR_TEXT,
+            height=28,
+        )
+        cat_menu.set("important (重要公告)")
+        cat_menu.grid(row=0, column=1, sticky="ew")
+
+        self.ann_list_scroll = ctk.CTkScrollableFrame(list_inner, fg_color="transparent", label_text="")
+        self.ann_list_scroll.grid(row=1, column=0, sticky="nsew")
+        self.ann_list_scroll.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkButton(
+            list_inner,
+            text="↻  刷新列表",
+            width=100,
+            height=28,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            border_width=1,
+            text_color=COLOR_TEXT_MUTED,
+            hover_color=COLOR_BG_HOVER,
+            command=self._refresh_announcements_list,
+        ).grid(row=2, column=0, sticky="w", padx=4, pady=(8, 0))
+
+        # 右：表单
+        form_frame = ctk.CTkFrame(
+            body,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        form_frame.grid(row=0, column=1, sticky="nsew", padx=(8, 0))
+        form_frame.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            form_frame,
+            text="新增公告",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=16, pady=(12, 8))
+
+        # 标题
+        ctk.CTkLabel(
+            form_frame,
+            text="标题",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=1, column=0, sticky="w", padx=16, pady=(0, 2))
+        self.ann_title_var = ctk.StringVar()
+        ctk.CTkEntry(
+            form_frame,
+            textvariable=self.ann_title_var,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            height=32,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=2, column=0, sticky="ew", padx=16, pady=(0, 8))
+
+        # 日期 + 标签
+        date_tag_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        date_tag_frame.grid(row=3, column=0, sticky="ew", padx=16, pady=(0, 8))
+        date_tag_frame.grid_columnconfigure(1, weight=1)
+        date_tag_frame.grid_columnconfigure(3, weight=1)
+
+        ctk.CTkLabel(
+            date_tag_frame,
+            text="日期",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        ).grid(row=0, column=0, padx=(0, 4))
+        self.ann_date_var = ctk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
+        ctk.CTkEntry(
+            date_tag_frame,
+            textvariable=self.ann_date_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=28,
+            width=120,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=1, sticky="w")
+
+        ctk.CTkLabel(
+            date_tag_frame,
+            text="标签",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        ).grid(row=0, column=2, padx=(8, 4))
+        self.ann_tag_var = ctk.StringVar(value="重要")
+        ctk.CTkEntry(
+            date_tag_frame,
+            textvariable=self.ann_tag_var,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            height=28,
+            width=100,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=3, sticky="w")
+
+        # 内容
+        ctk.CTkLabel(
+            form_frame,
+            text="内容（支持多行）",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=4, column=0, sticky="w", padx=16, pady=(0, 2))
+        self.ann_content_textbox = ctk.CTkTextbox(
+            form_frame,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            border_width=1,
+            text_color=COLOR_TEXT,
+            height=180,
+            wrap="word",
+        )
+        self.ann_content_textbox.grid(row=5, column=0, sticky="nsew", padx=16, pady=(0, 8))
+        form_frame.grid_rowconfigure(5, weight=1)
+
+        btn_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        btn_frame.grid(row=6, column=0, sticky="ew", padx=16, pady=(0, 16))
+        btn_frame.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkButton(
+            btn_frame,
+            text="保存到 announcements.json",
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
+            fg_color=COLOR_ACCENT_DARK,
+            hover_color=COLOR_ACCENT,
+            text_color=COLOR_TEXT,
+            command=self._on_save_announcement,
+        ).grid(row=0, column=0, sticky="ew")
+
+        self.ann_file_label = ctk.CTkLabel(
+            form_frame,
+            text=f"文件：{self.ann_store.file_path}",
+            font=ctk.CTkFont(family="Consolas", size=9),
+            text_color=COLOR_TEXT_DIM,
+            anchor="w",
+        )
+        self.ann_file_label.grid(row=7, column=0, sticky="w", padx=16, pady=(0, 12))
+
+        self.pages["announcements"] = page
+        self._refresh_announcements_list()
+
+    # ====================================================================
+    # Deploy 页
+    # ====================================================================
+
+    def _build_deploy_page(self):
+        page = ctk.CTkFrame(self.content_area, fg_color=COLOR_BG, corner_radius=0)
+        page.grid_columnconfigure(0, weight=1)
+        page.grid_rowconfigure(0, weight=0)
+        page.grid_rowconfigure(1, weight=0)
+        page.grid_rowconfigure(2, weight=1)
+
+        ctk.CTkLabel(
+            page,
+            text="推送操作",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=20, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=24, pady=(20, 8))
+
+        ops = ctk.CTkFrame(page, fg_color="transparent")
+        ops.grid(row=1, column=0, sticky="ew", padx=24, pady=(0, 12))
+        ops.grid_columnconfigure(0, weight=0, minsize=80)
+        ops.grid_columnconfigure(1, weight=1)
+
+        ctk.CTkLabel(
+            ops,
+            text="Commit 信息",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=0, column=0, sticky="nw", padx=(0, 8), pady=(0, 8))
+
+        self.commit_msg_var = ctk.StringVar(
+            value=f"chore: update website ({datetime.now().strftime('%Y-%m-%d')})"
+        )
+        commit_entry = ctk.CTkEntry(
+            ops,
+            textvariable=self.commit_msg_var,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            height=36,
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        )
+        commit_entry.grid(row=0, column=1, sticky="ew", pady=(0, 8))
+
+        options_frame = ctk.CTkFrame(ops, fg_color="transparent")
+        options_frame.grid(row=1, column=1, sticky="ew", pady=(0, 8))
+
+        self.skip_build_var = ctk.BooleanVar(value=False)
+        ctk.CTkCheckBox(
+            options_frame,
+            text="构建网站（npm run build）",
+            variable=self.skip_build_var,
+            onvalue=False,
+            offvalue=True,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            fg_color=COLOR_ACCENT_DARK,
+        ).grid(row=0, column=0, padx=(0, 16))
+
+        self.skip_tests_var = ctk.BooleanVar(value=True)
+        ctk.CTkCheckBox(
+            options_frame,
+            text="运行测试（npm run test）",
+            variable=self.skip_tests_var,
+            onvalue=False,
+            offvalue=True,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            fg_color=COLOR_ACCENT_DARK,
+        ).grid(row=0, column=1)
+
+        btn_frame = ctk.CTkFrame(ops, fg_color="transparent")
+        btn_frame.grid(row=2, column=1, sticky="ew", pady=(8, 0))
+        for c in range(6):
+            btn_frame.grid_columnconfigure(c, weight=0 if c < 5 else 1)
+
+        ctk.CTkButton(
+            btn_frame,
+            text="↻  同步数据",
+            width=110,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_ACCENT_DARK,
+            border_width=1,
+            text_color=COLOR_ACCENT,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_sync_data,
+        ).grid(row=0, column=0, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="◉  Git 状态",
+            width=110,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_ACCENT_DARK,
+            border_width=1,
+            text_color=COLOR_ACCENT,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_git_status,
+        ).grid(row=0, column=1, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="🔨  仅构建",
+            width=110,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_ACCENT_DARK,
+            border_width=1,
+            text_color=COLOR_ACCENT,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_build_only,
+        ).grid(row=0, column=2, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="≡  最近 commit",
+            width=120,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_CARD,
+            border_color=COLOR_ACCENT_DARK,
+            border_width=1,
+            text_color=COLOR_ACCENT,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_git_log,
+        ).grid(row=0, column=3, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="▶  一键推送",
+            width=140,
+            height=40,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            fg_color=COLOR_ACCENT_DARK,
+            hover_color=COLOR_ACCENT,
+            text_color=COLOR_TEXT,
+            command=self._on_full_deploy,
+        ).grid(row=0, column=5, sticky="e")
+
+        log_frame = ctk.CTkFrame(
+            page,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        log_frame.grid(row=2, column=0, sticky="nsew", padx=24, pady=(0, 24))
+        log_frame.grid_rowconfigure(1, weight=1)
+        log_frame.grid_columnconfigure(0, weight=1)
+
+        log_header = ctk.CTkFrame(log_frame, fg_color="transparent")
+        log_header.grid(row=0, column=0, sticky="ew", padx=12, pady=(12, 4))
+        log_header.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            log_header,
+            text="操作日志",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w")
+
+        ctk.CTkButton(
+            log_header,
+            text="✕  清空",
+            width=70,
+            height=24,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=10),
+            fg_color="transparent",
+            hover_color=COLOR_BG_HOVER,
+            text_color=COLOR_TEXT_DIM,
+            command=lambda: self.log_textbox.delete("1.0", "end"),
+        ).grid(row=0, column=1)
+
+        self.log_textbox = ctk.CTkTextbox(
+            log_frame,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            fg_color="transparent",
+            text_color=COLOR_TEXT_MUTED,
+            wrap="word",
+            activate_scrollbars=True,
+        )
+        self.log_textbox.grid(row=1, column=0, sticky="nsew", padx=12, pady=(0, 12))
+
+        self.pages["deploy"] = page
+
+    # ====================================================================
+    # Settings 页
+    # ====================================================================
+
+    def _build_settings_page(self):
+        page = ctk.CTkFrame(self.content_area, fg_color=COLOR_BG, corner_radius=0)
+        page.grid_columnconfigure(0, weight=1)
+        page.grid_rowconfigure(0, weight=0)
+        page.grid_rowconfigure(1, weight=1)
+
+        ctk.CTkLabel(
+            page,
+            text="应用设置",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=20, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w", padx=24, pady=(20, 8))
+
+        body = ctk.CTkFrame(page, fg_color="transparent")
+        body.grid(row=1, column=0, sticky="nsew", padx=24, pady=(0, 24))
+        body.grid_columnconfigure(0, weight=1)
+        body.grid_rowconfigure(0, weight=1)
+
+        card = ctk.CTkFrame(
+            body,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        card.grid(row=0, column=0, sticky="new")
+        card.grid_columnconfigure(1, weight=1)
+
+        row = 0
+        ctk.CTkLabel(
+            card,
+            text="项目根目录",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=row, column=0, sticky="w", padx=16, pady=(16, 2))
+
+        root_frame = ctk.CTkFrame(card, fg_color="transparent")
+        root_frame.grid(row=row + 1, column=0, columnspan=2, sticky="ew", padx=16, pady=(0, 12))
+        root_frame.grid_columnconfigure(0, weight=1)
+
+        self.settings_root_var = ctk.StringVar(value=str(self.project_root))
+        ctk.CTkEntry(
+            root_frame,
+            textvariable=self.settings_root_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=32,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="ew", padx=(0, 8))
+
+        ctk.CTkButton(
+            root_frame,
+            text="浏览…",
+            width=70,
+            height=32,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            fg_color=COLOR_BG_HOVER,
+            hover_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+            command=self._on_browse_project_root,
+        ).grid(row=0, column=1)
+
+        row += 2
+        ctk.CTkLabel(
+            card,
+            text="GitHub 仓库",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=row, column=0, sticky="w", padx=16, pady=(0, 2))
+        self.settings_repo_var = ctk.StringVar(value=self.github_repo)
+        ctk.CTkEntry(
+            card,
+            textvariable=self.settings_repo_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=32,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=row + 1, column=0, columnspan=2, sticky="ew", padx=16, pady=(0, 12))
+
+        row += 2
+        ctk.CTkLabel(
+            card,
+            text="GitHub Token（可选，仅本地保存）",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=row, column=0, sticky="w", padx=16, pady=(0, 2))
+        self.settings_token_var = ctk.StringVar(value=self.github_token)
+        ctk.CTkEntry(
+            card,
+            textvariable=self.settings_token_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=32,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+            show="●",
+        ).grid(row=row + 1, column=0, columnspan=2, sticky="ew", padx=16, pady=(0, 12))
+
+        row += 2
+        ctk.CTkLabel(
+            card,
+            text="窗口尺寸（宽 x 高）",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+        ).grid(row=row, column=0, sticky="w", padx=16, pady=(0, 2))
+        size_frame = ctk.CTkFrame(card, fg_color="transparent")
+        size_frame.grid(row=row + 1, column=0, columnspan=2, sticky="w", padx=16, pady=(0, 16))
+        self.settings_width_var = ctk.StringVar(value=str(self.config.window_width))
+        self.settings_height_var = ctk.StringVar(value=str(self.config.window_height))
+        ctk.CTkEntry(
+            size_frame,
+            textvariable=self.settings_width_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=28,
+            width=80,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0)
+        ctk.CTkLabel(
+            size_frame,
+            text="x",
+            font=ctk.CTkFont(family="Consolas", size=11),
+            text_color=COLOR_TEXT_MUTED,
+        ).grid(row=0, column=1, padx=8)
+        ctk.CTkEntry(
+            size_frame,
+            textvariable=self.settings_height_var,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            height=28,
+            width=80,
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=2)
+
+        # 操作按钮
+        btn_frame = ctk.CTkFrame(card, fg_color="transparent")
+        btn_frame.grid(row=row + 2, column=0, columnspan=2, sticky="w",
+                       padx=16, pady=(8, 16))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="保存设置",
+            width=120,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
+            fg_color=COLOR_ACCENT_DARK,
+            hover_color=COLOR_ACCENT,
+            text_color=COLOR_TEXT,
+            command=self._on_save_settings,
+        ).grid(row=0, column=0, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="打开项目目录",
+            width=120,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            border_width=1,
+            text_color=COLOR_TEXT_MUTED,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_open_project_dir,
+        ).grid(row=0, column=1, padx=(0, 8))
+
+        ctk.CTkButton(
+            btn_frame,
+            text="打开公告文件",
+            width=120,
+            height=36,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color=COLOR_BG_PANEL,
+            border_color=COLOR_BORDER,
+            border_width=1,
+            text_color=COLOR_TEXT_MUTED,
+            hover_color=COLOR_BG_HOVER,
+            command=self._on_open_announcements_file,
+        ).grid(row=0, column=2)
+
+        self.pages["settings"] = page
+
+    def _on_open_project_dir(self):
+        """在资源管理器中打开项目根目录"""
+        import subprocess
+        if self.project_root.is_dir():
+            subprocess.run(["explorer", str(self.project_root)])
+        else:
+            messagebox.showwarning("路径无效", "项目根目录不存在")
+
+    def _on_open_announcements_file(self):
+        """在资源管理器中定位 announcements.json"""
+        import subprocess
+        path = self.ann_store.file_path
+        if path.is_file():
+            subprocess.run(["explorer", "/select,", str(path)])
+        else:
+            messagebox.showwarning("文件不存在", f"{path} 不存在")
+
+    def _on_browse_project_root(self):
+        path = filedialog.askdirectory(initialdir=str(self.project_root))
+        if path:
+            self.settings_root_var.set(path)
+
+    def _on_save_settings(self):
+        root = self.settings_root_var.get().strip()
+        repo = self.settings_repo_var.get().strip()
+        token = self.settings_token_var.get().strip()
+
+        if not root or not Path(root).is_dir():
+            messagebox.showwarning("路径无效", "项目根目录不存在")
+            return
+        if not (Path(root) / "package.json").is_file():
+            messagebox.showwarning("路径无效", "所选目录下未找到 package.json")
+            return
+        if not repo:
+            messagebox.showwarning("仓库名无效", "GitHub 仓库名不能为空")
+            return
+
+        try:
+            width = max(1000, int(self.settings_width_var.get().strip()))
+            height = max(700, int(self.settings_height_var.get().strip()))
+        except ValueError:
+            messagebox.showwarning("尺寸无效", "窗口尺寸必须为整数")
+            return
+
+        self.config.project_root = root
+        self.config.github_repo = repo
+        self.config.github_token = token
+        self.config.window_width = width
+        self.config.window_height = height
+        save_config(self.config)
+
+        self.project_root = Path(root)
+        self.github_repo = repo
+        self.github_token = token
+        self.github_client = GitHubClient(repo=repo, token=token)
+        self.ann_store = AnnouncementStore(self.project_root / "public" / "announcements.json")
+        self.ann_file_label.configure(text=f"文件：{self.ann_store.file_path}")
+
+        self.geometry(f"{width}x{height}")
+        self._log("[OK] 设置已保存")
+        self._refresh_announcements_list()
+        self._refresh_github_threaded()
+        messagebox.showinfo("保存成功", "设置已保存并生效")
+
+    # ====================================================================
+    # Logs 页
+    # ====================================================================
+
+    def _build_logs_page(self):
+        page = ctk.CTkFrame(self.content_area, fg_color=COLOR_BG, corner_radius=0)
+        page.grid_columnconfigure(0, weight=1)
+        page.grid_rowconfigure(0, weight=0)
+        page.grid_rowconfigure(1, weight=1)
+
+        header = ctk.CTkFrame(page, fg_color="transparent")
+        header.grid(row=0, column=0, sticky="ew", padx=24, pady=(20, 8))
+        header.grid_columnconfigure(0, weight=1)
+
+        ctk.CTkLabel(
+            header,
+            text="操作日志",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=20, weight="bold"),
+            text_color=COLOR_TEXT,
+        ).grid(row=0, column=0, sticky="w")
+
+        ctk.CTkButton(
+            header,
+            text="✕  清空",
+            width=100,
+            height=32,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
+            fg_color="transparent",
+            hover_color=COLOR_BG_HOVER,
+            text_color=COLOR_TEXT_DIM,
+            command=lambda: self.persistent_log_textbox.delete("1.0", "end"),
+        ).grid(row=0, column=1)
+
+        log_frame = ctk.CTkFrame(
+            page,
+            fg_color=COLOR_BG_CARD,
+            corner_radius=12,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        log_frame.grid(row=1, column=0, sticky="nsew", padx=24, pady=(0, 24))
+        log_frame.grid_rowconfigure(0, weight=1)
+        log_frame.grid_columnconfigure(0, weight=1)
+
+        self.persistent_log_textbox = ctk.CTkTextbox(
+            log_frame,
+            font=ctk.CTkFont(family="Consolas", size=11),
+            fg_color="transparent",
+            text_color=COLOR_TEXT_MUTED,
+            wrap="word",
+            activate_scrollbars=True,
+        )
+        self.persistent_log_textbox.grid(row=0, column=0, sticky="nsew", padx=12, pady=12)
+
+        self.pages["logs"] = page
+
+    # ====================================================================
+    # 日志与状态
+    # ====================================================================
+
+    def _log(self, msg: str):
+        self.log_queue.put(msg)
+
+    def _poll_log_queue(self):
+        try:
+            while True:
+                msg = self.log_queue.get_nowait()
+                timestamped = self._format_log_line(msg)
+                self.log_textbox.insert("end", timestamped)
+                self.log_textbox.see("end")
+                self.persistent_log_textbox.insert("end", timestamped)
+                self.persistent_log_textbox.see("end")
+        except queue.Empty:
+            pass
+        self.after(100, self._poll_log_queue)
+
+    @staticmethod
+    def _format_log_line(msg: str) -> str:
+        ts = datetime.now().strftime("%H:%M:%S")
+        if msg.startswith("[") and "]" in msg[:12]:
+            return msg + "\n"
+        return f"[{ts}] {msg}\n"
+
+    def _set_busy(self, busy: bool, status: str | None = None):
+        self.is_busy = busy
+        if busy:
+            self.status_label.configure(text="● Working...", text_color=COLOR_WARNING)
+        else:
+            self.status_label.configure(text="● Idle", text_color=COLOR_TEXT_MUTED)
+        if status:
+            self.status_label.configure(text=f"● {status}")
+
+    # ====================================================================
+    # GitHub 数据刷新
+    # ====================================================================
+
+    def _refresh_github_threaded(self):
+        if self.is_busy:
+            self._log("[SKIP] 已有任务在执行，刷新请求已忽略")
+            return
+
+        self._set_busy(True, "Fetching GitHub...")
+        self._log("开始刷新 GitHub 数据...")
+
+        def worker():
+            try:
+                stats = self.github_client.fetch_full_stats()
+                self.github_stats = stats
+                self.after(0, lambda: self._update_dashboard(stats))
+                self._log("[OK] GitHub 数据刷新成功")
+                self._log(f"  Stars: {stats.repo.stars}")
+                self._log(f"  Forks: {stats.repo.forks}")
+                self._log(f"  总下载量: {stats.total_downloads}")
+                self._log(f"  最新版本: {stats.latest_version or '无'}")
+                self._log(f"  API 配额: {stats.rate_limit_remaining}/{stats.rate_limit_limit}")
+            except RateLimitExceededError as e:
+                self._log(f"[ERROR] {e}")
+                self.after(0, lambda: messagebox.showwarning("速率限制", str(e)))
+            except GitHubAPIError as e:
+                self._log(f"[ERROR] GitHub API 错误：{e}")
+                self.after(0, lambda: messagebox.showerror("GitHub 错误", str(e)))
+            except Exception as e:
+                self._log(f"[ERROR] 未知错误：{e}")
+                self.after(0, lambda: messagebox.showerror("错误", str(e)))
+            finally:
+                self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _update_dashboard(self, stats: GitHubFullStats):
+        self.stars_label.configure(text=format_count(stats.repo.stars))
+        self.forks_label.configure(text=format_count(stats.repo.forks))
+        self.issues_label.configure(text=str(stats.repo.open_issues))
+        self.downloads_label.configure(text=format_count(stats.total_downloads))
+
+        if stats.latest:
+            r = stats.latest
+            asset_text = (
+                f"版本：{r.tag_name}\n"
+                f"发布：{r.published_at_display}\n"
+                f"资产数：{len(r.assets)}\n"
+                f"该版本下载：{format_count(r.download_count)}"
+            )
+        else:
+            asset_text = "尚无 Release"
+        self.latest_release_card.configure(text=asset_text)
+
+        push_text = (
+            f"分支：{stats.repo.default_branch}\n"
+            f"推送：{format_relative_time(stats.repo.pushed_at)}\n"
+            f"仓库：{stats.repo.full_name}"
+        )
+        if stats.repo.homepage:
+            push_text += f"\n主页：{stats.repo.homepage}"
+        self.last_push_card.configure(text=push_text)
+
+        self.assets_list.configure(state="normal")
+        self.assets_list.delete("1.0", "end")
+        if stats.latest and stats.latest.assets:
+            for a in stats.latest.assets:
+                size = format_file_size(a.size)
+                self.assets_list.insert(
+                    "end",
+                    f"  • {a.name}\n"
+                    f"    下载：{a.download_count}  |  大小：{size}\n"
+                    f"    URL：{a.url}\n\n",
+                )
+        else:
+            self.assets_list.insert("end", "暂无资产（请先在 GitHub 创建 Release 并上传安装包）")
+        self.assets_list.configure(state="disabled")
+
+        self.rate_limit_label.configure(
+            text=f"API 速率限制：{stats.rate_limit_remaining} / {stats.rate_limit_limit}"
+        )
+        self.sync_time_label.configure(text=f"Last sync: {stats.fetched_at_display}")
+
+    def _start_auto_refresh(self):
+        def tick():
+            if self._auto_refresh_enabled and not self.is_busy:
+                self._refresh_github_threaded()
+            self.after(AUTO_REFRESH_INTERVAL * 1000, tick)
+
+        self.after(AUTO_REFRESH_INTERVAL * 1000, tick)
+
+    def _on_open_repo(self):
+        """在浏览器中打开 GitHub 仓库"""
+        url = f"https://github.com/{self.github_repo}"
+        try:
+            webbrowser.open(url, new=2)
+            self._log(f"[OK] 已打开：{url}")
+        except Exception as e:
+            self._log(f"[ERROR] 无法打开浏览器：{e}")
+            messagebox.showerror("打开失败", f"无法打开浏览器：{e}")
+
+    # ====================================================================
+    # 部署操作回调
+    # ====================================================================
+
+    def _on_sync_data(self):
+        if self.is_busy:
+            self._log("[SKIP] 已有任务在执行")
+            return
+        self._set_busy(True, "Syncing...")
+        self._log("=" * 50)
+        self._log("开始同步数据...")
+
+        def worker():
+            r1 = sync_downloads(self.project_root, log=self._log)
+            if not r1.success:
+                self._log("[FAILED] sync:downloads 失败")
+                self.after(0, lambda: self._set_busy(False))
+                return
+            r2 = sync_version(self.project_root, log=self._log)
+            if not r2.success:
+                self._log("[FAILED] sync:version 失败")
+                self.after(0, lambda: self._set_busy(False))
+                return
+            self._log("[OK] 数据同步完成")
+            self.after(0, lambda: self._refresh_github_threaded())
+            self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_build_only(self):
+        if self.is_busy:
+            self._log("[SKIP] 已有任务在执行")
+            return
+        self._set_busy(True, "Building...")
+        self._log("=" * 50)
+
+        def worker():
+            r = build_website(self.project_root, log=self._log)
+            if r.success:
+                self._log("[OK] 构建成功")
+            else:
+                self._log(f"[FAILED] 构建失败（returncode={r.returncode}）")
+            self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_git_status(self):
+        if self.is_busy:
+            return
+        self._set_busy(True, "Git Status...")
+
+        def worker():
+            git_status(self.project_root, log=self._log)
+            self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_git_log(self):
+        if self.is_busy:
+            return
+        self._set_busy(True, "Git Log...")
+
+        def worker():
+            git_log_recent(self.project_root, n=10, log=self._log)
+            self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _on_full_deploy(self):
+        if self.is_busy:
+            self._log("[SKIP] 已有任务在执行")
+            return
+
+        msg = self.commit_msg_var.get().strip()
+        if not msg:
+            messagebox.showwarning("Commit 信息不能为空", "请输入 commit 信息")
+            return
+
+        skip_build = self.skip_build_var.get()
+        skip_tests = self.skip_tests_var.get()
+        confirm_text = (
+            f"将执行以下操作：\n\n"
+            f"  1. npm run sync:downloads\n"
+            f"  2. npm run sync:version\n"
+            + ("  3. npm run test\n" if not skip_tests else "")
+            + ("  4. npm run build\n" if not skip_build else "")
+            + f"  5. git add .\n"
+            + f"  6. git commit -m {msg!r}\n"
+            + f"  7. git push\n\n"
+            + f"是否继续？"
+        )
+        if not messagebox.askyesno("确认推送", confirm_text):
+            self._log("[CANCEL] 用户取消推送")
+            return
+
+        self._set_busy(True, "Deploying...")
+        self._log("=" * 60)
+        self._log("开始一键推送")
+        self._log("=" * 60)
+
+        def worker():
+            success = full_deploy(
+                project_root=self.project_root,
+                commit_message=msg,
+                log=self._log,
+                skip_build=skip_build,
+                skip_tests=skip_tests,
+            )
+            if success:
+                self._log("[SUCCESS] 推送完成！")
+                self.after(0, lambda: messagebox.showinfo(
+                    "推送成功",
+                    "所有步骤已成功完成！\n\n"
+                    "GitHub Pages / Cloudflare Pages 将在 1-2 分钟后自动部署。",
+                ))
+                self.after(100, self._refresh_github_threaded)
+            else:
+                self._log("[FAILED] 推送过程中断，请查看上方日志")
+                self.after(0, lambda: messagebox.showerror(
+                    "推送失败",
+                    "推送过程中断，请查看日志了解详情。",
+                ))
+            self.after(0, lambda: self._set_busy(False))
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    # ====================================================================
+    # 公告管理回调
+    # ====================================================================
+
+    def _on_ann_category_change(self, choice: str):
+        category = choice.split(" ")[0]
+        self.ann_category_var.set(choice)
+        self._refresh_announcements_list()
+
+    def _refresh_announcements_list(self):
+        for child in self.ann_list_scroll.winfo_children():
+            child.destroy()
+
+        try:
+            data = self.ann_store.load()
+        except Exception as e:
+            messagebox.showerror("加载失败", str(e))
+            return
+
+        choice = self.ann_category_var.get()
+        category = choice.split(" ")[0]
+        items = data.get(category, [])
+
+        if not items:
+            empty = ctk.CTkLabel(
+                self.ann_list_scroll,
+                text="（暂无公告）",
+                font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+                text_color=COLOR_TEXT_DIM,
+            )
+            empty.grid(row=0, column=0, sticky="w", padx=8, pady=8)
+            return
+
+        items_sorted = sorted(items, key=lambda x: x.date, reverse=True)
+        for i, item in enumerate(items_sorted):
+            self._render_announcement_item(item, i, category)
+
+    def _render_announcement_item(self, item: AnnouncementItem, idx: int, category: str):
+        card = ctk.CTkFrame(
+            self.ann_list_scroll,
+            fg_color=COLOR_BG_PANEL,
+            corner_radius=8,
+            border_width=1,
+            border_color=COLOR_BORDER,
+        )
+        card.grid(row=idx, column=0, sticky="ew", padx=4, pady=4)
+        card.grid_columnconfigure(0, weight=1)
+
+        title_text = item.title
+        if item.tag:
+            title_text = f"[{item.tag}] {item.title}"
+        ctk.CTkLabel(
+            card,
+            text=title_text,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
+            text_color=COLOR_TEXT,
+            anchor="w",
+            justify="left",
+        ).grid(row=0, column=0, sticky="ew", padx=12, pady=(8, 2))
+
+        meta = f"#{item.id}  •  {item.date}"
+        ctk.CTkLabel(
+            card,
+            text=meta,
+            font=ctk.CTkFont(family="Consolas", size=10),
+            text_color=COLOR_TEXT_DIM,
+            anchor="w",
+        ).grid(row=1, column=0, sticky="w", padx=12, pady=(0, 4))
+
+        preview = item.content[:120] + ("..." if len(item.content) > 120 else "")
+        ctk.CTkLabel(
+            card,
+            text=preview,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=COLOR_TEXT_MUTED,
+            anchor="w",
+            justify="left",
+            wraplength=400,
+        ).grid(row=2, column=0, sticky="ew", padx=12, pady=(0, 4))
+
+        ctk.CTkButton(
+            card,
+            text="✕  删除",
+            width=70,
+            height=24,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=10),
+            fg_color="transparent",
+            hover_color=COLOR_ERROR,
+            text_color=COLOR_ERROR,
+            command=lambda i=item, c=category: self._on_delete_announcement(i.id, c),
+        ).grid(row=3, column=0, sticky="e", padx=8, pady=(0, 8))
+
+    def _on_save_announcement(self):
+        choice = self.ann_category_var.get()
+        category = choice.split(" ")[0]
+        title = self.ann_title_var.get().strip()
+        content = self.ann_content_textbox.get("1.0", "end-1c").strip()
+        date = self.ann_date_var.get().strip()
+        tag = self.ann_tag_var.get().strip()
+
+        if not title:
+            messagebox.showwarning("标题不能为空", "请输入公告标题")
+            return
+        if not content:
+            messagebox.showwarning("内容不能为空", "请输入公告内容")
+            return
+        if not date:
+            date = datetime.now().strftime("%Y-%m-%d")
+
+        try:
+            item = self.ann_store.add(
+                category=category,
+                title=title,
+                content=content,
+                tag=tag,
+                date=date,
+            )
+            self._log(f"[OK] 已添加公告：[{category}] #{item.id} {item.title}")
+            messagebox.showinfo(
+                "保存成功",
+                f"公告已保存到 announcements.json\n\n"
+                f"分类：{category}\n"
+                f"ID：{item.id}\n"
+                f"标题：{item.title}\n\n"
+                f"提示：在 Deploy 页执行「一键推送」可同步到线上。",
+            )
+            self.ann_title_var.set("")
+            self.ann_content_textbox.delete("1.0", "end")
+            self._refresh_announcements_list()
+        except Exception as e:
+            messagebox.showerror("保存失败", str(e))
+
+    def _on_delete_announcement(self, ann_id: int, category: str):
+        if not messagebox.askyesno(
+            "确认删除",
+            f"确定要删除公告 #{ann_id} 吗？\n\n此操作不可撤销。",
+        ):
+            return
+        try:
+            ok = self.ann_store.delete(category, ann_id)
+            if ok:
+                self._log(f"[OK] 已删除公告：[{category}] #{ann_id}")
+                self._refresh_announcements_list()
+            else:
+                messagebox.showwarning("未找到", f"未找到公告 #{ann_id}")
+        except Exception as e:
+            messagebox.showerror("删除失败", str(e))
+
+
+# ====================================================================
+# 入口
+# ====================================================================
+
+def main():
+    cfg = load_config()
+    root = Path(cfg.project_root)
+    needs_config = not root.is_dir() or not (root / "package.json").is_file()
+    if needs_config:
+        print(f"[WARN] 项目根目录无效：{root}")
+        print("启动后请在 Settings 页配置正确的 quiddity-website 路径。")
+
+    app = QuiddityAdminApp()
+    if needs_config:
+        app.after(
+            500,
+            lambda: messagebox.showwarning(
+                "需要配置项目路径",
+                f"项目根目录无效或不存在：\n{root}\n\n"
+                "请进入 Settings 页配置正确的 quiddity-website 路径，"
+                "然后点击「保存设置」。",
+            ),
+        )
+    app.mainloop()
+
+
+if __name__ == "__main__":
+    main()
