@@ -22,7 +22,9 @@ export default defineConfig({
     { name: 'mobile-safari', use: { ...devices['iPhone 14'] } },
   ],
   webServer: {
-    command: 'npm run build && npm run preview',
+    // 直接用 npx vite build 绕过 npm run build 的 prebuild hook
+    // （prebuild 调用 sync:downloads，依赖 GitHub Releases API，仓库无 Release 时会失败）
+    command: 'npx vite build && npx vite preview --port 4173',
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
