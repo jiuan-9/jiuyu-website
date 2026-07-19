@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react";
-import { Megaphone, Sparkles, Clock, Calendar, Tag } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Megaphone, Sparkles, Clock, Calendar, ChevronDown } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { useI18n } from "@/store/i18n";
 import {
@@ -8,15 +8,8 @@ import {
   announcementsSectionSubtitle,
   tabImportant,
   tabLatest,
-  emptyTabHint,
   emptyListHint,
-  emptyCategoryTitle,
-  emptyCategoryDesc,
-  emptySelectHint,
-  tagFallback,
   noContentHint,
-  countLabel,
-  currentLabel,
 } from "@/content/announcements";
 
 interface AnnouncementItem {
@@ -32,15 +25,21 @@ interface AnnouncementsData {
   latest: AnnouncementItem[];
 }
 
-type CategoryType = "important" | "latest";
-
+/**
+ * Announcements — 公告区（v3.0 并排双栏版）
+ *
+ * 用户反馈：「把重要和最新分开来，放在一排」
+ * v3.0 改造：
+ *   - 从 tab 切换改为左右并排两个独立框（重要 | 最新）
+ *   - 移动端自动堆叠为上下两栏
+ *   - 点击公告卡片展开/折叠完整内容（无需跳转到右侧详情区）
+ *   - 简化结构，去除复杂的选中态/切换动画
+ */
 export default function Announcements() {
   const { t } = useI18n();
   const [data, setData] = useState<AnnouncementsData>({ important: [], latest: [] });
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState<CategoryType>("important");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [isSwitching, setIsSwitching] = useState(false);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
     const isValidItem = (item: AnnouncementItem) => {
@@ -57,45 +56,22 @@ export default function Announcements() {
     fetch(`${import.meta.env.BASE_URL}announcements.json`)
       .then((res) => res.json())
       .then((json: AnnouncementsData) => {
-        const filteredImportant = json.important.filter(isValidItem);
-        const filteredLatest = json.latest.filter(isValidItem);
-        const filteredData = { important: filteredImportant, latest: filteredLatest };
-        setData(filteredData);
+        setData({
+          important: (json.important || []).filter(isValidItem),
+          latest: (json.latest || []).filter(isValidItem),
+        });
         setLoading(false);
-        if (filteredImportant.length > 0) {
-          setSelectedId(filteredImportant[0].id);
-        } else if (filteredLatest.length > 0) {
-          setSelectedId(filteredLatest[0].id);
-          setActiveCategory("latest");
-        }
       })
       .catch(() => setLoading(false));
   }, []);
 
-  const currentList = activeCategory === "important" ? data.important : data.latest;
-  const selectedItem = currentList.find((item) => item.id === selectedId) || null;
-
-  // 当前选中条目在列表中的位置（1-based），未找到返回 0
-  const currentIndex = useMemo(() => {
-    if (selectedId === null) return 0;
-    const idx = currentList.findIndex((i) => i.id === selectedId);
-    return idx >= 0 ? idx + 1 : 0;
-  }, [currentList, selectedId]);
-
-  const handleSelect = (item: AnnouncementItem, category: CategoryType) => {
-    if (activeCategory !== category) {
-      setActiveCategory(category);
-    }
-    if (selectedId !== item.id) {
-      setIsSwitching(true);
-      setTimeout(() => {
-        setSelectedId(item.id);
-        setIsSwitching(false);
-      }, 150);
-    }
+  const toggleExpand = (id: number) => {
+    setExpandedId((prev) => (prev === id ? null : id));
   };
 
   if (loading) return null;
+
+  const hasAny = data.important.length > 0 || data.latest.length > 0;
 
   return (
     <section id="announcements" className="py-16 sm:py-20 md:py-24 relative overflow-hidden">
@@ -116,204 +92,151 @@ export default function Announcements() {
           </p>
         </ScrollReveal>
 
-        <ScrollReveal threshold={0.1}>
-          <div className="glass glow-border rounded-2xl overflow-hidden max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row min-h-[480px]">
-              {/* 左侧目录区 */}
-              <div className="w-full md:w-[32%] lg:w-[28%] border-b md:border-b-0 md:border-r border-white/[0.06] flex flex-col">
-                {/* 分类标题 */}
-                <div className="flex border-b border-white/[0.06]">
-                  <button
-                    onClick={() => {
-                      if (data.important.length > 0) {
-                        handleSelect(data.important[0], "important");
-                      } else {
-                        setActiveCategory("important");
-                        setSelectedId(null);
-                      }
-                    }}
-                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative cursor-pointer border-0 bg-transparent ${
-                      activeCategory === "important"
-                        ? "text-brand-400 bg-brand-500/[0.04]"
-                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
-                    }`}
-                  >
-                    <span className="flex items-center justify-center gap-1.5">
-                      <Sparkles size={13} />
-                      {t(tabImportant)}
-                      {data.important.length === 0 && (
-                        <span className="text-[9px] text-dark-600 ml-1">（{t(emptyTabHint)}）</span>
-                      )}
-                    </span>
-                    {activeCategory === "important" && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-brand-400 to-transparent" />
-                    )}
-                  </button>
-                  <div className="w-px bg-white/[0.06]" />
-                  <button
-                    onClick={() => {
-                      if (data.latest.length > 0) {
-                        handleSelect(data.latest[0], "latest");
-                      } else {
-                        setActiveCategory("latest");
-                        setSelectedId(null);
-                      }
-                    }}
-                    className={`flex-1 py-3.5 sm:py-4 text-xs font-medium transition-all duration-300 relative cursor-pointer border-0 bg-transparent ${
-                      activeCategory === "latest"
-                        ? "text-white bg-white/[0.03]"
-                        : "text-dark-400 hover:text-dark-200 hover:bg-white/[0.02]"
-                    }`}
-                  >
-                    <span className="flex items-center justify-center gap-1.5">
-                      <Clock size={13} />
-                      {t(tabLatest)}
-                      {data.latest.length === 0 && (
-                        <span className="text-[9px] text-dark-600 ml-1">（{t(emptyTabHint)}）</span>
-                      )}
-                    </span>
-                    {activeCategory === "latest" && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                    )}
-                  </button>
-                </div>
+        {hasAny ? (
+          <ScrollReveal threshold={0.1}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
+              {/* 重要公告栏 */}
+              <AnnouncementColumn
+                title={t(tabImportant)}
+                icon="important"
+                items={data.important}
+                expandedId={expandedId}
+                onToggle={toggleExpand}
+                emptyHint={t(emptyListHint)}
+                noContentHint={t(noContentHint)}
+              />
 
-                {/* 公告列表 */}
-                <div className="flex-1 overflow-y-auto chat-scroll p-3 sm:p-4 max-h-[300px] md:max-h-none">
-                  <div className="space-y-1">
-                    {currentList.map((item) => (
-                      <button
-                        key={`${activeCategory}-${item.id}`}
-                        onClick={() => handleSelect(item, activeCategory)}
-                        className={`group w-full text-left p-3.5 sm:p-4 rounded-xl transition-all duration-300 ${
-                          selectedId === item.id
-                            ? "bg-white/[0.05] border border-white/[0.08]"
-                            : "hover:bg-white/[0.03] border border-transparent"
-                        }`}
-                      >
-                        <div className="flex items-start gap-2.5">
-                          <div className="flex flex-col items-center pt-1.5 shrink-0">
-                            <span
-                              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-                                selectedId === item.id
-                                  ? activeCategory === "important"
-                                    ? "bg-brand-400 shadow-[0_0_8px_rgba(59,130,246,0.5)]"
-                                    : "bg-white/70"
-                                  : "bg-dark-600"
-                              }`}
-                            />
-                          </div>
-
-                          <div className="min-w-0 flex-1">
-                            <h4
-                              className={`text-xs sm:text-[13px] font-medium mb-1 line-clamp-2 transition-colors duration-300 ${
-                                selectedId === item.id
-                                  ? "text-white"
-                                  : "text-dark-300 group-hover:text-dark-100"
-                              }`}
-                            >
-                              {item.title}
-                            </h4>
-                            <div className="flex items-center gap-2">
-                              {activeCategory === "important" && item.tag && (
-                                <span className="px-1.5 py-px rounded bg-brand-500/15 text-[9px] font-bold text-brand-400 tracking-wider">
-                                  {item.tag}
-                                </span>
-                              )}
-                              <span className="text-[10px] text-dark-600 flex items-center gap-1">
-                                <Calendar size={9} />
-                                {item.date}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </button>
-                    ))}
-                    {currentList.length === 0 && (
-                      <div className="py-8 text-center text-xs text-dark-500">{t(emptyListHint)}</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* 右侧内容区 */}
-              <div className="flex-1 flex flex-col relative">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-500/[0.06] to-transparent rounded-bl-full pointer-events-none opacity-60" />
-
-                <div
-                  className={`flex-1 p-6 sm:p-8 md:p-10 transition-all duration-300 ${
-                    isSwitching ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"
-                  }`}
-                >
-                  {selectedItem ? (
-                    <>
-                      <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-5">
-                        {activeCategory === "important" ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-brand-500/15 text-[11px] font-bold text-brand-400 tracking-wide">
-                            <Tag size={11} />
-                            {selectedItem.tag || t(tagFallback)}
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] text-[11px] font-medium text-dark-300 tracking-wide">
-                            <Clock size={11} />
-                            {t(tabLatest)}
-                          </span>
-                        )}
-                        <span className="inline-flex items-center gap-1.5 text-[11px] text-dark-500">
-                          <Calendar size={11} />
-                          {selectedItem.date}
-                        </span>
-                      </div>
-
-                      <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-4 sm:mb-6 leading-snug">
-                        {selectedItem.title}
-                      </h3>
-
-                      <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-4 sm:mb-6" />
-
-                      <div className="text-sm sm:text-[15px] text-dark-300 leading-relaxed whitespace-pre-wrap max-h-[320px] overflow-y-auto chat-scroll pr-2">
-                        {selectedItem.content || t(noContentHint)}
-                      </div>
-                    </>
-                  ) : currentList.length === 0 ? (
-                    <div className="h-full flex flex-col items-center justify-center text-dark-500 py-12 gap-4">
-                      <div className="relative">
-                        <div className="absolute inset-0 rounded-full bg-brand-500/5 blur-2xl" />
-                        <Megaphone size={48} className="opacity-30 relative" />
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-medium text-dark-400 mb-1">
-                          {t(emptyCategoryTitle)}
-                        </div>
-                        <div className="text-xs text-dark-600">
-                          {t(emptyCategoryDesc)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-dark-500 text-sm">
-                      {t(emptySelectHint)}
-                    </div>
-                  )}
-                </div>
-
-                {/* 底部统计 */}
-                <div className="h-px bg-gradient-to-r from-transparent via-white/5 to-transparent mx-5 sm:mx-7 md:mx-8" />
-                <div className="px-5 sm:px-7 md:px-8 py-3 sm:py-4">
-                  <div className="flex items-center justify-between text-[11px] text-dark-600">
-                    <span>{t(countLabel).replace("{count}", String(currentList.length))}</span>
-                    <span>
-                      {t(currentLabel)
-                        .replace("{index}", String(currentIndex))
-                        .replace("{total}", String(currentList.length))}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              {/* 最新公告栏 */}
+              <AnnouncementColumn
+                title={t(tabLatest)}
+                icon="latest"
+                items={data.latest}
+                expandedId={expandedId}
+                onToggle={toggleExpand}
+                emptyHint={t(emptyListHint)}
+                noContentHint={t(noContentHint)}
+              />
             </div>
+          </ScrollReveal>
+        ) : (
+          <div className="text-center py-12 text-dark-500 text-sm">
+            <Megaphone size={40} className="mx-auto mb-3 opacity-30" />
+            {t(emptyListHint)}
           </div>
-        </ScrollReveal>
+        )}
       </div>
     </section>
+  );
+}
+
+/* ============ 单列公告栏 ============ */
+
+type AnnouncementColumnProps = {
+  title: string;
+  icon: "important" | "latest";
+  items: AnnouncementItem[];
+  expandedId: number | null;
+  onToggle: (id: number) => void;
+  emptyHint: string;
+  noContentHint: string;
+};
+
+function AnnouncementColumn({
+  title,
+  icon,
+  items,
+  expandedId,
+  onToggle,
+  emptyHint,
+  noContentHint,
+}: AnnouncementColumnProps) {
+  const isImportant = icon === "important";
+  const accentColor = isImportant ? "text-brand-400" : "text-white/70";
+  const borderColor = isImportant ? "border-brand-500/20" : "border-white/10";
+  const headerBg = isImportant ? "bg-brand-500/[0.04]" : "bg-white/[0.02]";
+  const dotColor = isImportant ? "bg-brand-400" : "bg-white/60";
+  const tagBg = isImportant ? "bg-brand-500/15 text-brand-400" : "bg-white/[0.06] text-dark-300";
+
+  return (
+    <div className={`glass glow-border rounded-2xl overflow-hidden flex flex-col ${borderColor}`}>
+      {/* 列标题 */}
+      <div className={`flex items-center justify-between px-5 sm:px-6 py-4 border-b border-white/[0.06] ${headerBg}`}>
+        <div className="flex items-center gap-2">
+          {isImportant ? (
+            <Sparkles size={14} className={accentColor} />
+          ) : (
+            <Clock size={14} className={accentColor} />
+          )}
+          <h3 className={`text-sm font-bold ${accentColor}`}>{title}</h3>
+        </div>
+        <span className="text-[11px] text-dark-500 tabular-nums">
+          {items.length} 条
+        </span>
+      </div>
+
+      {/* 公告列表 */}
+      <div className="flex-1 p-3 sm:p-4 space-y-2">
+        {items.length === 0 ? (
+          <div className="py-8 text-center text-xs text-dark-500">{emptyHint}</div>
+        ) : (
+          items.map((item) => {
+            const isExpanded = expandedId === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => onToggle(item.id)}
+                className={`group w-full text-left p-3.5 sm:p-4 rounded-xl transition-all duration-300 cursor-pointer border ${
+                  isExpanded
+                    ? "bg-white/[0.05] border-white/[0.1]"
+                    : "hover:bg-white/[0.03] border-transparent"
+                }`}
+              >
+                {/* 标题行 */}
+                <div className="flex items-start gap-2.5">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 transition-all duration-300 ${isExpanded ? dotColor : "bg-dark-600"}`}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h4
+                      className={`text-xs sm:text-[13px] font-medium mb-1.5 line-clamp-2 transition-colors duration-300 ${
+                        isExpanded ? "text-white" : "text-dark-300 group-hover:text-dark-100"
+                      }`}
+                    >
+                      {item.title}
+                    </h4>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {item.tag && (
+                        <span className={`px-1.5 py-px rounded text-[9px] font-bold tracking-wider ${tagBg}`}>
+                          {item.tag}
+                        </span>
+                      )}
+                      <span className="text-[10px] text-dark-600 flex items-center gap-1">
+                        <Calendar size={9} />
+                        {item.date}
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    size={14}
+                    className={`shrink-0 mt-1.5 text-dark-600 transition-transform duration-300 ${
+                      isExpanded ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {/* 展开内容 */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t border-white/[0.06]">
+                    <div className="text-xs sm:text-[13px] text-dark-300 leading-relaxed whitespace-pre-wrap pl-4">
+                      {item.content || noContentHint}
+                    </div>
+                  </div>
+                )}
+              </button>
+            );
+          })
+        )}
+      </div>
+    </div>
   );
 }
