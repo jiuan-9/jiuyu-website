@@ -10,7 +10,7 @@
  * 工作流：localStorage 暂存 → 导出 announcements.json → 部署到 public/
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -27,6 +27,8 @@ import {
   AlertTriangle,
   CheckCircle,
   KeyRound,
+  RefreshCw,
+  CloudDownload,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "@/store/i18n";
@@ -46,6 +48,8 @@ import {
   isDefaultPassword,
   todayStr,
   nextId,
+  fetchLiveAnnouncements,
+  isEmptyData,
 } from "@/lib/announcement-store";
 
 // 双语文案
@@ -88,6 +92,22 @@ const TXT = {
   confirmDelete: { zh: "确认删除此公告？", en: "Delete this announcement?" },
   confirmClear: { zh: "确认清除所有草稿？此操作不可恢复。", en: "Clear all drafts? This cannot be undone." },
   unsavedWarn: { zh: "未导出的更改会丢失，建议先导出", en: "Export before leaving to save changes" },
+  // 线上公告状态
+  liveTitle: { zh: "线上公告", en: "Live" },
+  liveCount: { zh: "重要 {imp} 条 / 最新 {lat} 条", en: "{imp} important / {lat} latest" },
+  liveEmpty: { zh: "线上暂无公告", en: "No live announcements" },
+  liveLoading: { zh: "拉取中...", en: "Loading..." },
+  liveLoadFailed: { zh: "拉取线上公告失败（可能未部署或网络问题）", en: "Failed to fetch live announcements" },
+  refreshLive: { zh: "刷新线上", en: "Refresh Live" },
+  loadLiveToDraft: { zh: "载入草稿", en: "Load to Draft" },
+  loadLiveConfirm: {
+    zh: "将用线上公告覆盖当前草稿，确认继续？",
+    en: "This will overwrite current draft with live data. Continue?",
+  },
+  liveLoaded: { zh: "已将线上公告载入草稿", en: "Live announcements loaded into draft" },
+  draftTitle: { zh: "当前草稿", en: "Draft" },
+  draftSynced: { zh: "草稿与线上一致", en: "Draft matches live" },
+  draftDiffer: { zh: "草稿与线上不同", en: "Draft differs from live" },
 } as const;
 
 const AUTH_KEY = "quiddity-admin-authed";
@@ -206,13 +226,41 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
   const [toast, setToast] = useState<string | null>(null);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
 
-  // 初始化：从 localStorage 加载草稿，无则用空结构
+  // 线上公告状态（实时监测网站数据）
+  const [liveData, setLiveData] = useState<AnnouncementsData | null>(null);
+  const [liveLoading, setLiveLoading] = useState(false);
+  const [liveError, setLiveError] = useState(false);
+  const liveAbortRef = useRef<AbortController | null>(null);
+
+  // 拉取线上公告
+  const refreshLive = useCallback(async () => {
+    if (liveAbortRef.current) liveAbortRef.current.abort();
+    const ctrl = new AbortController();
+    liveAbortRef.current = ctrl;
+    setLiveLoading(true);
+    setLiveError(false);
+    const result = await fetchLiveAnnouncements(ctrl.signal);
+    if (ctrl.signal.aborted) return;
+    setLiveData(result);
+    setLiveLoading(false);
+    if (isEmptyData(result)) {
+      // fetch 失败时返回 EMPTY_DATA，但无法区分"线上真的无公告"和"拉取失败"
+      // 这里通过 fetchLiveAnnouncements 内部 catch 返回 EMPTY_DATA 来判断
+      setLiveError(true);
+    }
+  }, []);
+
+  // 初始化：从 localStorage 加载草稿 + 拉取线上公告
   useEffect(() => {
     const draft = loadDraft();
     if (draft) {
       setData(draft);
     }
-  }, []);
+    refreshLive();
+    return () => {
+      if (liveAbortRef.current) liveAbortRef.current.abort();
+    };
+  }, [refreshLive]);
 
   // 自动保存到 localStorage
   const persist = useCallback((newData: AnnouncementsData) => {
@@ -300,6 +348,20 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
     showToast("已清除");
   };
 
+  // 将线上公告载入草稿（覆盖）
+  const handleLoadLiveToDraft = () => {
+    if (!liveData) return;
+    if (!confirm(t(TXT.loadLiveConfirm))) return;
+    persist(liveData);
+    showToast(t(TXT.liveLoaded));
+  };
+
+  // 渲染线上公告数量文案
+  const renderLiveCount = (text: { zh: string; en: string }, imp: number, lat: number) => {
+    const template = t(text);
+    return template.replace("{imp}", String(imp)).replace("{lat}", String(lat));
+  };
+
   return (
     <div className="min-h-screen bg-dark-950 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-black via-dark-950 to-black" />
@@ -345,6 +407,60 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
         {/* GitHub 真实数据面板（替代虚假数据） */}
         <div className="mb-6">
           <GitHubStatsPanel />
+        </div>
+
+        {/* 线上公告状态（实时监测网站数据） */}
+        <div className="mb-6 glass glow-border rounded-2xl p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <Megaphone size={14} className="text-brand-400" />
+              {t(TXT.liveTitle)}
+              {liveLoading && (
+                <span className="text-[10px] text-dark-500 flex items-center gap-1 ml-1">
+                  <RefreshCw size={10} className="animate-spin" />
+                  {t(TXT.liveLoading)}
+                </span>
+              )}
+            </h3>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleLoadLiveToDraft}
+                disabled={!liveData || liveLoading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.04] text-xs text-dark-200 hover:text-brand-400 hover:border-brand-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                title={t(TXT.loadLiveToDraft)}
+              >
+                <CloudDownload size={12} />
+                {t(TXT.loadLiveToDraft)}
+              </button>
+              <button
+                onClick={refreshLive}
+                disabled={liveLoading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.04] text-xs text-dark-200 hover:text-brand-400 hover:border-brand-500/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                title={t(TXT.refreshLive)}
+              >
+                <RefreshCw size={12} className={liveLoading ? "animate-spin" : ""} />
+                {t(TXT.refreshLive)}
+              </button>
+            </div>
+          </div>
+          <div className="text-xs">
+            {liveError ? (
+              <p className="text-amber-400/80 flex items-center gap-1.5">
+                <AlertTriangle size={11} />
+                {t(TXT.liveLoadFailed)}
+              </p>
+            ) : liveData ? (
+              isEmptyData(liveData) ? (
+                <p className="text-dark-500">{t(TXT.liveEmpty)}</p>
+              ) : (
+                <p className="text-dark-300">
+                  {renderLiveCount(TXT.liveCount, liveData.important.length, liveData.latest.length)}
+                </p>
+              )
+            ) : (
+              <p className="text-dark-500">{t(TXT.liveLoading)}</p>
+            )}
+          </div>
         </div>
 
         {/* 密码修改区 */}

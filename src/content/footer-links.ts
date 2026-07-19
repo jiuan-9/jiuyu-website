@@ -9,7 +9,6 @@ export const footerLinks: FooterGroup[] = [
     links: [
       { label: { zh: "功能特色", en: "Features" }, href: "#features" },
       { label: { zh: "应用场景", en: "Use Cases" }, href: "#usecases" },
-      { label: { zh: "在线体验", en: "Live Demo" }, href: "#/demo" },
       { label: { zh: "下载应用", en: "Download" }, href: "#download" },
     ],
   },

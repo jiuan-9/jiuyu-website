@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ScrollReveal - 兼容性封装
  * v2.1: 底层已迁移到 Framer Motion 实现 (src/components/animation/ScrollReveal.tsx)
  * 此文件仅作 re-export，保持向后兼容（10+ 业务组件从此处导入）

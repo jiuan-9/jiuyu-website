@@ -34,7 +34,7 @@ import { navLinks as navLinksContent, navCta } from "@/content/nav-links";
 import { easing, duration } from "@/lib/animation";
 
 export default function Navbar() {
-  const { t } = useI18n();
+  const { t, lang, toggle } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -159,6 +159,17 @@ export default function Navbar() {
             </motion.button>
           ))}
 
+          {/* 语言切换：单字符紧凑设计，符合单色几何风格 */}
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={lang === "zh" ? "Switch to English" : "切换到中文"}
+            title={lang === "zh" ? "Switch to English" : "切换到中文"}
+            className="text-xs font-medium text-dark-400 hover:text-white transition-colors bg-transparent border border-white/[0.06] hover:border-white/[0.12] cursor-pointer px-2.5 py-1 rounded-md hover:bg-white/[0.04] ml-1 tracking-wider"
+          >
+            {lang === "zh" ? "EN" : "中"}
+          </button>
+
           {/* CTA：磁吸按钮（已经是 button，无需修改） */}
           <MagneticButton
             strength={14}
@@ -174,13 +185,23 @@ export default function Navbar() {
           </MagneticButton>
         </div>
 
-        {/* 移动端菜单按钮 */}
-        <button
-          type="button"
-          className="md:hidden text-white p-1 sm:p-2 rounded-lg hover:bg-white/[0.05] transition-colors bg-transparent border-0 cursor-pointer"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
+        {/* 移动端：语言切换 + 菜单按钮 */}
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={lang === "zh" ? "Switch to English" : "切换到中文"}
+            title={lang === "zh" ? "Switch to English" : "切换到中文"}
+            className="text-xs font-medium text-dark-400 hover:text-white transition-colors bg-transparent border border-white/[0.06] hover:border-white/[0.12] cursor-pointer px-2 py-1 rounded-md hover:bg-white/[0.04] tracking-wider"
+          >
+            {lang === "zh" ? "EN" : "中"}
+          </button>
+          <button
+            type="button"
+            className="text-white p-1 sm:p-2 rounded-lg hover:bg-white/[0.05] transition-colors bg-transparent border-0 cursor-pointer"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
           <AnimatePresence mode="wait" initial={false}>
             {mobileOpen ? (
               <motion.div
@@ -204,7 +225,8 @@ export default function Navbar() {
               </motion.div>
             )}
           </AnimatePresence>
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* 移动端展开菜单：AnimatePresence 滑入，全部 button */}

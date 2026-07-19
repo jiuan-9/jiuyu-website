@@ -13,11 +13,6 @@ export const navLinks: NavLink[] = [
     href: "#usecases",
   },
   {
-    id: "demo",
-    label: { zh: "在线体验", en: "Live Demo" },
-    href: "#/demo",
-  },
-  {
     id: "quiddity",
     label: { zh: "Quiddity Agent", en: "Quiddity Agent" },
     href: "#quiddity",

@@ -20,7 +20,6 @@
     "test:e2e:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
     "admin": "vite --port 5174 --mode admin",
-    "admin:publish": "tsx scripts/admin/cli.ts publish",
     "prebuild": "npm run sync:downloads && npm run sync:version",
     "sync:downloads": "tsx scripts/sync-downloads.ts",
     "sync:version": "tsx scripts/sync-version.ts",

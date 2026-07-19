@@ -113,3 +113,41 @@ export function changePassword(newPassword: string): void {
 export function isDefaultPassword(): boolean {
   return !localStorage.getItem(ADMIN_PASSWORD_KEY);
 }
+
+/** 空数据（用于 fallback） */
+export const EMPTY_DATA: AnnouncementsData = { important: [], latest: [] };
+
+/**
+ * 拉取线上当前发布的公告（public/announcements.json）
+ *
+ * 静态站点下，public/announcements.json 会被原样复制到部署根目录，
+ * 所以 fetch("/announcements.json") 能拿到线上当前状态。
+ *
+ * @param signal 可选的 AbortSignal，用于取消请求
+ * @returns 线上公告数据；拉取失败时返回 EMPTY_DATA
+ */
+export async function fetchLiveAnnouncements(
+  signal?: AbortSignal
+): Promise<AnnouncementsData> {
+  try {
+    const res = await fetch("/announcements.json", {
+      cache: "no-cache",
+      signal,
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const data = (await res.json()) as AnnouncementsData;
+    if (!Array.isArray(data.important) || !Array.isArray(data.latest)) {
+      throw new Error("Invalid format: missing important/latest arrays");
+    }
+    return data;
+  } catch {
+    return EMPTY_DATA;
+  }
+}
+
+/** 是否为空数据 */
+export function isEmptyData(data: AnnouncementsData): boolean {
+  return data.important.length === 0 && data.latest.length === 0;
+}
