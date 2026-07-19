@@ -37,7 +37,7 @@ export const brand = {
     en: "Your personal AI companion",
   },
   email: "qu9190agent@163.com",
-  github: "https://github.com/jiuan-9/quiddity-website",
+  github: "https://github.com/jiuan-9/jiuyu-website",
   // 通过 useVersion hook 动态读取，不在此硬编码
   versionSource: "/version.json",
   downloadsSource: "/downloads.json",

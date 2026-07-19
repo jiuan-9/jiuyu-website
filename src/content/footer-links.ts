@@ -42,7 +42,7 @@ export const footerDescription = {
 
 /** 社交链接（占位，后续接入真实账号） */
 export const footerSocial = {
-  github: "https://github.com/jiuan-9/quiddity-website",
+  github: "https://github.com/jiuan-9/jiuyu-website",
   twitter: "#",
   email: "mailto:qu9190agent@163.com",
 };

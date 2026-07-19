@@ -1,18 +1,18 @@
 {
-  "version": "1.1.0",
-  "releaseDate": "2026-07-10",
-  "releaseNotes": "首个正式版本",
+  "version": "1.0.0",
+  "releaseDate": "2026-07-08",
+  "releaseNotes": "首个正式版本：支持 11 家 AI 服务商、60+ 模型；AI 智能体；代码高亮；视觉理解；本地知识库；Markdown 渲染；多模态输入(Vision 等)。系统要求: Windows 10+",
   "assets": [
     {
       "platform": "windows",
       "arch": "x64",
-      "label": "Quiddity-1.1.0.exe",
-      "url": "https://github.com/jiuan-9/quiddity-website/releases/download/v1.1.0/Quiddity-1.1.0.exe",
-      "size": 0,
-      "contentType": "application/x-msdownload"
+      "label": "Jiuyu-1.0.0.exe",
+      "url": "https://github.com/jiuan-9/jiuyu-website/releases/download/v1.0.0/Jiuyu-1.0.0.exe",
+      "size": 72568522,
+      "contentType": "application/octet-stream"
     }
   ],
-  "fallbackUrl": "https://github.com/jiuan-9/quiddity-website/releases/latest",
-  "lastSyncedAt": "2026-07-18T00:00:00.000Z",
-  "_comment": "此文件为占位版本。运行 npm run sync:downloads 即可从 GitHub Releases API 拉取真实资产信息。"
+  "fallbackUrl": "https://github.com/jiuan-9/jiuyu-website/releases/latest",
+  "lastSyncedAt": "2026-07-19T13:30:00.000Z",
+  "_comment": "真实 Release v1.0.0，资产 Jiuyu-1.0.0.exe（69.2 MB）。仓库已从 quiddity-website 改名为 jiuyu-website。"
 }

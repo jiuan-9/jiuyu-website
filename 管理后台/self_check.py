@@ -19,7 +19,7 @@ def main():
     print(f"  project_root: {cfg.project_root}")
 
     print("[OK] github_client imported")
-    client = GitHubClient(repo="jiuan-9/quiddity-website")
+    client = GitHubClient(repo="jiuan-9/jiuyu-website")
     print(f"  repo: {client.repo}")
 
     print("[OK] announcements imported")

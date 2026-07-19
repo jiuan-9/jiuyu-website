@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Download, Monitor, Smartphone, Globe, Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { useI18n } from "@/store/i18n";
@@ -15,8 +16,44 @@ import {
   downloadMetaTags,
 } from "@/content";
 
+/**
+ * 从 downloads.json 动态读取下载链接
+ * 这样改 Release / 换仓库时无需改代码，sync:downloads 脚本同步即可
+ */
+type DownloadsInfo = {
+  version: string;
+  fallbackUrl: string;
+  assets: Array<{
+    platform: "windows" | "macos" | "linux";
+    arch: "x64" | "arm64";
+    label: string;
+    url: string;
+    size: number;
+    contentType: string;
+  }>;
+};
+
+const FALLBACK_DOWNLOAD_URL =
+  "https://github.com/jiuan-9/jiuyu-website/releases/latest";
+
+function useDownloadsInfo() {
+  const [info, setInfo] = useState<DownloadsInfo | null>(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}downloads.json`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: DownloadsInfo | null) => setInfo(data))
+      .catch(() => setInfo(null));
+  }, []);
+
+  return info;
+}
+
 export default function DownloadSection() {
   const { t } = useI18n();
+  const dlInfo = useDownloadsInfo();
+  const windowsAsset = dlInfo?.assets.find((a) => a.platform === "windows");
+  const downloadUrl = windowsAsset?.url || FALLBACK_DOWNLOAD_URL;
 
   return (
     <section id="download" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
@@ -46,7 +83,9 @@ export default function DownloadSection() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 max-w-2xl mx-auto">
             {/* Desktop */}
             <a
-              href="https://jiuan-9.github.io/quiddity-website/downloads/Quiddity-1.1.0.exe"
+              href={downloadUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl glass glow-border-strong w-full sm:w-auto sm:min-w-[220px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/15 hover:border-brand-500/30 active:scale-[0.98] active:bg-white/[0.04] overflow-hidden min-h-[64px]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-brand-500/[0.02] via-transparent to-brand-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

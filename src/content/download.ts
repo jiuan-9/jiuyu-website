@@ -25,8 +25,8 @@ export const desktopTitle: I18nText = {
 };
 
 export const desktopVersion: I18nText = {
-  zh: "v1.1.0 · 便携版",
-  en: "v1.1.0 · Portable",
+  zh: "v1.0.0 · 便携版",
+  en: "v1.0.0 · Portable",
 };
 
 export const desktopBadge: I18nText = {
@@ -58,7 +58,7 @@ export const mobileDesc: I18nText = {
 
 /** 底部 meta tags */
 export const downloadMetaTags: { icon: string; label: I18nText }[] = [
-  { icon: "Sparkles", label: { zh: "版本 1.1.0", en: "Version 1.1.0" } },
+  { icon: "Sparkles", label: { zh: "版本 1.0.0", en: "Version 1.0.0" } },
   { icon: "Dot", label: { zh: "Windows 10+", en: "Windows 10+" } },
   { icon: "Dot", label: { zh: "完全免费", en: "Completely Free" } },
   { icon: "Dot", label: { zh: "无需注册", en: "No Sign-up" } },

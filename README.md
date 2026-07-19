@@ -2,7 +2,7 @@
 
 > Quiddity AI 桌面应用官方网站 — 多模型 AI 桌面应用
 
-[![CI](https://github.com/jiuan-9/quiddity-website/actions/workflows/ci.yml/badge.svg)](https://github.com/jiuan-9/quiddity-website/actions/workflows/ci.yml)
+[![CI](https://github.com/jiuan-9/jiuyu-website/actions/workflows/ci.yml/badge.svg)](https://github.com/jiuan-9/jiuyu-website/actions/workflows/ci.yml)
 
 ## 技术栈
 
@@ -24,8 +24,8 @@
 ### 安装
 
 ```bash
-git clone https://github.com/jiuan-9/quiddity-website.git
-cd quiddity-website
+git clone https://github.com/jiuan-9/jiuyu-website.git
+cd jiuyu-website
 npm install
 npx playwright install  # 可选：安装 E2E 浏览器
 ```
@@ -189,7 +189,7 @@ python main.py
 
 ## 法律信息
 
-本项目涉及多国法规，详见 [/legal](https://jiuan-9.github.io/quiddity-website/#/legal) 页面。
+本项目涉及多国法规，详见 [/legal](https://jiuan-9.github.io/jiuyu-website/#/legal) 页面。
 
 ## 相关仓库
 

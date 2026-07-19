@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
+import { recordVisit } from './hooks/useAnalytics'
 import './index.css'
 
 // 开发环境品牌标识（生产构建由 terser drop_console 移除）
@@ -16,6 +17,9 @@ if (import.meta.env.DEV) {
     'color: #a78bfa; font-weight: bold;',
   );
 }
+
+// 记录一次访问（轻量本地统计，不上报第三方）
+recordVisit();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

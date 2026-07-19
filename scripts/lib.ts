@@ -21,8 +21,9 @@ export const PUBLIC_DIR = path.join(PROJECT_ROOT, "public");
 export const QUIDDITY_APP_DIR =
   process.env.QUIDDITY_APP_DIR ?? path.resolve(PROJECT_ROOT, "..", "Quiddity");
 
-/** GitHub 仓库（用于 Releases API） */
-export const GITHUB_REPO = process.env.GITHUB_REPO ?? "jiuan-9/quiddity-website";
+/** GitHub 仓库（用于 Releases API）
+ * 真实仓库是 jiuyu-website（不是 quiddity-website，那是历史遗留名） */
+export const GITHUB_REPO = process.env.GITHUB_REPO ?? "jiuan-9/jiuyu-website";
 
 /** GitHub API Token（可选，避免速率限制；CI 中通过 GITHUB_TOKEN 注入） */
 export const GITHUB_TOKEN = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? "";

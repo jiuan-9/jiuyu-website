@@ -115,3 +115,53 @@ class AnnouncementStore:
         if len(data[category]) == before:
             return False
         self.save(data["important"], data["latest"])
+        return True
+
+    def update(
+        self,
+        category: str,
+        announcement_id: int,
+        title: str | None = None,
+        content: str | None = None,
+        tag: str | None = None,
+        date: str | None = None,
+    ) -> AnnouncementItem | None:
+        """更新已有公告字段。返回更新后的 item，找不到返回 None。"""
+        if not title or not title.strip():
+            raise ValueError("标题不能为空")
+        if not content or not content.strip():
+            raise ValueError("内容不能为空")
+
+        data = self.load()
+        existing = data[category]
+        for item in existing:
+            if item.id == announcement_id:
+                item.title = title.strip()
+                item.content = content.strip()
+                if tag is not None:
+                    item.tag = tag.strip()
+                if date is not None and date.strip():
+                    item.date = date.strip()
+                self.save(data["important"], data["latest"])
+                return item
+        return None
+
+    def move(self, announcement_id: int, from_category: str, to_category: str) -> bool:
+        """把公告从一个分类移到另一个分类（保留 id）。"""
+        if from_category == to_category:
+            return True
+        if from_category not in ("important", "latest") or to_category not in ("important", "latest"):
+            raise ValueError(f"无效的分类：{from_category} → {to_category}")
+        data = self.load()
+        src = data[from_category]
+        dst = data[to_category]
+        target = next((x for x in src if x.id == announcement_id), None)
+        if target is None:
+            return False
+        data[from_category] = [x for x in src if x.id != announcement_id]
+        # 如目标分类已有同 id，重新分配
+        if any(x.id == target.id for x in dst):
+            target.id = max((x.id for x in dst), default=0) + 1
+        data[to_category].append(target)
+        self.save(data["important"], data["latest"])
+        return True
