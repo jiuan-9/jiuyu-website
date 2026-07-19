@@ -10,7 +10,7 @@ from config_store import load_config
 from github_client import GitHubClient
 from announcements import AnnouncementStore
 from deployer import load_settings_json
-from main import QuiddityAdminApp
+from main import App
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
     print(f"  version.json keys: {list(version.keys())}")
 
     print("[OK] main imported")
-    print(f"  app class: {QuiddityAdminApp.__name__}")
+    print(f"  app class: {App.__name__}")
 
     print("\n全部模块自检通过")
 
