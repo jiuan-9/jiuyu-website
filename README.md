@@ -130,7 +130,7 @@ quiddity-website/
 网站不再提供 `/admin` 页面。公告管理、GitHub 数据查看与一键部署已迁移到独立的桌面应用：
 
 ```
-D:\Quiddity-Agent\admin\
+D:\Quiddity-Agent\管理后台\
 ├── main.py           # CustomTkinter 桌面应用入口
 ├── start.bat         # Windows 启动脚本
 ├── config_store.py   # 本地配置持久化
@@ -143,7 +143,7 @@ D:\Quiddity-Agent\admin\
 启动方式：
 
 ```bash
-cd D:\Quiddity-Agent\admin
+cd "D:\Quiddity-Agent\管理后台"
 pip install -r requirements.txt
 python main.py
 # 或双击 start.bat
