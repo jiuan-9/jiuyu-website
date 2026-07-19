@@ -1547,4 +1547,10 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        import traceback
+        print(f"[FATAL] 程序启动失败：{e}")
+        traceback.print_exc()
+        input("\n按回车键退出...")
