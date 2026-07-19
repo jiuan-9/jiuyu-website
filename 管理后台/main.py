@@ -220,57 +220,68 @@ class App(ctk.CTk):
         body.grid_columnconfigure(2, weight=25, uniform="a")
         body.grid_rowconfigure(0, weight=1)
 
-        # --- 左：公告列表 ---
-        left = ctk.CTkFrame(body, fg_color=BG_CARD, corner_radius=12,
-                            border_width=1, border_color=BORDER)
+        # --- 左：公告列表（分两个框：重要 + 最新） ---
+        left = ctk.CTkFrame(body, fg_color="transparent")
         left.grid(row=0, column=0, sticky="nsew", padx=(0, 6))
-        left.grid_rowconfigure(1, weight=1)
+        left.grid_rowconfigure(0, weight=1)  # 重要公告框
+        left.grid_rowconfigure(1, weight=1)  # 最新公告框
         left.grid_columnconfigure(0, weight=1)
 
-        top = ctk.CTkFrame(left, fg_color="transparent")
-        top.grid(row=0, column=0, sticky="ew", padx=14, pady=(12, 6))
+        # 「重要公告」框
+        important_box = ctk.CTkFrame(left, fg_color=BG_CARD, corner_radius=12,
+                                     border_width=1, border_color="#ef4444")
+        important_box.grid(row=0, column=0, sticky="nsew", pady=(0, 6))
+        important_box.grid_rowconfigure(1, weight=1)
+        important_box.grid_columnconfigure(0, weight=1)
 
+        imp_header = ctk.CTkFrame(important_box, fg_color="transparent")
+        imp_header.grid(row=0, column=0, sticky="ew", padx=14, pady=(10, 4))
         ctk.CTkLabel(
-            top, text="现有公告",
-            font=ctk.CTkFont(family="Microsoft YaHei", size=14, weight="bold"),
-            text_color=TEXT,
-        ).grid(row=0, column=0, sticky="w")
-
-        self.cat_var = ctk.StringVar(value="important (重要公告)")
-        ctk.CTkOptionMenu(
-            top,
-            values=["important (重要公告)", "latest (最新公告)"],
-            variable=self.cat_var,
-            command=self._refresh_list,
-            font=ctk.CTkFont(family="Microsoft YaHei", size=12),
-            dropdown_font=ctk.CTkFont(family="Microsoft YaHei", size=12),
-            fg_color=BG_CARD, button_color=ACCENT_DARK,
-            button_hover_color=ACCENT, text_color=TEXT,
-            height=30, width=180,
-        ).grid(row=0, column=1, sticky="e")
-
-        self.list_scroll = ctk.CTkScrollableFrame(
-            left, fg_color="transparent", label_text="")
-        self.list_scroll.grid(row=1, column=0, sticky="nsew", padx=8, pady=(0, 8))
-        self.list_scroll.grid_columnconfigure(0, weight=1)
-
-        # 批量操作栏
-        batch_bar = ctk.CTkFrame(left, fg_color="transparent")
-        batch_bar.grid(row=2, column=0, sticky="ew", padx=12, pady=(0, 12))
-        ctk.CTkButton(
-            batch_bar, text="刷新列表", width=80, height=28,
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            fg_color=BG_PANEL, border_color=BORDER, border_width=1,
-            text_color=TEXT_MUTED, hover_color=BG_HOVER,
-            command=self._refresh_list,
-        ).pack(side="left", padx=(0, 6))
-        ctk.CTkButton(
-            batch_bar, text="清空表单", width=80, height=28,
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            fg_color=BG_PANEL, border_color=BORDER, border_width=1,
-            text_color=TEXT_MUTED, hover_color=BG_HOVER,
-            command=self._clear_form,
+            imp_header, text="🔴 重要公告",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            text_color="#ef4444",
         ).pack(side="left")
+        self.imp_count_lbl = ctk.CTkLabel(
+            imp_header, text="(0)",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=TEXT_DIM,
+        )
+        self.imp_count_lbl.pack(side="left", padx=(6, 0))
+
+        self.list_scroll_important = ctk.CTkScrollableFrame(
+            important_box, fg_color="transparent", label_text="")
+        self.list_scroll_important.grid(row=1, column=0, sticky="nsew", padx=6, pady=(0, 6))
+        self.list_scroll_important.grid_columnconfigure(0, weight=1)
+
+        # 「最新公告」框
+        latest_box = ctk.CTkFrame(left, fg_color=BG_CARD, corner_radius=12,
+                                   border_width=1, border_color=ACCENT)
+        latest_box.grid(row=1, column=0, sticky="nsew")
+        latest_box.grid_rowconfigure(1, weight=1)
+        latest_box.grid_columnconfigure(0, weight=1)
+
+        lat_header = ctk.CTkFrame(latest_box, fg_color="transparent")
+        lat_header.grid(row=0, column=0, sticky="ew", padx=14, pady=(10, 4))
+        ctk.CTkLabel(
+            lat_header, text="🔵 最新公告",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
+            text_color=ACCENT,
+        ).pack(side="left")
+        self.lat_count_lbl = ctk.CTkLabel(
+            lat_header, text="(0)",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=TEXT_DIM,
+        )
+        self.lat_count_lbl.pack(side="left", padx=(6, 0))
+
+        self.list_scroll_latest = ctk.CTkScrollableFrame(
+            latest_box, fg_color="transparent", label_text="")
+        self.list_scroll_latest.grid(row=1, column=0, sticky="nsew", padx=6, pady=(0, 6))
+        self.list_scroll_latest.grid_columnconfigure(0, weight=1)
+
+        # 批量操作栏（放在两个框下方不行，空间不够，改到右上角）
+        # 保留 cat_var 兼容旧代码（_save_announcement 用），但不再显示为下拉
+        self.cat_var = ctk.StringVar(value="important")
 
         # --- 中：编辑表单 ---
         right = ctk.CTkFrame(body, fg_color=BG_CARD, corner_radius=12,
@@ -341,11 +352,32 @@ class App(ctk.CTk):
         row = ctk.CTkFrame(right, fg_color="transparent")
         row.grid(row=6, column=0, sticky="ew", padx=16, pady=(0, 8))
 
+        # 分类选择（重要/最新）— 对应网站的两个 tab
+        ctk.CTkLabel(
+            row, text="分类",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            text_color=TEXT_MUTED,
+        ).grid(row=0, column=0, padx=(0, 4))
+
+        self.ann_category = ctk.StringVar(value="important")
+        cat_menu = ctk.CTkSegmentedButton(
+            row,
+            values=["important", "latest"],
+            variable=self.ann_category,
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            fg_color=BG_PANEL,
+            selected_color=ACCENT_DARK,
+            selected_hover_color=ACCENT,
+            text_color=TEXT,
+            height=28,
+        )
+        cat_menu.grid(row=0, column=1, sticky="w", padx=(0, 12))
+
         ctk.CTkLabel(
             row, text="日期",
             font=ctk.CTkFont(family="Microsoft YaHei", size=11),
             text_color=TEXT_MUTED,
-        ).grid(row=0, column=0, padx=(0, 4))
+        ).grid(row=0, column=2, padx=(0, 4))
 
         self.ann_date = ctk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
         date_entry = ctk.CTkEntry(
@@ -493,6 +525,7 @@ class App(ctk.CTk):
         self.ann_content_tb.delete("1.0", "end")
         self.ann_tag.set("重要")
         self.ann_date.set(datetime.now().strftime("%Y-%m-%d"))
+        self.ann_category.set("important")
         self.ann_form_title_lbl.configure(text="新增公告")
         self.ann_mode_lbl.configure(text="🟢 新建模式", text_color=ACCENT)
         self.save_btn.configure(text="保存公告")
@@ -512,11 +545,6 @@ class App(ctk.CTk):
             messagebox.showwarning("找不到", f"公告 #{ann_id} 不存在")
             return
 
-        # 切换到对应分类
-        cat_label = f"{category} ({'重要公告' if category == 'important' else '最新公告'})"
-        self.cat_var.set(cat_label)
-        self._refresh_list()
-
         # 填充表单
         self.editing_id = ann_id
         self.editing_category = category
@@ -525,6 +553,7 @@ class App(ctk.CTk):
         self.ann_content_tb.insert("1.0", target.content)
         self.ann_tag.set(target.tag or "重要")
         self.ann_date.set(target.date)
+        self.ann_category.set(category)  # 同步分类选择
 
         # 切换 UI 到编辑模式
         self.ann_form_title_lbl.configure(text=f"编辑公告 #{ann_id}")
@@ -532,6 +561,8 @@ class App(ctk.CTk):
         self.save_btn.configure(text="保存修改")
         self.cancel_edit_btn.configure(state="normal")
 
+        # 刷新列表（高亮当前编辑的项）
+        self._refresh_list()
         self._set_status(f"正在编辑 #{ann_id}")
         self._update_preview()
 
@@ -912,34 +943,49 @@ class App(ctk.CTk):
     # ================================================================
 
     def _refresh_list(self, *_):
-        for child in self.list_scroll.winfo_children():
-            child.destroy()
-
+        """同时刷新「重要公告」和「最新公告」两个列表框。"""
         try:
             data = self.ann_store.load()
         except Exception as e:
             messagebox.showerror("加载失败", str(e))
             return
 
-        choice = self.cat_var.get()
-        category = choice.split(" ")[0]
-        items = data.get(category, [])
-
-        if not items:
+        # 刷新重要公告框
+        for child in self.list_scroll_important.winfo_children():
+            child.destroy()
+        important_items = data.get("important", [])
+        self.imp_count_lbl.configure(text=f"({len(important_items)})")
+        if not important_items:
             ctk.CTkLabel(
-                self.list_scroll, text="（暂无公告）",
+                self.list_scroll_important, text="（暂无重要公告）",
                 font=ctk.CTkFont(family="Microsoft YaHei", size=11),
                 text_color=TEXT_DIM,
             ).grid(row=0, column=0, sticky="w", padx=8, pady=8)
-            return
+        else:
+            items_sorted = sorted(important_items, key=lambda x: x.date, reverse=True)
+            for i, item in enumerate(items_sorted):
+                self._render_item(self.list_scroll_important, item, i, "important")
 
-        items_sorted = sorted(items, key=lambda x: x.date, reverse=True)
-        for i, item in enumerate(items_sorted):
-            self._render_item(item, i, category)
+        # 刷新最新公告框
+        for child in self.list_scroll_latest.winfo_children():
+            child.destroy()
+        latest_items = data.get("latest", [])
+        self.lat_count_lbl.configure(text=f"({len(latest_items)})")
+        if not latest_items:
+            ctk.CTkLabel(
+                self.list_scroll_latest, text="（暂无最新公告）",
+                font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+                text_color=TEXT_DIM,
+            ).grid(row=0, column=0, sticky="w", padx=8, pady=8)
+        else:
+            items_sorted = sorted(latest_items, key=lambda x: x.date, reverse=True)
+            for i, item in enumerate(items_sorted):
+                self._render_item(self.list_scroll_latest, item, i, "latest")
 
-    def _render_item(self, item, idx, category):
+    def _render_item(self, container, item, idx, category):
+        """渲染单个公告卡片到指定容器。"""
         card = ctk.CTkFrame(
-            self.list_scroll, fg_color=BG_PANEL, corner_radius=8,
+            container, fg_color=BG_PANEL, corner_radius=8,
             border_width=1, border_color=BORDER)
         card.grid(row=idx, column=0, sticky="ew", padx=4, pady=4)
         card.grid_columnconfigure(0, weight=1)
@@ -967,7 +1013,7 @@ class App(ctk.CTk):
             card, text=preview,
             font=ctk.CTkFont(family="Microsoft YaHei", size=11),
             text_color=TEXT_MUTED, anchor="w", justify="left",
-            wraplength=320,
+            wraplength=280,
         ).grid(row=2, column=0, sticky="ew", padx=12, pady=(0, 4))
 
         # 编辑 + 删除按钮
@@ -991,8 +1037,8 @@ class App(ctk.CTk):
         ).pack(side="left")
 
     def _save_announcement(self):
-        choice = self.cat_var.get()
-        category = choice.split(" ")[0]
+        # 分类从表单的 ann_category 读取（不再用左侧 cat_var 下拉）
+        category = self.ann_category.get()
         title = self.ann_title_var.get().strip()
         content = self.ann_content_tb.get("1.0", "end-1c").strip()
         date = self.ann_date.get().strip()
