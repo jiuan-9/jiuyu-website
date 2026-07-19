@@ -103,9 +103,15 @@ async function main() {
 }
 
 main().catch((err) => {
-  log.err(err instanceof Error ? err.message : String(err));
+  const msg = err instanceof Error ? err.message : String(err);
+  log.err(msg);
   log.warn(
     "提示：如果遇到 403 Rate Limit，请在 CI 中设置 GITHUB_TOKEN 环境变量后重试。"
   );
-  process.exit(1);
+  log.warn(
+    "网络同步失败 — 保留 public/downloads.json 已有数据继续后续步骤（退出码 0）。"
+  );
+  // 网络失败时降级：不中止构建/推送流程
+  // public/downloads.json 已经有上次同步的真实数据，可用
+  process.exit(0);
 });

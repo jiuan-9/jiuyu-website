@@ -206,7 +206,15 @@ def full_deploy(
     skip_build: bool = False,
     skip_tests: bool = True,
 ) -> bool:
-    """一键推送流程（任一步失败即中止）"""
+    """一键推送流程
+
+    sync_downloads / sync_version 失败时降级为警告（不中止），
+    因为 public/downloads.json + version.json 已有上次同步的真实数据可用。
+    其他步骤失败才中止。
+    """
+    # sync 步骤失败时降级（网络问题不阻塞推送）
+    soft_fail_steps = {"同步下载资产", "同步版本号"}
+
     steps = [
         ("同步下载资产", lambda: sync_downloads(project_root, log=log)),
         ("同步版本号", lambda: sync_version(project_root, log=log)),
@@ -226,6 +234,13 @@ def full_deploy(
             log(f"\n{'=' * 60}\n▶ 步骤：{name}\n{'=' * 60}\n")
         result = fn()
         if not result.success:
+            if name in soft_fail_steps:
+                # 网络同步失败：降级跳过，用已有数据继续
+                if log:
+                    log(
+                        f"\n[WARN] 步骤 '{name}' 失败，但已降级跳过（用 public/ 下已有数据继续）\n"
+                    )
+                continue
             if log:
                 log(f"\n[FAILED] 步骤 '{name}' 失败（returncode={result.returncode}）\n")
             return False
