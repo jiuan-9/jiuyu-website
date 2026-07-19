@@ -58,3 +58,6 @@ __pycache__/
 
 # OS
 Thumbs.db
+
+# Trae IDE / agent artifacts (local planning docs, not project code)
+.trae/
