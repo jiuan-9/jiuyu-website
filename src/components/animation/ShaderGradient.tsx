@@ -19,8 +19,7 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { getDevicePerformanceProfile } from "@/lib/perf";
-import { observeVisibilityChange } from "@/lib/perf";
+import { getDevicePerformanceProfile, observeVisibilityChange } from "@/lib/perf";
 
 export interface ShaderGradientProps {
   /** 主色（vec3，0-1），默认品牌蓝 [0.08, 0.69, 1.0] */

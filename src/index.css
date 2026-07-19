@@ -61,6 +61,25 @@
   --ease-ease-in-out: ease-in-out;
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* === 动画组件依赖的语义变量（与 tailwind.config.ts 颜色对齐） === */
+  --color-brand-500: #14b0ff;
+  --color-brand-400: #40d0ff;
+  --color-accent-purple-500: #a855f7;
+  --color-accent-purple-400: #c084fc;
+
+  /* === willChange 语义变量（用于 framer-motion willChange 属性） === */
+  --will-change-transform: transform;
+  --will-change-opacity: opacity;
+  --will-change-both: transform, opacity;
+
+  /* === Tailwind transitionTimingFunction 引用的 easing 变量 === */
+  --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-out-quart: cubic-bezier(0.165, 1, 0.45, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out-quad: cubic-bezier(0.45, 0, 0.55, 1);
 }
 
 * {

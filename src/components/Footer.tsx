@@ -36,9 +36,8 @@ export default function Footer() {
   const navigate = useNavigate();
   const year = new Date().getFullYear();
 
-  const handleLink = (href: string, e: React.MouseEvent) => {
+  const handleLink = (href: string) => {
     if (href.startsWith("mailto:")) return;
-    e.preventDefault();
     if (href.startsWith("#/")) {
       navigate(href.slice(1));
     } else {
@@ -58,14 +57,14 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 mb-8 sm:mb-12">
           {/* 品牌区 */}
           <div className="col-span-2 md:col-span-1">
-            <a
-              href="#hero"
-              onClick={(e) => handleLink("#hero", e)}
-              className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors group"
+            <button
+              type="button"
+              onClick={() => handleLink("#hero")}
+              className="inline-block text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 hover:text-brand-400 transition-colors group bg-transparent border-0 cursor-pointer p-0"
             >
               Quiddity
               <span className="inline-block w-0 h-[2px] bg-gradient-to-r from-brand-500 to-brand-400 group-hover:w-full transition-all duration-300 ml-1" />
-            </a>
+            </button>
             <p className="text-xs text-dark-500 leading-relaxed mb-2.5 max-w-52">
               {t(footerDescription)}
             </p>
@@ -115,14 +114,14 @@ export default function Footer() {
               <ul className="flex flex-col gap-2 sm:gap-2.5">
                 {group.links.map((link) => (
                   <li key={link.href}>
-                    <a
-                      href={link.href}
-                      onClick={(e) => handleLink(link.href, e)}
-                      className="text-xs text-dark-500 hover:text-dark-300 transition-colors group inline-flex items-center gap-1"
+                    <button
+                      type="button"
+                      onClick={() => handleLink(link.href)}
+                      className="text-xs text-dark-500 hover:text-dark-300 transition-colors group inline-flex items-center gap-1 bg-transparent border-0 cursor-pointer p-0"
                     >
                       {t(link.label)}
                       <span className="w-0 h-[1px] bg-brand-400 group-hover:w-2 transition-all duration-200" />
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ul>

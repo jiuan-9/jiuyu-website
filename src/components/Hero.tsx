@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/lib/scroll";
 import { useI18n } from "@/store/i18n";
 import {
@@ -33,6 +34,7 @@ const SLOGAN = {
 
 export default function Hero() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [deviceTier, setDeviceTier] = useState<"high" | "medium" | "low">(
@@ -139,12 +141,13 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-r from-brand-400/0 via-brand-400/10 to-brand-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
           </MagneticButton>
 
-          <a
-            href="#/demo"
-            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-500 hover:border-brand-500/30 hover:bg-white/5 w-full sm:w-auto gradient-border"
+          <button
+            type="button"
+            onClick={() => navigate("/demo")}
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-3.5 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-500 hover:border-brand-500/30 hover:bg-white/5 w-full sm:w-auto gradient-border border-0 cursor-pointer"
           >
             {t(heroCtaSecondary)}
-          </a>
+          </button>
         </motion.div>
       </motion.div>
 

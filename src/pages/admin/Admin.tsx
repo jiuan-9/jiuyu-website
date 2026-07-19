@@ -93,11 +93,10 @@ const TXT = {
 const AUTH_KEY = "quiddity-admin-authed";
 
 export default function Admin() {
-  const [authed, setAuthed] = useState(false);
-
-  useEffect(() => {
-    setAuthed(sessionStorage.getItem(AUTH_KEY) === "1");
-  }, []);
+  const [authed, setAuthed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem(AUTH_KEY) === "1";
+  });
 
   if (!authed) {
     return <PasswordGate onSuccess={() => setAuthed(true)} />;
@@ -438,7 +437,7 @@ function AdminPanel({ onLogout }: { onLogout: () => void }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-dark-800 border border-brand-500/30 text-sm text-white flex items-center gap-2"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-lg bg-dark-800 border border-brand-500/30 text-sm text-white flex items-center gap-2"
           >
             <CheckCircle size={14} className="text-brand-400" />
             {toast}

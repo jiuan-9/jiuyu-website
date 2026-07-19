@@ -7,6 +7,7 @@ const Timeline = lazy(() => import("@/pages/Timeline"));
 const Legal = lazy(() => import("@/pages/legal/Legal"));
 const Announcements = lazy(() => import("@/pages/Announcements"));
 const Admin = lazy(() => import("@/pages/admin/Admin"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function Loading() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route path="/legal" element={<Legal />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   );

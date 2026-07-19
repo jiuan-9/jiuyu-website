@@ -2,12 +2,10 @@
  * Tailwind 配置（TypeScript 版）
  *
  * 设计哲学：
- *   - 颜色：单一来源在 src/styles/tokens.css，此处通过 var(--token) 引用
+ *   - 颜色：单一来源在 src/index.css :root，此处直接用十六进制字面量
  *   - 黑+蓝主题（参考 Nanfu 流畅感，但用黑蓝配色而非红黄）
  *   - 动画：Framer Motion 是主引擎；CSS keyframes 仅作为"静态规则"
  *     Phase 4 会逐步移除大部分 keyframes，业务组件迁移到 framer-motion variants
- *
- * 旧 tailwind.config.js 保留为 .bak 以便回退（如需），但 Vite 会优先读取 .ts
  */
 
 import type { Config } from "tailwindcss";

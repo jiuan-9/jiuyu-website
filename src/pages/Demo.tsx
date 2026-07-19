@@ -7,6 +7,8 @@ import {
   User, Sparkles, FileText, MapPin, RefreshCw,
   ToggleLeft, ToggleRight, ChevronDown,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useVersion } from "@/hooks/useVersion";
 import { useChat } from "@/hooks/useChat";
 import type { Message, ProviderConfig } from "@/hooks/types";
 import ChatMessage from "@/components/demo/ChatMessage";
@@ -14,7 +16,21 @@ import UpdateNotification from "@/components/demo/UpdateNotification";
 
 // ── 常量 ──
 
-const CURRENT_VERSION = "1.1.0";
+/**
+ * 构造欢迎消息（依赖运行时版本号，故为函数而非静态常量）
+ */
+function buildWelcomeMessage(version: string): Message {
+  return {
+    role: "assistant",
+    content: `你好！这是Quiddity (v${version}) 的在线体验版。
+
+请在左侧配置 API Key 和参数后开始对话。
+
+**新功能：** 代码块自动高亮、独立分框、一键复制！
+
+本页面仅展示基础聊天功能。实际桌面端还支持多会话管理、AI 人设精调等更完整的功能。`,
+  };
+}
 
 const PROVIDERS: ProviderConfig[] = [
   {
@@ -47,17 +63,6 @@ const PROVIDERS: ProviderConfig[] = [
     keyPlaceholder: "sk-...",
   },
 ];
-
-const WELCOME_MESSAGE: Message = {
-  role: "assistant",
-  content: `你好！这是Quiddity (v${CURRENT_VERSION}) 的在线体验版。
-
-请在左侧配置 API Key 和参数后开始对话。
-
-**新功能：** 代码块自动高亮、独立分框、一键复制！
-
-本页面仅展示基础聊天功能。实际桌面端还支持多会话管理、AI 人设精调等更完整的功能。`,
-};
 
 // ── 样式类 ──
 
@@ -148,8 +153,12 @@ function buildSystemPrompt(
 // ── 主组件 ──
 
 export default function Demo() {
+  const navigate = useNavigate();
+  const { version } = useVersion();
   // 聊天逻辑
-  const { messages, loading, send, chatEndRef, roundCount } = useChat([WELCOME_MESSAGE]);
+  const { messages, loading, send, chatEndRef, roundCount } = useChat([
+    buildWelcomeMessage(version),
+  ]);
 
   // API 设置
   const [apiKey, setApiKey] = useState("");
@@ -190,7 +199,7 @@ export default function Demo() {
       .then((data) => {
         if (
           data.version &&
-          data.version !== CURRENT_VERSION &&
+          data.version !== version &&
           lastDismissed !== data.version
         ) {
           setUpdateInfo({
@@ -202,7 +211,7 @@ export default function Demo() {
       .catch(() => {
         // 版本文件获取失败，静默处理
       });
-  }, []);
+  }, [version]);
 
   const dismissUpdate = () => {
     if (updateInfo) {
@@ -252,13 +261,13 @@ export default function Demo() {
     fetch("/version.json")
       .then((res) => res.json())
       .then((data) => {
-        if (data.version && data.version !== CURRENT_VERSION && lastDismissed !== data.version) {
+        if (data.version && data.version !== version && lastDismissed !== data.version) {
           setUpdateInfo({
             version: data.version,
             downloadUrl: data.downloadUrl || "#download",
           });
-        } else if (data.version === CURRENT_VERSION) {
-          alert("已是最新版 v" + CURRENT_VERSION);
+        } else if (data.version === version) {
+          alert("已是最新版 v" + version);
         }
       })
       .catch(() => alert("无法检查更新，请前往Quiddity官网查看"));
@@ -399,7 +408,7 @@ export default function Demo() {
         <div className="bg-dark-800/60 border border-white/[0.08] rounded-xl p-3.5 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-[10px] text-dark-400">版本</span>
-            <span className="text-[10px] font-medium text-brand-400">v{CURRENT_VERSION}</span>
+            <span className="text-[10px] font-medium text-brand-400">v{version}</span>
           </div>
           <button
             onClick={checkForUpdates}
@@ -408,25 +417,12 @@ export default function Demo() {
             <RefreshCw size={11} />
             检查更新
           </button>
-          <button
-            onClick={() => {
-              localStorage.removeItem("quiddity-update-dismissed");
-              setUpdateInfo({
-                version: "1.2.0",
-                downloadUrl: "#download",
-              });
-            }}
-            className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-yellow-500/[0.06] border border-yellow-500/10 text-[10px] text-yellow-400/60 hover:text-yellow-400 hover:border-yellow-500/25 hover:bg-yellow-500/[0.1] transition-all duration-200 active:scale-95"
-          >
-            <Sparkles size={11} />
-            演示更新通知
-          </button>
         </div>
       </div>
 
       <div className="px-4 py-2.5 border-t border-white/[0.06]">
         <p className="text-[9px] text-dark-500 leading-relaxed">
-          Quiddity桌面端 v{CURRENT_VERSION} 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
+          Quiddity桌面端 v{version} 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
         </p>
       </div>
     </>
@@ -439,13 +435,19 @@ export default function Demo() {
       {/* 标题栏 */}
       <div className="h-11 flex items-center justify-between px-3 bg-dark-900/90 border-b border-white/[0.06] select-none shrink-0">
         <div className="flex items-center gap-3">
-          <a href="#/" className="text-dark-400 hover:text-dark-200 transition-colors" title="返回首页">
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="text-dark-400 hover:text-dark-200 transition-colors bg-transparent border-0 cursor-pointer p-0"
+            title="返回首页"
+            aria-label="返回首页"
+          >
             <ArrowLeft size={16} />
-          </a>
+          </button>
           <div className="flex items-center gap-2">
             <Zap size={13} className="text-brand-400" />
             <span className="text-[11px] font-medium text-dark-200">Quiddity桌面端 · 在线体验</span>
-            <span className="hidden sm:inline text-[10px] text-dark-500 ml-1">v{CURRENT_VERSION}</span>
+            <span className="hidden sm:inline text-[10px] text-dark-500 ml-1">v{version}</span>
           </div>
         </div>
         <div className="flex items-center gap-1.5">

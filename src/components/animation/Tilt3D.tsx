@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Tilt3D - 3D Card Tilt
  */
 import {

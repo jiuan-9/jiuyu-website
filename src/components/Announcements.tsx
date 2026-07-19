@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Megaphone, Sparkles, Clock, Calendar, Tag } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -56,6 +56,13 @@ export default function Announcements() {
 
   const currentList = activeCategory === "important" ? data.important : data.latest;
   const selectedItem = currentList.find((item) => item.id === selectedId) || null;
+
+  // 当前选中条目在列表中的位置（1-based），未找到返回 0
+  const currentIndex = useMemo(() => {
+    if (selectedId === null) return 0;
+    const idx = currentList.findIndex((i) => i.id === selectedId);
+    return idx >= 0 ? idx + 1 : 0;
+  }, [currentList, selectedId]);
 
   const handleSelect = (item: AnnouncementItem, category: CategoryType) => {
     if (activeCategory !== category) {
@@ -168,7 +175,7 @@ export default function Announcements() {
                         key={`${activeCategory}-${item.id}`}
                         onClick={() => handleSelect(item, activeCategory)}
                         className={`group w-full text-left p-3.5 sm:p-4 rounded-xl transition-all duration-300 ${
-                          selectedId === item.id && activeCategory === activeCategory
+                          selectedId === item.id
                             ? "bg-white/[0.05] border border-white/[0.08]"
                             : "hover:bg-white/[0.03] border border-transparent"
                         }`}
@@ -290,7 +297,7 @@ export default function Announcements() {
                 <div className="px-5 sm:px-7 md:px-8 py-3 sm:py-4">
                   <div className="flex items-center justify-between text-[11px] text-dark-600">
                     <span>共 {currentList.length} 条公告</span>
-                    <span>当前第 {currentList.findIndex((i) => i.id === selectedId) + 1 || 0} 条</span>
+                    <span>当前第 {currentIndex} 条</span>
                   </div>
                 </div>
               </div>

@@ -67,17 +67,6 @@ export type { GradientTextProps } from "./GradientText";
 export { default as AuroraBackground } from "./AuroraBackground";
 export type { AuroraBackgroundProps } from "./AuroraBackground";
 
-/* 阶段 B 新增：全局焦点跟踪系统 */
-
-export { default as CursorGlow } from "./CursorGlow";
-export type { CursorGlowProps } from "./CursorGlow";
-
-export { default as GlobalTilt } from "./GlobalTilt";
-export type { GlobalTiltProps } from "./GlobalTilt";
-
-export { default as MagneticText } from "./MagneticText";
-export type { MagneticTextProps } from "./MagneticText";
-
 /* 阶段 C 新增：Canvas 2D + WebGL 视觉层（"做实"质感升级） */
 
 export { default as FilmGrain } from "./FilmGrain";
