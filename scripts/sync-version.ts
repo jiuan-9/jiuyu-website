@@ -28,15 +28,18 @@ import {
 async function main() {
   log.info("=== 开始全量同步 ===");
 
-  // 1. 读取本地 Quiddity 桌面应用版本
+  // 1. 读取本地 Quiddity 桌面应用版本（找不到则跳过，用 GitHub Release 版本）
   log.step("步骤 1/3：读取桌面应用 package.json");
-  if (!existsSync(QUIDDITY_PKG_PATH)) {
-    log.err(`未找到 ${QUIDDITY_PKG_PATH}`);
-    process.exit(1);
+  let localVersion = "";
+  let localDescription = "";
+  if (existsSync(QUIDDITY_PKG_PATH)) {
+    const pkg = await readJson<{ version: string; description?: string }>(QUIDDITY_PKG_PATH);
+    localVersion = pkg.version.trim();
+    localDescription = pkg.description || "";
+    log.ok(`桌面应用版本：v${localVersion}`);
+  } else {
+    log.warn(`未找到 ${QUIDDITY_PKG_PATH}，跳过本地版本校验（CI/云构建环境属正常现象）`);
   }
-  const pkg = await readJson<{ version: string; description?: string }>(QUIDDITY_PKG_PATH);
-  const localVersion = pkg.version.trim();
-  log.ok(`桌面应用版本：v${localVersion}`);
 
   // 2. 拉取 GitHub Release
   log.step("步骤 2/3：拉取 GitHub 最新 Release");
@@ -46,16 +49,18 @@ async function main() {
 
   // 3. 校验一致性
   log.step("步骤 3/3：校验与写入");
-  if (localVersion !== releaseVersion) {
+  if (localVersion && localVersion !== releaseVersion) {
     log.warn(
       `版本号不一致！本地 = v${localVersion}，GitHub Release = v${releaseVersion}`
     );
     log.warn(
-      "请先在桌面应用中 bump 版本并打 tag 推送，或检查 D:\\Quiddity\\package.json 是否更新。"
+      "请先在桌面应用中 bump 版本并打 tag 推送，或检查 QUIDDITY_APP_DIR 是否正确。"
     );
     // 不退出，继续写入（以 GitHub Release 为准）
-  } else {
+  } else if (localVersion) {
     log.ok("版本号一致 ✓");
+  } else {
+    log.info("无本地版本可对比，直接使用 GitHub Release 版本");
   }
 
   // 写入 version.json
@@ -67,7 +72,7 @@ async function main() {
   }
   versionInfo.version = releaseVersion;
   versionInfo.releaseDate = release.publishedAt.slice(0, 10);
-  versionInfo.releaseNotes = release.body?.trim() || pkg.description || "暂无发布说明";
+  versionInfo.releaseNotes = release.body?.trim() || localDescription || "暂无发布说明";
   versionInfo.downloadUrl = `https://github.com/${GITHUB_REPO}/releases/latest`;
   await writeJson(VERSION_JSON_PATH, versionInfo);
   log.ok("已写入 version.json");
