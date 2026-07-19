@@ -10,9 +10,9 @@
  */
 
 import { Mail, Github, Twitter, Scale, ArrowRight, Shield } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useI18n } from "@/store/i18n";
-import { scrollToSection } from "@/lib/scroll";
+import { navigateToSection } from "@/lib/scroll";
 import {
   footerLinks,
   footerSlogan,
@@ -34,15 +34,12 @@ const LEGAL_LINK_TEXT = {
 export default function Footer() {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
   const year = new Date().getFullYear();
 
   const handleLink = (href: string) => {
     if (href.startsWith("mailto:")) return;
-    if (href.startsWith("#/")) {
-      navigate(href.slice(1));
-    } else {
-      scrollToSection(href.slice(1));
-    }
+    navigateToSection(href, navigate, location.pathname);
   };
 
   return (

@@ -26,7 +26,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
-import { scrollToSection } from "@/lib/scroll";
+import { navigateToSection } from "@/lib/scroll";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useI18n } from "@/store/i18n";
 import { MagneticButton } from "@/components/animation";
@@ -79,42 +79,13 @@ export default function Navbar() {
    *
    * 关键设计：
    *   - 用 button 触发，无 href 属性
-   *   - 当前在 Home：直接 scrollToSection
-   *   - 当前在子路由：navigate("/") 后多次重试（50ms / 100ms / 200ms / 400ms）
-   *     确保等 Home 渲染完成后再 scrollToSection
+   *   - 跨路由锚点 / 同页锚点 / 路由跳转 统一委托给 navigateToSection
+   *   - 重试逻辑（50ms / 100ms / 200ms / 400ms / 800ms）封装在 scroll.ts，便于复用
    */
   const handleNav = useCallback(
     (href: string) => {
       setMobileOpen(false);
-
-      // 路由跳转（如 #/demo → navigate("/demo")）
-      if (href.startsWith("#/")) {
-        navigate(href.slice(1));
-        return;
-      }
-
-      // 同页锚点（如 #features → scrollToSection("features")）
-      const sectionId = href.slice(1);
-
-      if (location.pathname === "/") {
-        // 当前已在 Home：直接滚动
-        scrollToSection(sectionId);
-        return;
-      }
-
-      // 当前在子路由：先回 Home，等渲染完成后再滚动
-      // 多次重试是因为 Home 是 lazy import，需要时间加载 chunk
-      navigate("/");
-      const delays = [50, 100, 200, 400, 800];
-      delays.forEach((delay) => {
-        setTimeout(() => {
-          const el = document.getElementById(sectionId);
-          if (el) {
-            scrollToSection(sectionId);
-          }
-          // 如果还是找不到，下一次重试会处理
-        }, delay);
-      });
+      navigateToSection(href, navigate, location.pathname);
     },
     [location.pathname, navigate]
   );
