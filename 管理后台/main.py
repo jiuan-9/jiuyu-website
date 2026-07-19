@@ -277,7 +277,7 @@ class App(ctk.CTk):
                              border_width=1, border_color=BORDER)
         right.grid(row=0, column=1, sticky="nsew", padx=6)
         right.grid_columnconfigure(0, weight=1)
-        right.grid_rowconfigure(7, weight=1)  # 内容输入框可扩展
+        right.grid_rowconfigure(5, weight=1)  # 内容输入框可扩展
 
         # 表单标题（动态切换"新增/编辑"）
         self.ann_form_title_lbl = ctk.CTkLabel(
@@ -337,63 +337,72 @@ class App(ctk.CTk):
         self.ann_content_tb.grid(row=5, column=0, sticky="nsew", padx=16, pady=(0, 8))
         self.ann_content_tb.bind("<KeyRelease>", self._update_preview)
 
-        # 日期 + 标签行
-        row = ctk.CTkFrame(right, fg_color="transparent")
-        row.grid(row=6, column=0, sticky="ew", padx=16, pady=(0, 8))
+        # === 分类选择行（独占一行，醒目显示） ===
+        cat_row = ctk.CTkFrame(right, fg_color="transparent")
+        cat_row.grid(row=6, column=0, sticky="ew", padx=16, pady=(0, 8))
 
-        # 分类选择（重要/最新）— 对应网站的两个 tab
         ctk.CTkLabel(
-            row, text="分类",
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            text_color=TEXT_MUTED,
-        ).grid(row=0, column=0, padx=(0, 4))
+            cat_row, text="保存到哪个区？",
+            font=ctk.CTkFont(family="Microsoft YaHei", size=11, weight="bold"),
+            text_color=TEXT,
+        ).pack(side="left", padx=(0, 8))
 
         self.ann_category = ctk.StringVar(value="important")
-        cat_menu = ctk.CTkSegmentedButton(
-            row,
+        # 监听分类变化 → 同步更新保存按钮文字
+        self.ann_category.trace_add("write", self._update_save_btn_text)
+        self.ann_category.trace_add("write", self._update_preview)
+
+        self.cat_seg = ctk.CTkSegmentedButton(
+            cat_row,
             values=["important", "latest"],
             variable=self.ann_category,
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
+            font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
             fg_color=BG_PANEL,
-            selected_color=ACCENT_DARK,
-            selected_hover_color=ACCENT,
+            selected_color="#ef4444",  # 重要=红色
+            selected_hover_color="#dc2626",
+            unselected_color=BG_PANEL,
+            unselected_hover_color=BG_HOVER,
             text_color=TEXT,
-            height=28,
+            height=32,
+            width=240,
         )
-        cat_menu.grid(row=0, column=1, sticky="w", padx=(0, 12))
+        self.cat_seg.pack(side="left")
+
+        # === 日期行（独占一行） ===
+        date_row = ctk.CTkFrame(right, fg_color="transparent")
+        date_row.grid(row=7, column=0, sticky="ew", padx=16, pady=(0, 8))
 
         ctk.CTkLabel(
-            row, text="日期",
+            date_row, text="日期",
             font=ctk.CTkFont(family="Microsoft YaHei", size=11),
             text_color=TEXT_MUTED,
-        ).grid(row=0, column=2, padx=(0, 4))
+        ).pack(side="left", padx=(0, 4))
 
         self.ann_date = ctk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
-        date_entry = ctk.CTkEntry(
-            row, textvariable=self.ann_date,
+        ctk.CTkEntry(
+            date_row, textvariable=self.ann_date,
             font=ctk.CTkFont(family="Consolas", size=11),
-            height=28, width=110, fg_color=BG_PANEL,
+            height=28, width=120, fg_color=BG_PANEL,
             border_color=BORDER, text_color=TEXT,
-        )
-        date_entry.grid(row=0, column=1, sticky="w", padx=(0, 4))
+        ).pack(side="left", padx=(0, 4))
 
-        # 日期快捷按钮：今天
         ctk.CTkButton(
-            row, text="今天", width=40, height=28,
+            date_row, text="今天", width=50, height=28,
             font=ctk.CTkFont(family="Microsoft YaHei", size=10),
             fg_color=BG_PANEL, border_color=BORDER, border_width=1,
             text_color=TEXT_MUTED, hover_color=BG_HOVER,
             command=lambda: self.ann_date.set(datetime.now().strftime("%Y-%m-%d")),
-        ).grid(row=0, column=2, padx=(0, 8))
+        ).pack(side="left")
 
-        # 保存 + 取消编辑按钮
+        # === 保存 + 取消编辑按钮 ===
         btn_row = ctk.CTkFrame(right, fg_color="transparent")
-        btn_row.grid(row=8, column=0, sticky="ew", padx=16, pady=(4, 16))
+        btn_row.grid(row=9, column=0, sticky="ew", padx=16, pady=(4, 16))
 
+        # 保存按钮文字动态显示目标分区："保存到🔴重要公告" / "保存到🔵最新公告"
         self.save_btn = ctk.CTkButton(
-            btn_row, text="保存公告", height=40,
+            btn_row, text="保存到🔴重要公告", height=44,
             font=ctk.CTkFont(family="Microsoft YaHei", size=13, weight="bold"),
-            fg_color=ACCENT_DARK, hover_color=ACCENT, text_color=TEXT,
+            fg_color="#ef4444", hover_color="#dc2626", text_color=TEXT,
             command=self._save_announcement,
         )
         self.save_btn.pack(side="left", fill="x", expand=True, padx=(0, 4))
@@ -493,12 +502,38 @@ class App(ctk.CTk):
         self.ann_title_var.set("")
         self.ann_content_tb.delete("1.0", "end")
         self.ann_date.set(datetime.now().strftime("%Y-%m-%d"))
-        self.ann_category.set("important")
+        self.ann_category.set("important")  # 会触发 _update_save_btn_text
         self.ann_form_title_lbl.configure(text="新增公告")
         self.ann_mode_lbl.configure(text="🟢 新建模式", text_color=ACCENT)
-        self.save_btn.configure(text="保存公告")
         self.cancel_edit_btn.configure(state="disabled")
         self._update_preview()
+
+    def _update_save_btn_text(self, *_):
+        """分类变化时同步更新保存按钮的文字和颜色，让用户明确知道保存到哪个区。"""
+        category = self.ann_category.get()
+        is_editing = self.editing_id is not None
+        # 新建模式用"保存到"，编辑模式用"更新到"
+        verb = "更新到" if is_editing else "保存到"
+        if category == "important":
+            self.save_btn.configure(
+                text=f"{verb}🔴重要公告",
+                fg_color="#ef4444",
+                hover_color="#dc2626",
+            )
+            self.cat_seg.configure(
+                selected_color="#ef4444",
+                selected_hover_color="#dc2626",
+            )
+        else:
+            self.save_btn.configure(
+                text=f"{verb}🔵最新公告",
+                fg_color=ACCENT_DARK,
+                hover_color=ACCENT,
+            )
+            self.cat_seg.configure(
+                selected_color=ACCENT_DARK,
+                selected_hover_color=ACCENT,
+            )
 
     def _edit_announcement(self, ann_id: int, category: str):
         """点列表项「编辑」按钮：加载到表单，进入编辑模式。"""
@@ -520,13 +555,13 @@ class App(ctk.CTk):
         self.ann_content_tb.delete("1.0", "end")
         self.ann_content_tb.insert("1.0", target.content)
         self.ann_date.set(target.date)
-        self.ann_category.set(category)  # 同步分类选择
+        self.ann_category.set(category)  # 同步分类选择（会触发 _update_save_btn_text）
 
         # 切换 UI 到编辑模式
         self.ann_form_title_lbl.configure(text=f"编辑公告 #{ann_id}")
         self.ann_mode_lbl.configure(text=f"✏️ 编辑模式 · #{ann_id}", text_color="#fbbf24")
-        self.save_btn.configure(text="保存修改")
         self.cancel_edit_btn.configure(state="normal")
+        # 保存按钮文字由 _update_save_btn_text 根据分类动态设置
 
         # 刷新列表（高亮当前编辑的项）
         self._refresh_list()
