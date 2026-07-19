@@ -167,7 +167,20 @@ def git_commit(project_root: Path, message: str, log: LogCallback | None = None)
         return CommandResult(returncode=1, stderr=msg)
     if log:
         log(f"\n→ [Git] git commit -m {message!r}\n")
-    return run_command(["git", "commit", "-m", message], cwd=project_root, log=log, timeout=30)
+    result = run_command(["git", "commit", "-m", message], cwd=project_root, log=log, timeout=30)
+    # 工作区干净时 git commit 退出码 1 并输出 "nothing to commit"
+    # 这种情况视为成功（代码已经是最新的，继续 push 流程）
+    if not result.success:
+        combined = (result.stdout + "\n" + result.stderr).lower()
+        if (
+            "nothing to commit" in combined
+            or "no changes added to commit" in combined
+            or "nothing added to commit" in combined
+        ):
+            if log:
+                log("\n[INFO] 工作区是干净的，没有需要提交的改动（视为成功，继续推送）\n")
+            return CommandResult(returncode=0, stdout=result.stdout, stderr=result.stderr)
+    return result
 
 
 def git_push(project_root: Path, log: LogCallback | None = None) -> CommandResult:
