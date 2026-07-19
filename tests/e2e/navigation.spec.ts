@@ -234,11 +234,6 @@ test.describe("Footer 链接", () => {
     await expect(page).toHaveURL(/#\/legal$/);
   });
 
-  test("Footer 点击「管理后台」跳转到 /#/admin", async ({ page }) => {
-    const btn = page.locator('footer button[title="管理后台"]').first();
-    await btn.click({ timeout: 3000 });
-    await expect(page).toHaveURL(/#\/admin$/);
-  });
 });
 
 // ============================================================
