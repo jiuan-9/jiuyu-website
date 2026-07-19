@@ -1,5 +1,8 @@
 /**
  * Tilt3D - 3D Card Tilt
+ *
+ * 移动端优化：触摸设备上鼠标驱动逻辑无意义，直接渲染静态结构，
+ * 跳过 4 个 useMotionValue + 2 个 useSpring + 3 个 useTransform 的开销。
  */
 import {
   motion,
@@ -11,6 +14,7 @@ import {
 } from "framer-motion";
 import { type ReactNode, useRef, type CSSProperties } from "react";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 
 export type Tilt3DProps = {
   children: ReactNode;
@@ -31,6 +35,7 @@ export default function Tilt3D({
 }: Tilt3DProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const isTouch = useIsTouchDevice();
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const springConfig = { stiffness: 200, damping: 15, mass: 0.6 };
@@ -57,7 +62,8 @@ export default function Tilt3D({
 
   const containerStyle: CSSProperties = { perspective };
 
-  if (reduced) {
+  // 降级：用户开启减少动画 或 触摸设备（无鼠标交互）
+  if (reduced || isTouch) {
     return (
       <div className={className} style={containerStyle}>
         <div>{children}</div>

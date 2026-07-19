@@ -30,7 +30,7 @@ function FAQAccordion({ index }: { index: number }) {
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between py-5 text-left"
+        className="w-full flex items-center justify-between py-5 sm:py-6 text-left active:bg-white/[0.02] transition-colors -mx-2 px-2 rounded-lg min-h-[56px]"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">

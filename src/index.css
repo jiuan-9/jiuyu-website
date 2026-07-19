@@ -12,6 +12,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* 告知浏览器本网站已是深色主题，防止强制暗黑模式二次反转 */
+  color-scheme: dark;
+  -webkit-color-scheme: dark;
+  forced-color-adjust: none;
+
   --color-primary: #14b0ff;
   --color-primary-light: #40d0ff;
   --color-primary-dark: #0072bc;
@@ -755,3 +760,379 @@ a[role="button"],
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============ 夸克等浏览器强制暗黑模式适配（v2 修正版） ============ */
+
+/*
+ * 策略说明：
+ *   本网站已是深色主题（dark-only），无需浏览器的暗黑模式介入。
+ *   夸克 / 华为 / UC / 百度 / QQ 浏览器开启"夜间模式"后，会对页面注入
+ *   CSS filter（如 invert(1) hue-rotate(180deg)），导致深色页面被
+ *   反转为白色或出现色彩异常。以下规则通过多层防线阻止此行为：
+ *
+ *   第1层：html 上的 color-scheme: dark 告知浏览器本页已是暗色（见 :root）
+ *   第2层：html[data-force-dark-detected] 检测到强制滤镜后反向抵消
+ *   第3层：第三方浏览器 UA 标记 data-thirdparty-browser 针对性增强
+ *   第4层：特定元素（图片/视频/Canvas）恢复原始色彩
+ *   第5层：prefers-color-scheme 媒体查询强化关键色值
+ *
+ * v2 修正：
+ *   - 旧版 filter: none !important 在合成层应用的滤镜无效
+ *   - 改为反向 invert(1) hue-rotate(180deg) 抵消（双重反转 = 原色）
+ *   - 旧版 <head> 内联脚本因 document.body 未就绪导致检测永远失败
+ *     （已在 index.html 中修正）
+ *   - 新增 prefers-color-scheme 媒体查询，明确声明本站 dark-only
+ */
+
+/* 第2层：检测到浏览器强制暗黑模式 → 反向滤镜抵消
+ * 关键：夸克/UC 注入的 inline filter 在 <html> 上，
+ * 我们用更具体的选择器 + !important 反向应用 invert+hue-rotate(180deg)
+ * 双重反转 = 原色，hue-rotate(180deg) 二次反转 = 原色相 */
+html[data-force-dark-detected="true"] {
+  filter: invert(1) hue-rotate(180deg) !important;
+  -webkit-filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 媒体元素二次反转后会失真，单独恢复（图片/视频不应被反转）
+ * 同样用反向滤镜抵消，使其呈现原色 */
+html[data-force-dark-detected="true"] img,
+html[data-force-dark-detected="true"] video,
+html[data-force-dark-detected="true"] canvas,
+html[data-force-dark-detected="true"] picture,
+html[data-force-dark-detected="true"] svg:not([class*="icon"]),
+html[data-force-dark-detected="true"] [class*="blur"],
+html[data-force-dark-detected="true"] [class*="backdrop"],
+html[data-force-dark-detected="true"] .glass,
+html[data-force-dark-detected="true"] .glass-strong,
+html[data-force-dark-detected="true"] .glass-morphism,
+html[data-force-dark-detected="true"] .glow-border,
+html[data-force-dark-detected="true"] .glow-border-strong,
+html[data-force-dark-detected="true"] .super-glow {
+  filter: invert(1) hue-rotate(180deg) !important;
+  -webkit-filter: invert(1) hue-rotate(180deg) !important;
+}
+
+/* 第3层：第三方浏览器（夸克/华为/UC/百度/QQ）全局防护 */
+html[data-thirdparty-browser="true"] {
+  /* 禁止浏览器对背景色做任何自动调整 */
+  -webkit-text-fill-color: initial;
+  /* 阻止 filter 继承影响 */
+  isolation: isolate;
+}
+
+html[data-thirdparty-browser="true"] body {
+  background-color: #0a0e1a !important;
+  color: #e2e8f0 !important;
+}
+
+/* 第三方浏览器下媒体元素强制保持原色 */
+html[data-thirdparty-browser="true"] img,
+html[data-thirdparty-browser="true"] video,
+html[data-thirdparty-browser="true"] canvas {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
+
+/* 夸克夜间模式下，CSS 渐变色可能被反转，强制恢复 */
+html[data-force-dark-detected="true"] [class*="bg-gradient"],
+html[data-force-dark-detected="true"] [class*="text-gradient"],
+html[data-thirdparty-browser="true"] [class*="bg-gradient"],
+html[data-thirdparty-browser="true"] [class*="text-gradient"] {
+  -webkit-text-fill-color: initial;
+}
+
+/* 修复夸克暗黑模式下玻璃态（glass/blur）被反转成不透明白块 */
+html[data-force-dark-detected="true"] .glass,
+html[data-force-dark-detected="true"] .glass-strong,
+html[data-force-dark-detected="true"] .glass-morphism,
+html[data-thirdparty-browser="true"] .glass,
+html[data-thirdparty-browser="true"] .glass-strong,
+html[data-thirdparty-browser="true"] .glass-morphism {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: rgba(26, 26, 46, 0.92) !important;
+}
+
+/* 修复文字渐变在强制暗黑模式下失效 */
+html[data-force-dark-detected="true"] .text-gradient,
+html[data-force-dark-detected="true"] .text-gradient-warm,
+html[data-force-dark-detected="true"] .text-gradient-purple,
+html[data-thirdparty-browser="true"] .text-gradient,
+html[data-thirdparty-browser="true"] .text-gradient-warm,
+html[data-thirdparty-browser="true"] .text-gradient-purple {
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 第5层：prefers-color-scheme 媒体查询兜底
+ * 即使浏览器没被检测出强制暗黑模式，也强化关键色值，
+ * 防止系统级暗色模式或扩展（DarkReader）二次反转 */
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark !important;
+    -webkit-color-scheme: dark !important;
+  }
+  body {
+    background-color: #0a0e1a !important;
+    color: #e2e8f0 !important;
+  }
+}
+
+/* 系统设为 light 但网站是 dark-only 时，强化声明防止浏览器自动反转
+ * 此场景是用户反馈"切到黑夜就看不到界面"的关键修复点 */
+@media (prefers-color-scheme: light) {
+  html {
+    /* 明确告知：本站是 dark 主题，不要反转 */
+    color-scheme: dark !important;
+    -webkit-color-scheme: dark !important;
+  }
+  body {
+    background-color: #0a0e1a !important;
+    color: #e2e8f0 !important;
+  }
+  /* 防止 DarkReader 等扩展对暗色背景做反转 */
+  img,
+  video,
+  canvas,
+  picture {
+    filter: none !important;
+  }
+}
+
+/* ============ 移动端体验优化（补充） ============ */
+
+/* 防止 iOS Safari 橡皮筋效果导致的布局偏移 */
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* 移动端禁用长按弹出菜单（针对按钮和导航元素），同时消除 300ms tap delay */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  [role="button"],
+  nav a,
+  nav button,
+  a[href] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+}
+
+/* 移动端输入框缩放优化（iOS 16px 以下字体会自动缩放） */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* 移动端 video/iframe 防止溢出 */
+@media (max-width: 767px) {
+  video,
+  iframe,
+  embed,
+  object {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* 横屏手机优化：限制最大宽度避免拉伸变形 */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .container {
+    max-width: 90vw !important;
+  }
+}
+
+/* 移动端减少 backdrop-filter（GPU 开销大，且夸克等浏览器对此支持差） */
+@media (hover: none) and (pointer: coarse) {
+  .glass,
+  .glass-strong,
+  .glass-morphism {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(26, 26, 46, 0.92) !important;
+  }
+}
+
+/* 移动端 hero 区域减小动画复杂度（节省 GPU） */
+@media (max-width: 767px) {
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-fast {
+    animation-duration: 10s !important;
+  }
+
+  /* 移动端减少粒子/光晕元素（遮蔽背景动画以节省计算） */
+  #hero [class*="blur"] {
+    opacity: 0.5 !important;
+  }
+}
+
+/* iOS 刘海屏/底部 Home Indicator 安全区域适配 */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* 使用 dvh 做视口高度回退（兼容不支持 dvh 的浏览器） */
+@supports not (height: 100dvh) {
+  .min-h-screen {
+    min-height: 100vh;
+  }
+}
+
+/* 移动端卡片 hover 态降级为 active 态 */
+@media (hover: none) and (pointer: coarse) {
+  .card-tilt:active {
+    transform: scale(0.98);
+  }
+
+  .card-interactive:active {
+    transform: scale(0.98);
+  }
+
+  .card-hover-lift:active {
+    transform: scale(0.98);
+  }
+
+  .hover-scale:active {
+    transform: scale(0.98);
+  }
+
+  .hover-scale-sm:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ============ 移动端点击反馈增强（v2 新增） ============ */
+
+/* 所有可交互元素在触摸设备上统一 active 缩放反馈
+ * 让用户感受到"按下"的物理反馈，弥补 hover 缺失 */
+@media (hover: none) and (pointer: coarse) {
+  /* 链接、按钮的通用 active 反馈 */
+  a:active,
+  button:not([disabled]):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.96);
+    transition: transform 80ms ease-out;
+  }
+
+  /* 装饰性 hover 渐变在触摸态默认显示（不依赖 hover） */
+  .group:active .group-hover\:opacity-100 {
+    opacity: 1;
+  }
+
+  /* 卡片类元素的轻量按压反馈 */
+  [class*="card"]:active,
+  [class*="glass"]:active {
+    transform: scale(0.985);
+    transition: transform 100ms ease-out;
+  }
+
+  /* 下载链接的明确按压态 */
+  a[href]:active {
+    background-color: rgba(20, 176, 255, 0.08);
+  }
+
+  /* 输入框聚焦时统一高亮（移动端键盘弹起前的视觉反馈） */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: 2px solid rgba(20, 176, 255, 0.5);
+    outline-offset: 2px;
+  }
+}
+
+/* ============ 移动端最小点击尺寸兜底（v2 新增） ============ */
+/* 所有 button/a 至少 44x44（WCAG 2.1 AA 标准），不破坏显式尺寸 */
+@media (hover: none) and (pointer: coarse) {
+  button:not([aria-disabled="true"]):not([data-size-locked]),
+  a[role="button"]:not([aria-disabled="true"]):not([data-size-locked]),
+  nav a:not([data-size-locked]) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ============ 移动端滚动平滑度优化（v2 新增） ============ */
+@media (hover: none) and (pointer: coarse) {
+  /* 移除全局 scroll-behavior: smooth，避免编程式滚动卡顿 */
+  * {
+    scroll-behavior: auto;
+  }
+
+  /* 但保留 anchor 跳转的平滑（仅在用户点击触发时） */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* 触摸滚动惯性 */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* 移动端 FAQ 手风琴增大点击区域 */
+@media (max-width: 767px) {
+  .faq-button-min-height button {
+    min-height: 56px;
+  }
+}
+
+/* 修复移动端横向溢出：pre/code 块允许横向滚动 */
+@media (max-width: 767px) {
+  pre {
+    max-width: calc(100vw - 2rem);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  code {
+    word-break: break-all;
+  }
+}
+
+/* 长英文单词/URL 在窄屏自动断行 */
+@media (max-width: 640px) {
+  a,
+  span,
+  div {
+    word-break: break-word;
+  }
+}
+
+/* ============ 渲染性能优化 ============ */
+
+/*
+ * content-visibility: auto — 对首屏以下 section 延迟渲染，
+ * 浏览器跳过不可见区域的布局/绘制，大幅减少首次渲染负担。
+ * 仅在 Chromium 内核生效，其他浏览器降级为正常渲染。
+ */
+@media (max-width: 767px) {
+  section,
+  [data-section] {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
+  }
+
+  /* 首屏 Hero 不延迟，确保 LCP 不受影响 */
+  #hero,
+  section:first-of-type {
+    content-visibility: visible;
+    contain-intrinsic-size: none;
+  }
+}
+

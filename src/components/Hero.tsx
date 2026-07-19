@@ -71,10 +71,10 @@ export default function Hero() {
         />
       ) : (
         <AuroraBackground
-          blobCount={2}
-          opacity={0.18}
-          blur={160}
-          duration={35}
+          blobCount={isMobile ? 1 : 2}
+          opacity={isMobile ? 0.12 : 0.18}
+          blur={isMobile ? 100 : 160}
+          duration={isMobile ? 45 : 35}
           className="absolute inset-0"
         />
       )}

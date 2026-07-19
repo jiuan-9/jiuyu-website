@@ -47,7 +47,7 @@ export default function DownloadSection() {
             {/* Desktop */}
             <a
               href="https://jiuan-9.github.io/quiddity-website/downloads/Quiddity-1.1.0.exe"
-              className="group relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl glass glow-border-strong w-full sm:w-auto sm:min-w-[220px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/15 hover:border-brand-500/30 overflow-hidden"
+              className="group relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl glass glow-border-strong w-full sm:w-auto sm:min-w-[220px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/15 hover:border-brand-500/30 active:scale-[0.98] active:bg-white/[0.04] overflow-hidden min-h-[64px]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-brand-500/[0.02] via-transparent to-brand-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative w-10 h-10 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-gradient-to-br from-brand-500/20 to-brand-600/15 transition-all duration-300 shrink-0">
@@ -68,7 +68,7 @@ export default function DownloadSection() {
             {/* Demo */}
             <a
               href="#/demo"
-              className="group relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl glass glow-border w-full sm:w-auto sm:min-w-[200px] transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/25 overflow-hidden"
+              className="group relative flex items-center gap-3 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl glass glow-border w-full sm:w-auto sm:min-w-[200px] transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/10 hover:border-brand-500/25 active:scale-[0.98] active:bg-white/[0.04] overflow-hidden min-h-[64px]"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500/[0.02] via-transparent to-purple-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative w-10 h-10 rounded-lg bg-white/[0.02] flex items-center justify-center group-hover:bg-gradient-to-br from-purple-500/20 to-blue-500/15 transition-all duration-300 shrink-0">

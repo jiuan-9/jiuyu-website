@@ -4,10 +4,12 @@
  * 用于强调元素 / 营造高级感
  *
  * 性能保障：transform 驱动，不触发 layout/paint
+ * 移动端优化：触摸设备上跳过 motion value / spring 计算，直接渲染静态结构
  */
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { type ReactNode, useRef } from "react";
+import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 
 export type SpotlightCardProps = {
   children: ReactNode;
@@ -28,6 +30,7 @@ export default function SpotlightCard({
   className = "",
 }: SpotlightCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const isTouch = useIsTouchDevice();
   const mouseX = useMotionValue(-radius * 2);
   const mouseY = useMotionValue(-radius * 2);
   const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
@@ -46,6 +49,15 @@ export default function SpotlightCard({
     mouseX.set(-radius * 2);
     mouseY.set(-radius * 2);
   };
+
+  // 触摸设备：鼠标高光无意义，跳过 motion 渲染
+  if (isTouch) {
+    return (
+      <div className={`relative overflow-hidden ${className}`}>
+        <div className="relative z-10">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <div

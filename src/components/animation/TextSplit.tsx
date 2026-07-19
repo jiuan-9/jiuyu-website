@@ -9,10 +9,11 @@
  *   - 字符数有上限（移动端默认拆词，避免每字一个 DOM）
  *   - Reduced motion 时静态显示
  *   - 字符位置预计算（useMemo）
+ *   - 移动端自动降级为 word 拆分 + 减少 stagger
  */
 
 import { motion } from "framer-motion";
-import { useMemo, type ElementType } from "react";
+import { useMemo, useState, useEffect, type ElementType } from "react";
 import { useInView } from "@/hooks/useInView";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { textSplit as textSplitVariants } from "@/lib/animation";
@@ -57,10 +58,28 @@ export default function TextSplit({
 }: TextSplitProps) {
   const { ref, inView } = useInView<HTMLElement>({ threshold: 0.3, once });
   const reduced = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
 
-  // 决定拆分方式
-  const actualSplitBy: "char" | "word" =
-    splitBy === "auto" ? (hasCJK(text) ? "char" : "word") : splitBy;
+  // 移动端检测
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  // 移动端优化：减少动画粒度
+  //   - 强制 word 拆分（中文也按空格分组，避免每字一个 motion span）
+  //   - stagger 减半，减少 Framer Motion 并发调度压力
+  const mobileStagger = isMobile ? stagger * 0.5 : stagger;
+  const mobileDuration = isMobile ? duration * 0.7 : duration;
+
+  // 决定拆分方式（移动端强制 word 拆分）
+  const actualSplitBy: "char" | "word" = isMobile
+    ? "word"
+    : splitBy === "auto"
+    ? (hasCJK(text) ? "char" : "word")
+    : splitBy;
 
   // 拆分文本
   const segments = useMemo(() => {
@@ -114,7 +133,7 @@ export default function TextSplit({
               custom={i}
               variants={textSplitVariants}
               style={{ display: "inline-block" }}
-              transition={{ delay: i * stagger, duration }}
+              transition={{ delay: i * mobileStagger, duration: mobileDuration }}
             >
               {seg}
             </motion.span>

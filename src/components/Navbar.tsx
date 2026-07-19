@@ -186,21 +186,22 @@ export default function Navbar() {
         </div>
 
         {/* 移动端：语言切换 + 菜单按钮 */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-1">
           <button
             type="button"
             onClick={toggle}
             aria-label={lang === "zh" ? "Switch to English" : "切换到中文"}
             title={lang === "zh" ? "Switch to English" : "切换到中文"}
-            className="text-xs font-medium text-dark-400 hover:text-white transition-colors bg-transparent border border-white/[0.06] hover:border-white/[0.12] cursor-pointer px-2 py-1 rounded-md hover:bg-white/[0.04] tracking-wider"
+            className="text-xs font-medium text-dark-400 hover:text-white active:text-white active:scale-95 transition-all bg-transparent border border-white/[0.06] hover:border-white/[0.12] cursor-pointer px-3 py-2 rounded-md hover:bg-white/[0.04] tracking-wider min-h-[44px]"
           >
             {lang === "zh" ? "EN" : "中"}
           </button>
           <button
             type="button"
-            className="text-white p-1 sm:p-2 rounded-lg hover:bg-white/[0.05] transition-colors bg-transparent border-0 cursor-pointer"
+            className="text-white p-2.5 -mr-2 rounded-lg hover:bg-white/[0.05] active:bg-white/[0.08] active:scale-95 transition-all bg-transparent border-0 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
           <AnimatePresence mode="wait" initial={false}>
             {mobileOpen ? (
@@ -229,18 +230,21 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* 移动端展开菜单：AnimatePresence 滑入，全部 button */}
+      {/* 移动端展开菜单：AnimatePresence 滑入，全部 button
+       * 性能优化：用 transform: translateY 替代 height: auto 动画
+       * height 动画会触发 layout/paint，transform 仅合成层处理（GPU 加速） */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             className="md:hidden glass-strong border-t border-white/[0.06] overflow-hidden"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
             transition={{
-              duration: duration.normal,
-              ease: easing.inOutQuart,
+              duration: duration.fast,
+              ease: easing.outQuart,
             }}
+            style={{ willChange: "transform, opacity" }}
           >
             <motion.div
               className="container mx-auto px-4 sm:px-6 py-4 sm:py-5 flex flex-col gap-2 sm:gap-3"
@@ -249,7 +253,7 @@ export default function Navbar() {
               variants={{
                 hidden: {},
                 visible: {
-                  transition: { staggerChildren: 0.04, delayChildren: 0.05 },
+                  transition: { staggerChildren: 0.03, delayChildren: 0.04 },
                 },
               }}
             >
@@ -258,10 +262,10 @@ export default function Navbar() {
                   key={link.href}
                   type="button"
                   onClick={() => handleNav(link.href)}
-                  className={`text-left text-sm sm:text-base py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-colors duration-200 bg-transparent border-0 cursor-pointer ${
+                  className={`text-left text-sm sm:text-base py-3.5 sm:py-3 px-4 sm:px-4 rounded-lg transition-colors duration-200 bg-transparent border-0 cursor-pointer active:scale-[0.98] min-h-[48px] ${
                     isActive(link)
                       ? "text-brand-400 bg-brand-500/10"
-                      : "text-dark-300 hover:text-white hover:bg-white/[0.03]"
+                      : "text-dark-300 hover:text-white hover:bg-white/[0.03] active:bg-white/[0.05]"
                   }`}
                   variants={{
                     hidden: { opacity: 0, x: -20 },
@@ -281,7 +285,7 @@ export default function Navbar() {
               <motion.button
                 type="button"
                 onClick={() => handleNav(navCta.href)}
-                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white text-sm sm:text-base font-medium transition-all mt-2 border-0 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 sm:py-3.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white text-sm sm:text-base font-medium transition-all mt-2 border-0 cursor-pointer active:scale-[0.98] min-h-[48px]"
                 variants={{
                   hidden: { opacity: 0, x: -20 },
                   visible: {

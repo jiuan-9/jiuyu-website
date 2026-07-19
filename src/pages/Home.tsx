@@ -38,12 +38,12 @@ function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 z-40 w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400 transition-all duration-400 backdrop-blur-md ${
+      className={`fixed bottom-6 right-6 sm:bottom-8 sm:right-8 z-40 w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400 transition-all duration-300 backdrop-blur-md active:scale-90 hover:bg-brand-500/30 hover:border-brand-500/50 ${
         visible ? "back-to-top visible" : "back-to-top pointer-events-none"
       }`}
       aria-label={t(backToTopAriaLabel)}
     >
-      <ChevronUp size={18} />
+      <ChevronUp size={20} />
     </button>
   );
 }

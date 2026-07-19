@@ -4,10 +4,12 @@
  * 用于强调元素（CTA / 主按钮）
  *
  * 性能保障：transform 驱动，rAF 节流
+ * 移动端优化：触摸设备跳过磁吸效果，仅保留 whileTap 缩放反馈
  */
 
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { type ReactNode, useRef } from "react";
+import { useIsTouchDevice } from "@/hooks/useIsTouchDevice";
 
 export type MagneticButtonProps = {
   children: ReactNode;
@@ -24,6 +26,7 @@ export default function MagneticButton({
   onClick,
 }: MagneticButtonProps) {
   const ref = useRef<HTMLButtonElement>(null);
+  const isTouch = useIsTouchDevice();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   // 弹性插值，让位移有"软"感
@@ -45,6 +48,21 @@ export default function MagneticButton({
     x.set(0);
     y.set(0);
   };
+
+  // 触摸设备：保留 whileTap 缩放反馈，但跳过磁吸 motion value 计算
+  if (isTouch) {
+    return (
+      <motion.button
+        ref={ref}
+        onClick={onClick}
+        whileTap={{ scale: 0.96 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
+        className={className}
+      >
+        {children}
+      </motion.button>
+    );
+  }
 
   return (
     <motion.button
