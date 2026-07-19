@@ -20,7 +20,7 @@
     "test:e2e:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
     "admin": "vite --port 5174 --mode admin",
-    "prebuild": "npm run sync:downloads && npm run sync:version",
+    "prebuild": "node -e \"if(process.env.CI||process.env.CF_PAGES){console.log('[prebuild] CI/Cloudflare env detected, skipping sync');process.exit(0)}require('child_process').execSync('npm run sync:downloads && npm run sync:version',{stdio:'inherit'})\"",
     "sync:downloads": "tsx scripts/sync-downloads.ts",
     "sync:version": "tsx scripts/sync-version.ts",
     "sync:from-quiddity": "tsx scripts/sync-from-quiddity.ts",
