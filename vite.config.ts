@@ -42,7 +42,7 @@ export default defineConfig({
   plugins: [react({}), tsconfigPaths()],
   server: {
     port: 5174,
-    strictPort: false,
+    strictPort: true,
   },
   preview: {
     port: 4173,

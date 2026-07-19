@@ -19,7 +19,7 @@
 
 const { chromium } = require("playwright");
 
-const BASE_URL = "http://127.0.0.1:5176/";
+const BASE_URL = "http://127.0.0.1:5174/";
 const NAVBAR_HEIGHT = 80;
 
 // 期望按钮文本 → 目标 section id
@@ -93,6 +93,7 @@ async function runTest(name, fn) {
 async function main() {
   const browser = await chromium.launch({
     headless: true,
+    channel: "msedge",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
   const context = await browser.newContext({
@@ -239,6 +240,95 @@ async function main() {
       })
     );
   }
+
+  // ── Phase 3: Footer 链接（基线：捕获当前"坏"行为） ──
+  console.log("\n========== Phase 3: Footer 链接基线 ==========");
+
+  // 确保在 Home 页
+  if (!page.url().endsWith("/") && !page.url().endsWith("/#/")) {
+    await page.goto(BASE_URL, { waitUntil: "networkidle" });
+    await page.waitForTimeout(1000);
+  }
+
+  // 测试 12: Footer "功能特色" 锚点链接（当前坏行为：URL 错误变成 /#/features）
+  results.push(
+    await runTest("Footer → 功能特色 (#features) [基线：当前坏行为]", async () => {
+      // 滚动到 Footer
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(500);
+      // 点击 Footer 中的 "功能特色" 链接（Footer 用 <a href="#features">，存在 HashRouter bug）
+      const footerLink = page.locator('footer a:has-text("功能特色")').first();
+      const count = await footerLink.count();
+      if (count === 0) {
+        throw new Error("未找到 Footer '功能特色' 链接");
+      }
+      await footerLink.click({ timeout: 3000 });
+      await page.waitForTimeout(800);
+      const url = page.url();
+      // 基线断言：当前坏行为是 URL 变成 /#/features（HashRouter 错误响应）
+      // Phase 1 修复后，此测试应改为：URL 仍是 /，且 #features 滚动到可见
+      if (url.includes("/features")) {
+        return `基线确认坏行为：URL=${url}（Phase 1 后应修复）`;
+      }
+      // 如果 URL 没变，说明已经修复了（或本就是好的）
+      const rect = await waitForSectionVisible(page, "features", 2000);
+      return `URL=${url}, rect.top=${rect ? Math.round(rect.top) : "null"}`;
+    })
+  );
+
+  // 测试 13: Footer "法律信息" 按钮（当前好行为：跳转到 /legal）
+  results.push(
+    await runTest("Footer → 法律信息 (/legal) [基线：当前好行为]", async () => {
+      // 回到 Home
+      if (!page.url().endsWith("/") && !page.url().endsWith("/#/")) {
+        await page.goto(BASE_URL, { waitUntil: "networkidle" });
+        await page.waitForTimeout(800);
+      }
+      // 滚动到 Footer
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(500);
+      // 点击 Footer 法律信息按钮（包含 Scale 图标 + 免责声明文案）
+      const legalBtn = page.locator('footer button:has-text("免责声明")').first();
+      const count = await legalBtn.count();
+      if (count === 0) {
+        throw new Error("未找到 Footer '法律信息' 按钮");
+      }
+      await legalBtn.click({ timeout: 3000 });
+      await page.waitForURL(/\/legal$/, { timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(1000);
+      const url = page.url();
+      if (!url.includes("/legal")) {
+        throw new Error(`URL 没有跳转到 /legal，当前: ${url}`);
+      }
+      return `url=${url}`;
+    })
+  );
+
+  // 测试 14: Footer "管理后台" 按钮（当前好行为：跳转到 /admin）
+  results.push(
+    await runTest("Footer → 管理后台 (/admin) [基线：当前好行为]", async () => {
+      // 回到 Home
+      await page.goto(BASE_URL, { waitUntil: "networkidle" });
+      await page.waitForTimeout(800);
+      // 滚动到 Footer
+      await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+      await page.waitForTimeout(500);
+      // 点击 Footer Admin 按钮（title="管理后台"）
+      const adminBtn = page.locator('footer button[title="管理后台"]').first();
+      const count = await adminBtn.count();
+      if (count === 0) {
+        throw new Error("未找到 Footer '管理后台' 按钮");
+      }
+      await adminBtn.click({ timeout: 3000 });
+      await page.waitForURL(/\/admin$/, { timeout: 8000 }).catch(() => {});
+      await page.waitForTimeout(1000);
+      const url = page.url();
+      if (!url.includes("/admin")) {
+        throw new Error(`URL 没有跳转到 /admin，当前: ${url}`);
+      }
+      return `url=${url}`;
+    })
+  );
 
   // ── 汇总 ──
   console.log("\n========== 测试汇总 ==========");
