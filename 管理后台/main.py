@@ -27,24 +27,18 @@ from config_store import load_config
 # 公告编辑常量
 # ====================================================================
 
-# 标签预设（精简版：只保留最常用的，用户可直接选或自定义输入）
-TAG_PRESETS = ["重要", "新版本", "活动"]
-
-# 公告模板：一键填充表单
+# 公告模板：一键填充表单（不再使用标签，只填标题和内容）
 ANNOUNCEMENT_TEMPLATES = {
     "新版本发布": {
         "title": "Quiddity vX.X.X 发布",
-        "tag": "新版本",
         "content": "本次更新内容：\n\n1. 新功能：\n2. 优化：\n3. 修复：\n\n欢迎下载体验！",
     },
     "重要通知": {
         "title": "重要通知",
-        "tag": "重要",
         "content": "尊敬的用户：\n\n[在此填写通知内容]\n\n感谢您的支持。",
     },
     "活动公告": {
         "title": "活动公告",
-        "tag": "活动",
         "content": "🎉 [活动名称] 开始啦！\n\n活动时间：\n参与方式：\n\n期待您的参与！",
     },
     "清空模板": None,  # 特殊：清空表单
@@ -392,25 +386,6 @@ class App(ctk.CTk):
             command=lambda: self.ann_date.set(datetime.now().strftime("%Y-%m-%d")),
         ).grid(row=0, column=2, padx=(0, 8))
 
-        ctk.CTkLabel(
-            row, text="标签",
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            text_color=TEXT_MUTED,
-        ).grid(row=0, column=3, padx=(0, 4))
-
-        # 标签下拉（OptionMenu + Entry 组合：选预设或自定义输入）
-        self.ann_tag = ctk.StringVar(value="重要")
-        self.ann_tag.trace_add("write", self._update_preview)
-        tag_menu = ctk.CTkOptionMenu(
-            row, values=TAG_PRESETS, variable=self.ann_tag,
-            font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            dropdown_font=ctk.CTkFont(family="Microsoft YaHei", size=11),
-            fg_color=BG_PANEL, button_color=ACCENT_DARK,
-            button_hover_color=ACCENT, text_color=TEXT,
-            height=28, width=110,
-        )
-        tag_menu.grid(row=0, column=4, sticky="w")
-
         # 保存 + 取消编辑按钮
         btn_row = ctk.CTkFrame(right, fg_color="transparent")
         btn_row.grid(row=8, column=0, sticky="ew", padx=16, pady=(4, 16))
@@ -507,7 +482,6 @@ class App(ctk.CTk):
         self.ann_title_var.set(tpl["title"])
         self.ann_content_tb.delete("1.0", "end")
         self.ann_content_tb.insert("1.0", tpl["content"])
-        self.ann_tag.set(tpl["tag"])
         self.ann_date.set(datetime.now().strftime("%Y-%m-%d"))
         self._set_status(f"已应用模板：{tpl_name}")
         self._update_preview()
@@ -518,7 +492,6 @@ class App(ctk.CTk):
         self.editing_category = "important"
         self.ann_title_var.set("")
         self.ann_content_tb.delete("1.0", "end")
-        self.ann_tag.set("重要")
         self.ann_date.set(datetime.now().strftime("%Y-%m-%d"))
         self.ann_category.set("important")
         self.ann_form_title_lbl.configure(text="新增公告")
@@ -546,7 +519,6 @@ class App(ctk.CTk):
         self.ann_title_var.set(target.title)
         self.ann_content_tb.delete("1.0", "end")
         self.ann_content_tb.insert("1.0", target.content)
-        self.ann_tag.set(target.tag or "重要")
         self.ann_date.set(target.date)
         self.ann_category.set(category)  # 同步分类选择
 
@@ -566,13 +538,11 @@ class App(ctk.CTk):
         title = self.ann_title_var.get().strip() or "（请输入标题）"
         content = self.ann_content_tb.get("1.0", "end-1c").strip() or "（请输入内容）"
         date = self.ann_date.get().strip() or "—"
-        tag = self.ann_tag.get().strip()
+        category = self.ann_category.get()
+        cat_label = "🔴 重要公告" if category == "important" else "🔵 最新公告"
 
         self.preview_title_lbl.configure(text=title)
-        meta = f"📅 {date}"
-        if tag:
-            meta += f"  ·  🏷️ {tag}"
-        self.preview_meta_lbl.configure(text=meta)
+        self.preview_meta_lbl.configure(text=f"{cat_label}  ·  📅 {date}")
         # 内容支持换行显示
         self.preview_content_lbl.configure(text=content)
 
@@ -990,7 +960,7 @@ class App(ctk.CTk):
         if is_editing:
             card.configure(border_color=ACCENT, border_width=2)
 
-        title = f"[{item.tag}] {item.title}" if item.tag else item.title
+        title = item.title
         ctk.CTkLabel(
             card, text=title,
             font=ctk.CTkFont(family="Microsoft YaHei", size=12, weight="bold"),
@@ -1032,12 +1002,11 @@ class App(ctk.CTk):
         ).pack(side="left")
 
     def _save_announcement(self):
-        # 分类从表单的 ann_category 读取（不再用左侧 cat_var 下拉）
+        # 分类从表单的 ann_category 读取（决定公告去哪个区显示）
         category = self.ann_category.get()
         title = self.ann_title_var.get().strip()
         content = self.ann_content_tb.get("1.0", "end-1c").strip()
         date = self.ann_date.get().strip()
-        tag = self.ann_tag.get().strip()
 
         if not title:
             messagebox.showwarning("标题不能为空", "请输入公告标题")
@@ -1052,7 +1021,7 @@ class App(ctk.CTk):
                 item = self.ann_store.update(
                     category=self.editing_category,
                     announcement_id=self.editing_id,
-                    title=title, content=content, tag=tag,
+                    title=title, content=content,
                     date=date or datetime.now().strftime("%Y-%m-%d"),
                 )
                 if item is None:
@@ -1067,7 +1036,7 @@ class App(ctk.CTk):
                 # 新建模式
                 item = self.ann_store.add(
                     category=category, title=title, content=content,
-                    tag=tag, date=date or datetime.now().strftime("%Y-%m-%d"),
+                    date=date or datetime.now().strftime("%Y-%m-%d"),
                 )
                 self._set_status(f"✓ 已新增公告 #{item.id}：{item.title}")
 

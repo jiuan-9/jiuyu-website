@@ -155,7 +155,6 @@ function AnnouncementColumn({
   const borderColor = isImportant ? "border-brand-500/20" : "border-white/10";
   const headerBg = isImportant ? "bg-brand-500/[0.04]" : "bg-white/[0.02]";
   const dotColor = isImportant ? "bg-brand-400" : "bg-white/60";
-  const tagBg = isImportant ? "bg-brand-500/15 text-brand-400" : "bg-white/[0.06] text-dark-300";
 
   return (
     <div className={`glass glow-border rounded-2xl overflow-hidden flex flex-col ${borderColor}`}>
@@ -205,11 +204,6 @@ function AnnouncementColumn({
                       {item.title}
                     </h4>
                     <div className="flex items-center gap-2 flex-wrap">
-                      {item.tag && (
-                        <span className={`px-1.5 py-px rounded text-[9px] font-bold tracking-wider ${tagBg}`}>
-                          {item.tag}
-                        </span>
-                      )}
                       <span className="text-[10px] text-dark-600 flex items-center gap-1">
                         <Calendar size={9} />
                         {item.date}
