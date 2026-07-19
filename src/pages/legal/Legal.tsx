@@ -23,21 +23,12 @@ import {
   disclaimerHighlight,
   disclaimerOutro,
 } from "@/content/footer-links";
-
-const PAGE_TITLE = {
-  zh: "法律信息",
-  en: "Legal Information",
-} as const;
-
-const PAGE_SUBTITLE = {
-  zh: "合规声明与相关法律法规参考",
-  en: "Compliance statements and legal references",
-} as const;
-
-const BACK_HOME = {
-  zh: "返回首页",
-  en: "Back to Home",
-} as const;
+import {
+  legalPageTitle,
+  legalPageSubtitle,
+  legalBackHome,
+  legalBadge,
+} from "@/content/legal-page";
 
 export default function Legal() {
   const { t } = useI18n();
@@ -57,7 +48,7 @@ export default function Legal() {
           className="inline-flex items-center gap-2 text-sm text-dark-400 hover:text-brand-400 transition-colors mb-8 group"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          {t(BACK_HOME)}
+          {t(legalBackHome)}
         </button>
 
         {/* Header */}
@@ -67,13 +58,13 @@ export default function Legal() {
           </div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 mb-4">
             <Scale size={12} className="text-brand-400" />
-            <span className="text-[10px] font-semibold text-brand-400 tracking-wider">LEGAL</span>
+            <span className="text-[10px] font-semibold text-brand-400 tracking-wider">{t(legalBadge)}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3">
-            <GradientText animated={true}>{t(PAGE_TITLE)}</GradientText>
+            <GradientText animated={true}>{t(legalPageTitle)}</GradientText>
           </h1>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base">
-            {t(PAGE_SUBTITLE)}
+            {t(legalPageSubtitle)}
           </p>
         </ScrollReveal>
 

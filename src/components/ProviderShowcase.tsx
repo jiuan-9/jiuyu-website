@@ -12,22 +12,20 @@
  */
 
 import ScrollReveal from "./ScrollReveal";
-
-const providers = [
-  { name: "深度求索", model: "DeepSeek" },
-  { name: "阿里云", model: "通义千问" },
-  { name: "硅基流动", model: "多模型平台" },
-  { name: "智谱", model: "GLM" },
-  { name: "月之暗面", model: "Kimi" },
-  { name: "阶跃星辰", model: "Step" },
-  { name: "科大讯飞", model: "星火" },
-  { name: "MiniMax", model: "海螺AI" },
-  { name: "腾讯", model: "混元" },
-  { name: "字节跳动", model: "豆包" },
-  { name: "百度", model: "文心一言" },
-];
+import { useI18n } from "@/store/i18n";
+import {
+  providerShowcaseBadge,
+  providerShowcaseTitleTemplate,
+  providerShowcaseSectionSubtitle,
+  pauseHint,
+  providers,
+} from "@/content";
 
 export default function ProviderShowcase() {
+  const { t } = useI18n();
+  const count = providers.length;
+  const title = t(providerShowcaseTitleTemplate).replace("{count}", String(count));
+
   // 复制一份用于无缝循环（marquee 效果需要重复内容）
   const loopProviders = [...providers, ...providers];
 
@@ -38,13 +36,18 @@ export default function ProviderShowcase() {
       <div className="container relative z-20 mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-8 sm:mb-10">
           <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
-            Multi-Provider
+            {t(providerShowcaseBadge)}
           </span>
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3">
-            接入<span className="text-gradient"> 11 家</span> AI 服务商
+            {title.split(count.toString()).map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && <span className="text-gradient">{count}</span>}
+              </span>
+            ))}
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            一个应用汇聚主流 AI 平台，无需反复切换，随心选择你喜欢的模型
+            {t(providerShowcaseSectionSubtitle)}
           </p>
         </ScrollReveal>
 
@@ -58,23 +61,23 @@ export default function ProviderShowcase() {
             <div className="provider-marquee-content">
               {loopProviders.map((provider, index) => (
                 <div
-                  key={`${provider.name}-${index}`}
+                  key={`${provider.name.zh}-${index}`}
                   className="flex-shrink-0 flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-3 sm:py-3.5 rounded-xl glass border border-white/[0.04] hover:border-brand-500/30 hover:bg-brand-500/5 transition-all duration-300 hover:-translate-y-1 group"
                 >
                   <div className="relative">
                     <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-brand-500/10 flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">
                       <span className="text-xs font-bold text-brand-400">
-                        {provider.name.charAt(0)}
+                        {t(provider.name).charAt(0)}
                       </span>
                     </div>
                     <div className="absolute inset-0 rounded-lg bg-brand-500/20 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-300" />
                   </div>
                   <div className="text-left">
                     <div className="text-sm font-medium text-white whitespace-nowrap group-hover:text-brand-300 transition-colors">
-                      {provider.name}
+                      {t(provider.name)}
                     </div>
                     <div className="text-[10px] text-dark-500 whitespace-nowrap">
-                      {provider.model}
+                      {t(provider.model)}
                     </div>
                   </div>
                 </div>
@@ -87,7 +90,7 @@ export default function ProviderShowcase() {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M17 8l4 4m0 0l-4 4m4-4H3"/>
               </svg>
-              鼠标悬停暂停滚动
+              {t(pauseHint)}
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 18l-6-6 6-6"/>
               </svg>

@@ -2,80 +2,43 @@ import { useState, useRef, useEffect } from "react";
 import { Code, BookOpen, Palette, MessageCircle } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
+import { useI18n } from "@/store/i18n";
+import type { I18nText } from "@/content";
+import {
+  useCases,
+  useCasesBadge,
+  useCasesSectionTitle,
+  useCasesSectionSubtitle,
+  expandLabel,
+  collapseLabel,
+  useCasesAvatarLabels,
+  codeLabelFallback,
+} from "@/content/use-cases";
+
+const iconMap: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
+  Code,
+  BookOpen,
+  Palette,
+  MessageCircle,
+};
 
 type Role = "user" | "ai";
 
-const useCases = [
-  {
-    icon: Code,
-    title: "编程助手",
-    subtitle: "调试、学习、优化——专属技术顾问",
-    color: "from-blue-500/20 to-cyan-500/5",
-    iconBg: "from-blue-500/20 to-cyan-500/10",
-    iconColor: "text-blue-400",
-    messages: [
-      { role: "user" as Role, text: "帮我写一个 Python 脚本，自动整理桌面文件" },
-      { role: "ai" as Role, text: "好的。我帮你写一个脚本，按文件扩展名自动分类到不同文件夹。支持自定义规则，可设为开机自启或手动运行。" },
-      { role: "user" as Role, text: "再加个功能：超过 30 天的文件自动归档到 Archive 文件夹" },
-      { role: "ai" as Role, text: "没问题。我在脚本里加上日期判断逻辑，匹配超过 30 天的文件移动到 Archive，保留原有的分类结构。" },
-    ],
-  },
-  {
-    icon: BookOpen,
-    title: "学习伴侣",
-    subtitle: "用通俗语言讲透复杂概念",
-    color: "from-purple-500/20 to-pink-500/5",
-    iconBg: "from-purple-500/20 to-pink-500/10",
-    iconColor: "text-purple-400",
-    messages: [
-      { role: "user" as Role, text: "什么是量子纠缠？用简单的比喻解释" },
-      { role: "ai" as Role, text: "想象你有两只手套，一左一右。把它们分别装进两个盒子，打乱后随机寄到北京和上海。当你在北京打开盒子看到左手套的瞬间，你就立刻知道上海那只一定是右手套——无论距离多远。量子纠缠也是类似，两个粒子的状态始终关联。" },
-      { role: "user" as Role, text: "那跟普通逻辑有什么不同？" },
-      { role: "ai" as Role, text: "关键区别：手套「左」和「右」在装盒时就确定了。但量子粒子在被观测前，处于「既左又右」的叠加态！观测的瞬间才坍缩成确定状态——这才是真正神奇的地方。" },
-    ],
-  },
-  {
-    icon: Palette,
-    title: "创作灵感",
-    subtitle: "文案、点子、策划——突破创意瓶颈",
-    color: "from-orange-500/20 to-yellow-500/5",
-    iconBg: "from-orange-500/20 to-yellow-500/10",
-    iconColor: "text-orange-400",
-    messages: [
-      { role: "user" as Role, text: "帮我写一段面向 Z 世代用户的 AI 产品 slogan" },
-      { role: "ai" as Role, text: "几个方向供你参考：\n\n「不设限，才无限」—— 简洁有力，暗示 AI 没有边界\n「你的智能，你做主」—— 强调用户掌控\n「聪明，无需条件」—— 暗示免费/易得\n\n你倾向哪种调性？我可以针对性地深化。" },
-      { role: "user" as Role, text: "第一个方向不错，帮我展开写一段产品描述" },
-      { role: "ai" as Role, text: "好的。「不设限，才无限。」\n\n在这个信息过载的时代，你需要的不是又一个工具，而是一个真正懂你的伙伴。Quiddity接入主流 AI，自由切换模型，精调 AI 人设——你的创造力，从此不受限。" },
-    ],
-  },
-  {
-    icon: MessageCircle,
-    title: "日常陪伴",
-    subtitle: "聊天、倾诉、解闷——随时在你身边",
-    color: "from-green-500/20 to-emerald-500/5",
-    iconBg: "from-green-500/20 to-emerald-500/10",
-    iconColor: "text-green-400",
-    messages: [
-      { role: "user" as Role, text: "推荐几部冷门但特别好看的科幻电影" },
-      { role: "ai" as Role, text: "推荐这几部：\n🎬 《月球》(2009) — 孤独宇航员的困境，反转惊艳\n🎬 《降临》(2016) — 语言学+外星人的神作\n🎬 《机械姬》(2014) — 图灵测试的极致演绎\n🎬 《她》(2013) — AI 与人的情感连接，温暖又深刻" },
-      { role: "user" as Role, text: "《她》确实很好看。你觉得未来 AI 真的会有情感吗？" },
-      { role: "ai" as Role, text: "这是个迷人的问题。目前 AI 能模拟情感表达，但离真正的「感受」还很远。不过换个角度想——如果一只狗摇尾巴我们认为是「开心」，那当 AI 展现出足够复杂的情感行为时，我们真的能分清「模拟」和「感受」的界限吗？" },
-    ],
-  },
-];
-
-function ChatBubble({ text, role, index }: { text: string; role: Role; index: number }) {
+function ChatBubble({ text, role, index }: { text: I18nText; role: Role; index: number }) {
+  const { t } = useI18n();
   return (
     <div className={`flex items-start gap-1.5 ${role === "user" ? "justify-end" : ""} animate-slide-in-up`} style={{ animationDelay: `${index * 100}ms` }}>
       {role === "ai" && (
-        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 shadow-lg shadow-brand-500/30">九</div>
+        <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 shadow-lg shadow-brand-500/30">
+          {t(useCasesAvatarLabels.ai)}
+        </div>
       )}
       <div className="max-w-[82%] min-w-0">
-        {parseContent(text).map((seg, si) =>
+        {parseContent(t(text)).map((seg, si) =>
           seg.type === "code" ? (
             <div key={si} className="my-2 rounded-xl overflow-hidden border border-white/[0.08] bg-[#0d1117] shadow-lg">
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.04] bg-[#161b22]/80">
-                <span className="text-[9px] text-dark-500 font-medium">{seg.language || "代码"}</span>
+                <span className="text-[9px] text-dark-500 font-medium">{seg.language || t(codeLabelFallback)}</span>
               </div>
               <pre className="px-3 py-2 text-[10px] leading-relaxed font-mono overflow-x-auto" style={{ fontFamily: "'JetBrains Mono','Fira Code','Consolas',monospace" }}>
                 <code dangerouslySetInnerHTML={{ __html: highlightCode(seg.content, seg.language || "") }} />
@@ -93,7 +56,9 @@ function ChatBubble({ text, role, index }: { text: string; role: Role; index: nu
         )}
       </div>
       {role === "user" && (
-        <div className="w-6 h-6 rounded-lg bg-dark-700/80 border border-white/[0.08] flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5">你</div>
+        <div className="w-6 h-6 rounded-lg bg-dark-700/80 border border-white/[0.08] flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5">
+          {t(useCasesAvatarLabels.user)}
+        </div>
       )}
     </div>
   );
@@ -110,8 +75,10 @@ function ExpandableCard({
   isOpen: boolean;
   onToggle: (idx: number | null) => void;
 }) {
+  const { t } = useI18n();
   const contentRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState<number>(0);
+  const Icon = iconMap[item.icon];
 
   useEffect(() => {
     if (!contentRef.current) return;
@@ -126,7 +93,7 @@ function ExpandableCard({
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-0 ${isOpen ? "opacity-30" : ""} transition-opacity duration-500`} />
-      
+
       <button
         onClick={() => onToggle(isOpen ? null : index)}
         className="w-full text-left p-5 cursor-pointer relative z-10"
@@ -136,22 +103,22 @@ function ExpandableCard({
             <div className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-500 shrink-0 ${
               isOpen ? `bg-gradient-to-br ${item.iconBg} scale-110` : `bg-dark-800`
             }`}>
-              <item.icon size={22} className={item.iconColor} />
+              {Icon && <Icon size={22} className={item.iconColor} />}
             </div>
             <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${item.iconBg} blur-lg opacity-0 ${isOpen ? "opacity-50" : ""} transition-opacity duration-500`} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-white">{item.title}</h3>
+              <h3 className="text-base font-semibold text-white">{t(item.title)}</h3>
               <span className="hidden sm:inline text-[11px] text-dark-500">—</span>
-              <span className="hidden sm:inline text-xs text-dark-400">{item.subtitle}</span>
+              <span className="hidden sm:inline text-xs text-dark-400">{t(item.subtitle)}</span>
             </div>
-            <p className="text-[10px] text-dark-500 mt-0.5 sm:hidden">{item.subtitle}</p>
+            <p className="text-[10px] text-dark-500 mt-0.5 sm:hidden">{t(item.subtitle)}</p>
           </div>
           <div className={`flex items-center gap-1.5 text-xs font-medium transition-colors shrink-0 ${
             isOpen ? "text-brand-400" : "text-dark-500"
           }`}>
-            <span>{isOpen ? "收起" : "展开预览"}</span>
+            <span>{isOpen ? t(collapseLabel) : t(expandLabel)}</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
               className={`transition-transform duration-300 ${isOpen ? "rotate-90" : ""}`}>
               <path d="M9 18l6-6-6-6"/>
@@ -168,7 +135,7 @@ function ExpandableCard({
           <div className={`h-[1px] mb-4 bg-gradient-to-r ${item.color} from-20% via-50% to-transparent`} />
           <div className="space-y-3">
             {item.messages.map((msg, i) => (
-              <ChatBubble key={i} text={msg.text} role={msg.role} index={i} />
+              <ChatBubble key={i} text={msg.text} role={msg.role as Role} index={i} />
             ))}
           </div>
         </div>
@@ -178,6 +145,7 @@ function ExpandableCard({
 }
 
 export default function UseCases() {
+  const { t } = useI18n();
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
 
   return (
@@ -188,18 +156,18 @@ export default function UseCases() {
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <ScrollReveal className="text-center mb-10 sm:mb-14">
-          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">Use Cases</span>
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">{t(useCasesBadge)}</span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-            Quiddity<span className="text-gradient"> 能做什么</span>
+            {t(useCasesSectionTitle)}
           </h2>
           <p className="text-dark-400 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-            不止聊天，更是工作、学习和生活中的得力助手
+            {t(useCasesSectionSubtitle)}
           </p>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5 max-w-5xl mx-auto">
           {useCases.map((item, index) => (
-            <ScrollReveal key={item.title} threshold={0.1}>
+            <ScrollReveal key={item.id} threshold={0.1}>
               <ExpandableCard
                 item={item}
                 index={index}

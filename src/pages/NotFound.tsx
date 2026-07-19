@@ -1,4 +1,12 @@
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/store/i18n";
+import {
+  notFoundTitle,
+  notFoundDescriptionLine1,
+  notFoundDescriptionLine2,
+  notFoundBackHome,
+  notFoundBackPrev,
+} from "@/content";
 
 /**
  * 404 页面 — 极简黑蓝主题
@@ -6,6 +14,7 @@ import { useNavigate } from "react-router-dom";
  */
 export default function NotFound() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen bg-dark-950 flex items-center justify-center px-6 overflow-hidden relative">
@@ -33,12 +42,12 @@ export default function NotFound() {
 
         {/* 文案 */}
         <h2 className="text-xl sm:text-2xl font-semibold text-white mb-3">
-          页面不存在
+          {t(notFoundTitle)}
         </h2>
         <p className="text-sm text-dark-400 mb-10 leading-relaxed">
-          你访问的页面可能已被移除、重命名，或从未存在。
+          {t(notFoundDescriptionLine1)}
           <br />
-          请检查链接或返回首页继续探索。
+          {t(notFoundDescriptionLine2)}
         </p>
 
         {/* 按钮组 */}
@@ -48,14 +57,14 @@ export default function NotFound() {
             onClick={() => navigate("/")}
             className="btn-press inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-brand-500 hover:bg-brand-400 text-dark-950 text-sm font-semibold transition-all duration-300 shadow-lg shadow-brand-500/20 w-full sm:w-auto"
           >
-            返回首页
+            {t(notFoundBackHome)}
           </button>
           <button
             type="button"
             onClick={() => navigate(-1)}
             className="btn-press inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full glass text-dark-200 hover:text-white text-sm transition-all duration-300 hover:border-brand-500/30 hover:bg-white/5 w-full sm:w-auto border-0 cursor-pointer"
           >
-            返回上一页
+            {t(notFoundBackPrev)}
           </button>
         </div>
       </div>

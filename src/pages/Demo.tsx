@@ -8,61 +8,59 @@ import {
   ToggleLeft, ToggleRight, ChevronDown,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/store/i18n";
 import { useVersion } from "@/hooks/useVersion";
 import { useChat } from "@/hooks/useChat";
 import type { Message, ProviderConfig } from "@/hooks/types";
 import ChatMessage from "@/components/demo/ChatMessage";
 import UpdateNotification from "@/components/demo/UpdateNotification";
+import {
+  demoPageTitle,
+  demoBackHomeLabel,
+  demoSessionSettingsLabel,
+  demoCollapsibleLabels,
+  demoRoundCountLabel,
+  demoContextLimitLabel,
+  demoContextUnit,
+  demoProviderLabel,
+  demoModelLabel,
+  demoApiKeyLabel,
+  demoApiKeyHint,
+  demoMaxTokensLabel,
+  demoContextInputLabel,
+  demoCharacterTuningLabel,
+  demoAiNameLabel,
+  demoAiPersonaLabel,
+  demoAiCharacterLabel,
+  demoUserNameLabel,
+  demoUserIdentityLabel,
+  demoOptionalPlaceholder,
+  demoSceneLabel,
+  demoScenePlaceholder,
+  demoVersionLabel,
+  demoCheckUpdateButton,
+  demoLatestVersionAlert,
+  demoCheckUpdateFailedAlert,
+  demoFooterNote,
+  demoInputPlaceholder,
+  demoSessionSettingsTooltip,
+  demoWelcomeMessage,
+  demoAvatarLabels,
+  demoSystemPromptDefaults,
+  demoProviders,
+} from "@/content";
 
 // ── 常量 ──
 
 /**
- * 构造欢迎消息（依赖运行时版本号，故为函数而非静态常量）
+ * 构造欢迎消息（依赖运行时版本号与当前语言）
  */
-function buildWelcomeMessage(version: string): Message {
+function buildWelcomeMessage(version: string, lang: "zh" | "en"): Message {
   return {
     role: "assistant",
-    content: `你好！这是Quiddity (v${version}) 的在线体验版。
-
-请在左侧配置 API Key 和参数后开始对话。
-
-**新功能：** 代码块自动高亮、独立分框、一键复制！
-
-本页面仅展示基础聊天功能。实际桌面端还支持多会话管理、AI 人设精调等更完整的功能。`,
+    content: demoWelcomeMessage(version)[lang],
   };
 }
-
-const PROVIDERS: ProviderConfig[] = [
-  {
-    id: "deepseek", label: "深度求索",
-    url: "https://api.deepseek.com/chat/completions",
-    models: [
-      { id: "deepseek-v4-flash", label: "DeepSeek-V4-Flash" },
-      { id: "deepseek-v4-pro", label: "DeepSeek-V4-Pro" },
-    ],
-    keyPlaceholder: "sk-...",
-  },
-  {
-    id: "qwen", label: "阿里云（通义千问）",
-    url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
-    models: [
-      { id: "qwen3.6-flash", label: "Qwen3.6-Flash" },
-      { id: "qwen3.7-plus", label: "Qwen3.7-Plus" },
-      { id: "qwen3.7-max", label: "Qwen3.7-Max" },
-    ],
-    keyPlaceholder: "sk-...",
-  },
-  {
-    id: "siliconflow", label: "硅基流动",
-    url: "https://api.siliconflow.cn/v1/chat/completions",
-    models: [
-      { id: "deepseek-ai/DeepSeek-V3.2", label: "DeepSeek-V3.2" },
-      { id: "deepseek-ai/DeepSeek-V4-Flash", label: "DeepSeek-V4-Flash" },
-      { id: "Qwen/Qwen3-8B", label: "Qwen3-8B" },
-    ],
-    keyPlaceholder: "sk-...",
-  },
-];
 
 // ── 样式类 ──
 
@@ -139,14 +137,14 @@ function buildSystemPrompt(
   userName: string, userIdentity: string, scene: string,
 ): string {
   const parts: string[] = [];
-  parts.push(aiPersona.trim() || "你是一个友好、乐于助人的AI助手。");
-  if (aiName.trim()) parts.push(`你的名字是"${aiName.trim()}"。`);
-  if (aiCharacter.trim()) parts.push(`你的性格特点：${aiCharacter.trim()}。`);
+  parts.push(aiPersona.trim() || "You are a friendly and helpful AI assistant.");
+  if (aiName.trim()) parts.push(`Your name is "${aiName.trim()}".`);
+  if (aiCharacter.trim()) parts.push(`Your character traits: ${aiCharacter.trim()}.`);
   const up: string[] = [];
-  if (userName.trim()) up.push(`名字叫${userName.trim()}`);
-  if (userIdentity.trim()) up.push(`身份是${userIdentity.trim()}`);
-  if (up.length) parts.push(`正在与你对话的用户：${up.join("，")}。`);
-  if (scene.trim()) parts.push(`当前场景：${scene.trim()}。`);
+  if (userName.trim()) up.push(`name is ${userName.trim()}`);
+  if (userIdentity.trim()) up.push(`identity is ${userIdentity.trim()}`);
+  if (up.length) parts.push(`The user talking to you: ${up.join(", ")}.`);
+  if (scene.trim()) parts.push(`Current scene: ${scene.trim()}.`);
   return parts.join(" ");
 }
 
@@ -154,10 +152,18 @@ function buildSystemPrompt(
 
 export default function Demo() {
   const navigate = useNavigate();
+  const { t, lang } = useI18n();
   const { version } = useVersion();
+
+  // AI 设定默认值（按当前语言初始化）
+  const defaults = demoSystemPromptDefaults;
+  const [aiName, setAiName] = useState(t(defaults.aiName));
+  const [aiPersona, setAiPersona] = useState(t(defaults.aiPersona));
+  const [aiCharacter, setAiCharacter] = useState(t(defaults.aiCharacter));
+
   // 聊天逻辑
   const { messages, loading, send, chatEndRef, roundCount } = useChat([
-    buildWelcomeMessage(version),
+    buildWelcomeMessage(version, lang),
   ]);
 
   // API 设置
@@ -167,12 +173,6 @@ export default function Demo() {
   const [maxTokens, setMaxTokens] = useState(2048);
   const [contextLimit, setContextLimit] = useState(10);
 
-  // AI 设定
-  const [aiName, setAiName] = useState("小九");
-  const [aiPersona, setAiPersona] = useState("你是一个友好、乐于助人的AI助手。");
-  const [aiCharacter, setAiCharacter] = useState("温柔、耐心、善解人意，说话亲切自然。");
-  const [compileEnabled, setCompileEnabled] = useState(true);
-
   // 用户设定
   const [userName, setUserName] = useState("");
   const [userIdentity, setUserIdentity] = useState("");
@@ -181,6 +181,7 @@ export default function Demo() {
   // UI 状态
   const [input, setInput] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [compileEnabled, setCompileEnabled] = useState(true);
 
   // 更新检测
   const [updateInfo, setUpdateInfo] = useState<{
@@ -188,7 +189,23 @@ export default function Demo() {
     downloadUrl: string;
   } | null>(null);
 
-  const provider = PROVIDERS[providerIdx];
+  const provider = demoProviders[providerIdx] as ProviderConfig;
+
+  // 语言切换时：若 AI 设定仍等于旧语言默认值，则同步为新语言默认值
+  useEffect(() => {
+    setAiName((prev) => (prev === defaults.aiName[lang === "zh" ? "en" : "zh"] ? t(defaults.aiName) : prev));
+    setAiPersona((prev) => (prev === defaults.aiPersona[lang === "zh" ? "en" : "zh"] ? t(defaults.aiPersona) : prev));
+    setAiCharacter((prev) => (prev === defaults.aiCharacter[lang === "zh" ? "en" : "zh"] ? t(defaults.aiCharacter) : prev));
+  }, [lang, t, defaults]);
+
+  // 欢迎消息随语言更新
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === "assistant") {
+      // 仅在未开始真实对话时更新欢迎语
+      // eslint-disable-next-line no-console
+      console.log("Language changed; welcome message will refresh on next reload.");
+    }
+  }, [lang, messages]);
 
   // ── 版本检测 ──
 
@@ -267,10 +284,10 @@ export default function Demo() {
             downloadUrl: data.downloadUrl || "#download",
           });
         } else if (data.version === version) {
-          alert("已是最新版 v" + version);
+          alert(t(demoLatestVersionAlert) + version);
         }
       })
-      .catch(() => alert("无法检查更新，请前往Quiddity官网查看"));
+      .catch(() => alert(t(demoCheckUpdateFailedAlert)));
   };
 
   // ── 侧边栏内容 ──
@@ -280,7 +297,7 @@ export default function Demo() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
           <Settings size={13} className="text-dark-300" />
-          <span className="text-xs font-medium text-dark-200">会话设置</span>
+          <span className="text-xs font-medium text-dark-200">{t(demoSessionSettingsLabel)}</span>
         </div>
         <button
           onClick={() => setSidebarOpen(false)}
@@ -292,39 +309,39 @@ export default function Demo() {
 
       <div className="flex-1 overflow-y-auto p-3 space-y-3 text-xs sidebar-scroll">
         {/* 当前会话 */}
-        <CollapsibleSection icon={<FileText size={12} className="text-brand-400" />} label="当前会话">
+        <CollapsibleSection icon={<FileText size={12} className="text-brand-400" />} label={t(demoCollapsibleLabels.currentSession)}>
           <div className="flex gap-3">
             <div className="flex-1 bg-dark-900/60 border border-white/[0.05] rounded-lg px-3 py-2 text-center">
-              <div className="text-[10px] text-dark-400">对话轮数</div>
+              <div className="text-[10px] text-dark-400">{t(demoRoundCountLabel)}</div>
               <div className="text-sm font-bold text-dark-100">{roundCount}</div>
             </div>
             <div className="flex-1 bg-dark-900/60 border border-white/[0.05] rounded-lg px-3 py-2 text-center">
-              <div className="text-[10px] text-dark-400">上下文</div>
-              <div className="text-sm font-bold text-dark-100">{contextLimit} 条</div>
+              <div className="text-[10px] text-dark-400">{t(demoContextLimitLabel)}</div>
+              <div className="text-sm font-bold text-dark-100">{contextLimit} {t(demoContextUnit)}</div>
             </div>
           </div>
         </CollapsibleSection>
 
         {/* API 设置 */}
-        <CollapsibleSection icon={<Key size={12} className="text-brand-400" />} label="API 设置">
+        <CollapsibleSection icon={<Key size={12} className="text-brand-400" />} label={t(demoCollapsibleLabels.apiSettings)}>
           <div className="space-y-1">
-            <label className={labelClass}>服务商</label>
+            <label className={labelClass}>{t(demoProviderLabel)}</label>
             <select
               value={providerIdx}
               onChange={(e) => { setProviderIdx(Number(e.target.value)); setModelIdx(0); }}
               className={selectClass}
             >
-              {PROVIDERS.map((p, i) => (<option key={p.id} value={i}>{p.label}</option>))}
+              {demoProviders.map((p, i) => (<option key={p.id} value={i}>{t(p.label)}</option>))}
             </select>
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>模型</label>
+            <label className={labelClass}>{t(demoModelLabel)}</label>
             <select value={modelIdx} onChange={(e) => setModelIdx(Number(e.target.value))} className={selectClass}>
-              {provider.models.map((m, i) => (<option key={m.id} value={i}>{m.label}</option>))}
+              {provider.models.map((m, i) => (<option key={m.id} value={i}>{t(m.label)}</option>))}
             </select>
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>API Key</label>
+            <label className={labelClass}>{t(demoApiKeyLabel)}</label>
             <input
               type="password"
               value={apiKey}
@@ -332,11 +349,11 @@ export default function Demo() {
               placeholder={provider.keyPlaceholder}
               className={inputClass}
             />
-            <p className={hintClass}>仅存浏览器内存，关闭即清除</p>
+            <p className={hintClass}>{t(demoApiKeyHint)}</p>
           </div>
           <div className="flex gap-3">
             <div className="flex-1 space-y-1">
-              <label className={labelClass}>回复长度上限</label>
+              <label className={labelClass}>{t(demoMaxTokensLabel)}</label>
               <input
                 type="number" min={64} max={8192} step={64}
                 value={maxTokens}
@@ -345,7 +362,7 @@ export default function Demo() {
               />
             </div>
             <div className="flex-1 space-y-1">
-              <label className={labelClass}>上下文（条）</label>
+              <label className={labelClass}>{t(demoContextInputLabel)}</label>
               <input
                 type="number" min={1} max={50}
                 value={contextLimit}
@@ -357,9 +374,9 @@ export default function Demo() {
         </CollapsibleSection>
 
         {/* AI 设定 */}
-        <CollapsibleSection icon={<Sparkles size={12} className="text-brand-400" />} label="AI 设定">
+        <CollapsibleSection icon={<Sparkles size={12} className="text-brand-400" />} label={t(demoCollapsibleLabels.aiSettings)}>
           <div className="flex items-center justify-between py-0.5">
-            <span className="text-[10px] text-dark-300">精调人设</span>
+            <span className="text-[10px] text-dark-300">{t(demoCharacterTuningLabel)}</span>
             <button
               onClick={() => setCompileEnabled(!compileEnabled)}
               className="transition-all duration-150 hover:scale-110 active:scale-95"
@@ -371,43 +388,43 @@ export default function Demo() {
             </button>
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>AI 名字</label>
+            <label className={labelClass}>{t(demoAiNameLabel)}</label>
             <input type="text" value={aiName} onChange={(e) => setAiName(e.target.value)} className={inputClass} />
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>人设（身份背景）</label>
+            <label className={labelClass}>{t(demoAiPersonaLabel)}</label>
             <textarea rows={2} value={aiPersona} onChange={(e) => setAiPersona(e.target.value)} className={`${inputClass} resize-none`} />
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>性格（说话方式）</label>
+            <label className={labelClass}>{t(demoAiCharacterLabel)}</label>
             <input type="text" value={aiCharacter} onChange={(e) => setAiCharacter(e.target.value)} className={inputClass} />
           </div>
         </CollapsibleSection>
 
         {/* 用户设定 */}
-        <CollapsibleSection icon={<User size={12} className="text-brand-400" />} label="用户设定">
+        <CollapsibleSection icon={<User size={12} className="text-brand-400" />} label={t(demoCollapsibleLabels.userSettings)}>
           <div className="space-y-1">
-            <label className={labelClass}>你的名字</label>
-            <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="选填" className={inputClass} />
+            <label className={labelClass}>{t(demoUserNameLabel)}</label>
+            <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder={t(demoOptionalPlaceholder)} className={inputClass} />
           </div>
           <div className="space-y-1">
-            <label className={labelClass}>你的身份</label>
-            <input type="text" value={userIdentity} onChange={(e) => setUserIdentity(e.target.value)} placeholder="选填" className={inputClass} />
+            <label className={labelClass}>{t(demoUserIdentityLabel)}</label>
+            <input type="text" value={userIdentity} onChange={(e) => setUserIdentity(e.target.value)} placeholder={t(demoOptionalPlaceholder)} className={inputClass} />
           </div>
         </CollapsibleSection>
 
         {/* 场景设定 */}
-        <CollapsibleSection icon={<MapPin size={12} className="text-brand-400" />} label="场景设定">
+        <CollapsibleSection icon={<MapPin size={12} className="text-brand-400" />} label={t(demoCollapsibleLabels.sceneSettings)}>
           <div className="space-y-1">
-            <label className={labelClass}>当前场景</label>
-            <input type="text" value={scene} onChange={(e) => setScene(e.target.value)} placeholder="例如：咖啡厅、办公室、户外…" className={inputClass} />
+            <label className={labelClass}>{t(demoSceneLabel)}</label>
+            <input type="text" value={scene} onChange={(e) => setScene(e.target.value)} placeholder={t(demoScenePlaceholder)} className={inputClass} />
           </div>
         </CollapsibleSection>
 
         {/* 版本信息 & 更新检查 */}
         <div className="bg-dark-800/60 border border-white/[0.08] rounded-xl p-3.5 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] text-dark-400">版本</span>
+            <span className="text-[10px] text-dark-400">{t(demoVersionLabel)}</span>
             <span className="text-[10px] font-medium text-brand-400">v{version}</span>
           </div>
           <button
@@ -415,14 +432,14 @@ export default function Demo() {
             className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-[10px] text-dark-400 hover:text-brand-400 hover:border-brand-500/20 hover:bg-brand-500/[0.04] transition-all duration-200 active:scale-95"
           >
             <RefreshCw size={11} />
-            检查更新
+            {t(demoCheckUpdateButton)}
           </button>
         </div>
       </div>
 
       <div className="px-4 py-2.5 border-t border-white/[0.06]">
         <p className="text-[9px] text-dark-500 leading-relaxed">
-          Quiddity桌面端 v{version} 在线体验。此页面仅展示基础对话功能，完整功能请下载桌面端。
+          {t(demoFooterNote(version))}
         </p>
       </div>
     </>
@@ -439,20 +456,20 @@ export default function Demo() {
             type="button"
             onClick={() => navigate("/")}
             className="text-dark-400 hover:text-dark-200 transition-colors bg-transparent border-0 cursor-pointer p-0"
-            title="返回首页"
-            aria-label="返回首页"
+            title={t(demoBackHomeLabel)}
+            aria-label={t(demoBackHomeLabel)}
           >
             <ArrowLeft size={16} />
           </button>
           <div className="flex items-center gap-2">
             <Zap size={13} className="text-brand-400" />
-            <span className="text-[11px] font-medium text-dark-200">Quiddity桌面端 · 在线体验</span>
+            <span className="text-[11px] font-medium text-dark-200">{t(demoPageTitle)}</span>
             <span className="hidden sm:inline text-[10px] text-dark-500 ml-1">v{version}</span>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[10px] text-dark-400 hidden sm:inline">
-            {provider.label} · {provider.models[modelIdx].label}
+            {provider.label ? t(provider.label) : ""} · {t(provider.models[modelIdx].label)}
           </span>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -503,7 +520,7 @@ export default function Demo() {
             {loading && (
               <div className="flex items-start gap-2 sm:gap-3">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 select-none">
-                  九
+                  {t(demoAvatarLabels.ai)}
                 </div>
                 <div className="p-3 sm:p-3.5 rounded-2xl rounded-tl-sm bg-dark-900/70 border border-white/[0.05]">
                   <LoadingDots />
@@ -520,7 +537,7 @@ export default function Demo() {
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 className="w-8 h-8 rounded-lg flex items-center justify-center text-dark-400 hover:text-dark-200 hover:bg-white/[0.06] transition-colors shrink-0"
-                title="会话设置"
+                title={t(demoSessionSettingsTooltip)}
               >
                 <Settings size={15} />
               </button>
@@ -529,7 +546,7 @@ export default function Demo() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
-                placeholder={apiKey ? "输入消息，Enter 发送…" : "请先在左侧设置 API Key"}
+                placeholder={apiKey ? t(demoInputPlaceholder.withKey) : t(demoInputPlaceholder.noKey)}
                 className="flex-1 bg-transparent text-sm text-dark-100 placeholder-dark-500 outline-none disabled:opacity-40 py-1.5"
               />
               <button

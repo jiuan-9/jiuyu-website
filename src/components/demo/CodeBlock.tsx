@@ -3,6 +3,13 @@
 
 import { useState, useCallback } from "react";
 import { Check, Copy } from "lucide-react";
+import { useI18n } from "@/store/i18n";
+import {
+  demoCodeFallbackLabel,
+  demoCopyCodeTooltip,
+  demoCopiedText,
+  demoCopyButtonLabel,
+} from "@/content";
 import { highlightCode } from "@/lib/syntax-highlight";
 
 interface CodeBlockProps {
@@ -46,6 +53,7 @@ const LANG_LABELS: Record<string, string> = {
 };
 
 export default function CodeBlock({ code, language }: CodeBlockProps) {
+  const { t } = useI18n();
   const [copied, setCopied] = useState(false);
   const langLabel = language ? LANG_LABELS[language.toLowerCase()] || language : undefined;
   const highlighted = highlightCode(code, language || "");
@@ -81,7 +89,7 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
             </span>
           ) : (
             <span className="text-[10px] font-medium text-dark-500 tracking-wide">
-              代码
+              {t(demoCodeFallbackLabel)}
             </span>
           )}
           {/* 三个圆点装饰 */}
@@ -94,17 +102,17 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
         <button
           onClick={handleCopy}
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] text-dark-400 hover:text-brand-400 hover:bg-white/[0.06] active:scale-95 transition-all duration-200"
-          title={copied ? "已复制" : "复制代码"}
+          title={copied ? t(demoCopiedText) : t(demoCopyCodeTooltip)}
         >
           {copied ? (
             <>
               <Check size={12} className="text-green-400" />
-              <span className="text-green-400">已复制</span>
+              <span className="text-green-400">{t(demoCopiedText)}</span>
             </>
           ) : (
             <>
               <Copy size={12} />
-              <span>复制</span>
+              <span>{t(demoCopyButtonLabel)}</span>
             </>
           )}
         </button>

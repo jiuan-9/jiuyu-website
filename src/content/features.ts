@@ -1,4 +1,10 @@
-import type { Feature, Highlight } from "./types";
+import type { Feature, Highlight, I18nText } from "./types";
+
+/** 功能区 eyebrow */
+export const featuresBadge: I18nText = {
+  zh: "Features",
+  en: "Features",
+};
 
 /** 核心功能特性（6 项） */
 export const features: Feature[] = [

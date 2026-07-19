@@ -1,4 +1,22 @@
-import type { Stat } from "./types";
+import type { Stat, I18nText } from "./types";
+
+/** Stats 区 eyebrow */
+export const statsSectionBadge: I18nText = {
+  zh: "Platform",
+  en: "Platform",
+};
+
+/** Stats 区标题 */
+export const statsSectionTitle: I18nText = {
+  zh: "平台能力",
+  en: "Platform Capability",
+};
+
+/** Stats 区高亮词 */
+export const statsSectionHighlight: I18nText = {
+  zh: "核心数据",
+  en: "Key Metrics",
+};
 
 /**
  * 数据统计区

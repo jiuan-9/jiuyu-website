@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronUp } from "lucide-react";
+import { useI18n } from "@/store/i18n";
+import { backToTopAriaLabel } from "@/content";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
@@ -20,6 +22,7 @@ function Divider() {
 }
 
 function BackToTop() {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ function BackToTop() {
       className={`fixed bottom-8 right-8 z-40 w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400 transition-all duration-400 backdrop-blur-md ${
         visible ? "back-to-top visible" : "back-to-top pointer-events-none"
       }`}
-      aria-label="回到顶部"
+      aria-label={t(backToTopAriaLabel)}
     >
       <ChevronUp size={18} />
     </button>

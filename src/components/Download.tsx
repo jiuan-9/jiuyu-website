@@ -1,7 +1,23 @@
 import { Download, Monitor, Smartphone, Globe, Sparkles } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
+import { useI18n } from "@/store/i18n";
+import {
+  downloadBadge,
+  downloadSectionTitle,
+  downloadSectionSubtitle,
+  desktopTitle,
+  desktopVersion,
+  desktopBadge,
+  demoTitle,
+  demoDesc,
+  mobileTitle,
+  mobileDesc,
+  downloadMetaTags,
+} from "@/content";
 
 export default function DownloadSection() {
+  const { t } = useI18n();
+
   return (
     <section id="download" className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950 to-black" />
@@ -10,12 +26,19 @@ export default function DownloadSection() {
 
       <div className="container relative z-10 mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>
-          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">Download</span>
+          <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
+            {t(downloadBadge)}
+          </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-            获取<span className="text-gradient"> Quiddity</span>
+            {t(downloadSectionTitle).split("Quiddity").map((part, i, arr) => (
+              <span key={i}>
+                {part}
+                {i < arr.length - 1 && <span className="text-gradient">Quiddity</span>}
+              </span>
+            ))}
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base mb-10 sm:mb-14 leading-relaxed px-2">
-            桌面端完全免费，无需注册即可使用。内置自动更新检测，随时保持最新版本。
+            {t(downloadSectionSubtitle)}
           </p>
         </ScrollReveal>
 
@@ -32,10 +55,12 @@ export default function DownloadSection() {
               </div>
               <div className="text-left min-w-0 flex-1 relative z-10">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-semibold text-white">Windows 桌面端</span>
-                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gradient-to-r from-brand-500/20 to-brand-600/15 text-[9px] font-bold text-brand-400">NEW</span>
+                  <span className="text-sm font-semibold text-white">{t(desktopTitle)}</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-gradient-to-r from-brand-500/20 to-brand-600/15 text-[9px] font-bold text-brand-400">
+                    {t(desktopBadge)}
+                  </span>
                 </div>
-                <div className="text-xs text-dark-400 mt-0.5">v1.1.0 · 便携版</div>
+                <div className="text-xs text-dark-400 mt-0.5">{t(desktopVersion)}</div>
               </div>
               <Download size={16} className="text-dark-500 group-hover:text-brand-400 transition-colors ml-auto shrink-0 relative z-10" />
             </a>
@@ -50,8 +75,8 @@ export default function DownloadSection() {
                 <Globe size={22} className="text-brand-400" />
               </div>
               <div className="text-left min-w-0 flex-1 relative z-10">
-                <div className="text-sm font-semibold text-white">在线体验</div>
-                <div className="text-xs text-dark-400 mt-0.5">无需下载，浏览器直接聊</div>
+                <div className="text-sm font-semibold text-white">{t(demoTitle)}</div>
+                <div className="text-xs text-dark-400 mt-0.5">{t(demoDesc)}</div>
               </div>
             </a>
 
@@ -61,25 +86,19 @@ export default function DownloadSection() {
                 <Smartphone size={22} className="text-dark-400" />
               </div>
               <div className="text-left min-w-0 flex-1">
-                <div className="text-sm font-semibold text-dark-300">移动端</div>
-                <div className="text-xs text-dark-500 mt-0.5">全新 AI 工具 · 即将推出</div>
+                <div className="text-sm font-semibold text-dark-300">{t(mobileTitle)}</div>
+                <div className="text-xs text-dark-500 mt-0.5">{t(mobileDesc)}</div>
               </div>
             </div>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[10px] sm:text-[11px] text-dark-500 px-2">
-            <span className="flex items-center gap-1">
-              <Sparkles size={10} className="text-brand-400" />
-              版本 1.1.0
-            </span>
-            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
-            <span>Windows 10+</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
-            <span>完全免费</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
-            <span>无需注册</span>
-            <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />
-            <span>代码高亮</span>
+            {downloadMetaTags.map((tag, idx) => (
+              <span key={tag.label.zh} className="flex items-center gap-1">
+                {idx === 0 ? <Sparkles size={10} className="text-brand-400" /> : <span className="w-1 h-1 rounded-full bg-dark-700 hidden sm:inline" />}
+                {t(tag.label)}
+              </span>
+            ))}
           </div>
         </ScrollReveal>
       </div>

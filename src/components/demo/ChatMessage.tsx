@@ -2,6 +2,8 @@
 // 自动解析消息内容：文字用气泡显示，代码块用独立代码框显示
 
 import CodeBlock from "./CodeBlock";
+import { useI18n } from "@/store/i18n";
+import { demoAvatarLabels } from "@/content";
 import { parseContent } from "@/lib/syntax-highlight";
 
 interface ChatMessageProps {
@@ -30,6 +32,7 @@ function renderText(text: string): string {
 }
 
 export default function ChatMessage({ content, isUser }: ChatMessageProps) {
+  const { t } = useI18n();
   const segments = parseContent(content);
 
   return (
@@ -37,7 +40,7 @@ export default function ChatMessage({ content, isUser }: ChatMessageProps) {
       {/* AI 头像 */}
       {!isUser && (
         <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 select-none">
-          九
+          {t(demoAvatarLabels.ai)}
         </div>
       )}
 
@@ -67,7 +70,7 @@ export default function ChatMessage({ content, isUser }: ChatMessageProps) {
       {/* 用户头像 */}
       {isUser && (
         <div className="w-7 h-7 rounded-lg bg-dark-700 flex items-center justify-center text-white text-[10px] font-bold shrink-0 mt-0.5 select-none">
-          你
+          {t(demoAvatarLabels.user)}
         </div>
       )}
     </div>

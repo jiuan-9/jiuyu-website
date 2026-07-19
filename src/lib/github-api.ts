@@ -29,7 +29,7 @@ const API_BASE = "https://api.github.com";
 const CACHE_TTL = 5 * 60 * 1000;
 const CACHE_KEY = "quiddity-github-stats";
 
-/** 可选 token（若用户在 Admin 设置了，可提升 rate limit） */
+/** 可选 token（localStorage，用于提升 GitHub API rate limit） */
 const TOKEN_KEY = "quiddity-github-token";
 
 export interface GitHubStats {

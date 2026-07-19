@@ -4,6 +4,12 @@
 
 import { useState, useEffect } from "react";
 import { X, Download, Sparkles } from "lucide-react";
+import { useI18n } from "@/store/i18n";
+import {
+  updateNotificationTitle,
+  updateNotificationDesc,
+  updateNotificationButton,
+} from "@/content";
 
 interface UpdateNotificationProps {
   version: string;
@@ -16,6 +22,7 @@ export default function UpdateNotification({
   downloadUrl,
   onDismiss,
 }: UpdateNotificationProps) {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
@@ -62,7 +69,7 @@ export default function UpdateNotification({
           {/* 内容 */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2 mb-1">
-              <span className="text-xs font-semibold text-white">新版本可用</span>
+              <span className="text-xs font-semibold text-white">{t(updateNotificationTitle)}</span>
               <button
                 onClick={handleDismiss}
                 className="w-5 h-5 rounded-md flex items-center justify-center text-dark-500 hover:text-dark-300 hover:bg-white/[0.06] transition-colors shrink-0"
@@ -71,7 +78,7 @@ export default function UpdateNotification({
               </button>
             </div>
             <p className="text-[11px] text-dark-400 leading-relaxed mb-3">
-              Quiddity <span className="text-brand-400 font-medium">v{version}</span> 已发布，建议更新以获取最新功能。
+              {t(updateNotificationDesc(version))}
             </p>
             <a
               href={downloadUrl}
@@ -80,7 +87,7 @@ export default function UpdateNotification({
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-400 text-white text-[11px] font-medium transition-all duration-200 active:scale-95"
             >
               <Download size={13} />
-              前往下载
+              {t(updateNotificationButton)}
             </a>
           </div>
         </div>

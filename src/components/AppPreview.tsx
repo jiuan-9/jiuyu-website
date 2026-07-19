@@ -1,58 +1,38 @@
-import { Monitor, Settings, Search, MoreVertical, Sun, Image, Shield, Zap, Layers, Palette } from "lucide-react";
+import { Monitor, Settings, Search, MoreVertical, Sun, Image, Zap, Layers, Shield, Palette } from "lucide-react";
 import { useState } from "react";
 import ScrollReveal from "./ScrollReveal";
 import { parseContent, highlightCode } from "@/lib/syntax-highlight";
 import { scrollToSection } from "@/lib/scroll";
+import { useI18n } from "@/store/i18n";
+import {
+  appPreviewBadge,
+  appPreviewSectionTitle,
+  appPreviewSectionSubtitle,
+  appPreviewHint,
+  appPreviewChatSessions,
+  appPreviewInputPlaceholder,
+  appPreviewSenderLabels,
+  appPreviewMobileHighlights,
+  appPreviewFeatureTags,
+  appPreviewMobileCta,
+} from "@/content/app-preview";
 
-type MSG = { role: "user" | "ai"; text: string };
-
-const chatData: { name: string; model: string; messages: MSG[] }[] = [
-  {
-    name: "编程助手",
-    model: "DeepSeek V4 Pro",
-    messages: [
-      { role: "user", text: "帮我写一段 Python 爬虫代码" },
-      { role: "ai", text: "好的呀～你需要爬取什么类型的数据呢？网页、API 还是文件？告诉我具体需求，我帮你写完整的爬虫代码 😊" },
-      { role: "user", text: "想爬一个新闻网站的文章标题和链接" },
-      { role: "ai", text: "明白了！给你写一个用 requests + BeautifulSoup 的实现：\n\n```python\nimport requests\nfrom bs4 import BeautifulSoup\n\nurl = \"https://example.com/news\"\nresp = requests.get(url)\nsoup = BeautifulSoup(resp.text, \"html.parser\")\n\nfor article in soup.select(\".article-title\"):\n    print(article.text.strip(), article[\"href\"])\n```\n\n先用这个试试，如果网站结构不一样，告诉我具体网址，我帮你调选择器～" },
-    ],
-  },
-  {
-    name: "英语学习",
-    model: "Kimi K2.6",
-    messages: [
-      { role: "user", text: "How do I use 'nevertheless' in a sentence?" },
-      { role: "ai", text: "好问题！'Nevertheless' 意思是「尽管如此」/「不过」，用来表示转折。\n\n结构是：Sentence 1. Nevertheless, Sentence 2.\n\n来看两个例句：\n• It was raining heavily. Nevertheless, we went hiking.\n  虽然下着大雨，但我们还是去远足了。\n\n• The exam was difficult. Nevertheless, she passed with flying colors.\n  考试很难，但她依然高分通过。\n\n要不要自己造个句子试试？我帮你检查～" },
-      { role: "user", text: "I'm tired. Nevertheless, I'll finish this report." },
-      { role: "ai", text: "完全正确，而且用得很自然！👏\n\n再教你一个进阶用法：'Nevertheless' 也可以放句尾——\n「The plan had flaws. We succeeded, nevertheless.」\n\n中文习惯把「尽管如此」放前面，英语放句尾也很常见，这是两种语言思维上的一个小差异，注意到了就会让你的表达更地道。" },
-    ],
-  },
-  {
-    name: "产品脑暴",
-    model: "Qwen 3.7 Max",
-    messages: [
-      { role: "user", text: "我们正在做一个面向设计师的 AI 工具，帮我起几个产品名" },
-      { role: "ai", text: "有意思！帮你从几个不同角度想想：\n\n— 灵感向：灵犀 — 取自「心有灵犀」，暗示 AI 能秒懂设计师的想法\n— 专业向：像素笔记 — 精准、细节，设计师的日常\n— 诗意向：墨迹 — 简洁有中国味，水墨与 AI 的碰撞\n\n你的目标用户是国内设计师还是面向全球呢？这个会影响命名方向～" },
-      { role: "user", text: "国内为主，偏好简洁好记的中文名" },
-      { role: "ai", text: "那推荐这几个方向，都控制在两三个字：\n\n灵感 — 直白有力，用户一看就懂\n素记 — 「素」是素描的素，简洁大气\n设计力 — 直接传达「给设计师赋能」这个卖点\n\n我个人最推荐「灵感」，中文有温度，拼音 LingGan 也能注册域名。你觉得哪个方向比较对味？" },
-    ],
-  },
-  {
-    name: "日常闲聊",
-    model: "豆包 Seed 2.1 Pro",
-    messages: [
-      { role: "user", text: "推荐几部冷门但特别好看的科幻电影吧" },
-      { role: "ai", text: "这个我擅长！给你挑几部口碑好但不算热门的：\n\n🎬 《月球》(2009) — 一个人在月球基地的孤独与反转，山姆·洛克威尔演技封神\n🎬 《降临》(2016) — 语言学家与外星文明的哲学碰撞，看完会想很久\n🎬 《机械姬》(2014) — 图灵测试演绎到极致，氛围感拉满\n🎬 《她》(2013) — 人与 AI 的情感连接，温暖又让人深思\n\n看过哪部？按你的口味我再精准推荐～" },
-      { role: "user", text: "《她》看了两遍，特别喜欢" },
-      { role: "ai", text: "那你的品味我们很合拍！《她》的内核是「孤独与连接」，顺着这个方向推荐：\n\n🎬 《暖暖内含光》(2004) — 如果记忆可以删除，你还会爱上同一个人吗？\n🎬 《龙虾》(2015) — 荒诞设定下的情感寓言，冷幽默里藏着深深的孤独\n🎬 《成为约翰·马尔科维奇》(1999) — 同一导演的脑洞神作，关于身份与意识\n\n这三部都不是传统科幻，但都在探讨「人为什么是人」——跟《她》一脉相承。看完来找我聊感受～" },
-    ],
-  },
-];
+// 动态图标映射
+const iconMap: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
+  Monitor,
+  Settings,
+  Sun,
+  Zap,
+  Layers,
+  Shield,
+  Palette,
+};
 
 function AppMockup() {
+  const { t } = useI18n();
   const [activeChat, setActiveChat] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const current = chatData[activeChat];
+  const current = appPreviewChatSessions[activeChat];
 
   const handleChatChange = (index: number) => {
     if (activeChat === index) return;
@@ -95,15 +75,9 @@ function AppMockup() {
             <span className="text-[13px] font-medium text-dark-300 tracking-[0.5px]">Quiddity</span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
-              &#xE921;
-            </button>
-            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
-              &#xE922;
-            </button>
-            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-[#e81123] hover:text-white transition-colors text-[11px] font-[Segoe_MDL2_Assets]">
-              &#xE8BB;
-            </button>
+            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">&#xE921;</button>
+            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-white/[0.03] hover:text-dark-200 transition-colors text-[11px] font-[Segoe_MDL2_Assets]">&#xE922;</button>
+            <button className="w-[32px] h-[32px] rounded-sm flex items-center justify-center text-dark-400 hover:bg-[#e81123] hover:text-white transition-colors text-[11px] font-[Segoe_MDL2_Assets]">&#xE8BB;</button>
           </div>
         </div>
 
@@ -113,7 +87,7 @@ function AppMockup() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1 px-2 py-1 rounded-sm bg-white/[0.03] text-[12px] text-dark-400">
                   <Search size={11} />
-                  <span className="truncate">搜索会话...</span>
+                  <span className="truncate">{t(appPreviewInputPlaceholder)}</span>
                 </div>
               </div>
               <button className="w-[26px] h-[26px] rounded-sm border border-white/[0.08] flex items-center justify-center text-dark-500 hover:bg-white/[0.03] hover:text-dark-300 transition-colors text-[14px]">⚙</button>
@@ -121,9 +95,9 @@ function AppMockup() {
               <button className="w-[26px] h-[26px] rounded-sm flex items-center justify-center text-dark-500 hover:bg-white/[0.03] hover:text-dark-300 transition-colors text-[14px]">&laquo;</button>
             </div>
             <div className="flex-1 overflow-y-auto p-[6px] space-y-[2px]">
-              {chatData.map((chat, i) => (
+              {appPreviewChatSessions.map((chat, i) => (
                 <button
-                  key={chat.name}
+                  key={chat.id}
                   onClick={() => handleChatChange(i)}
                   className={`w-full flex items-center justify-between px-[12px] py-[10px] rounded-md text-[13px] text-left transition-all duration-300 group relative overflow-hidden ${
                     activeChat === i
@@ -134,7 +108,7 @@ function AppMockup() {
                   {activeChat === i && (
                     <div className="absolute inset-0 bg-gradient-to-r from-brand-500/5 to-transparent" />
                   )}
-                  <span className="truncate flex-1 relative z-10">{chat.name}</span>
+                  <span className="truncate flex-1 relative z-10">{t(chat.name)}</span>
                   <MoreVertical size={12} className="opacity-40 group-hover:opacity-60 shrink-0 relative z-10" />
                 </button>
               ))}
@@ -144,7 +118,7 @@ function AppMockup() {
           <div className="flex-1 flex flex-col bg-dark-950/40 min-w-0 relative">
             <div className="absolute inset-0 bg-gradient-to-br from-brand-500/[0.01] via-transparent to-purple-500/[0.01]" />
             <div className="h-[36px] flex items-center px-[16px] border-b border-white/[0.04] shrink-0 relative z-10">
-              <span className="text-[13px] text-dark-200 font-medium truncate">{current.name}</span>
+              <span className="text-[13px] text-dark-200 font-medium truncate">{t(current.name)}</span>
               <span className="ml-auto text-[11px] text-dark-500 shrink-0 ml-2">{current.model}</span>
             </div>
 
@@ -153,10 +127,10 @@ function AppMockup() {
                 {current.messages.map((msg, i) => (
                   <div key={i} className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}>
                     <span className="text-[12px] font-medium text-dark-500 mb-[4px] px-[4px]">
-                      {msg.role === "user" ? "你" : "小九"}
+                      {msg.role === "user" ? t(appPreviewSenderLabels.user) : t(appPreviewSenderLabels.ai)}
                     </span>
                     <div className={`max-w-[85%] min-w-0 ${msg.role === "user" ? "" : ""}`}>
-                      {parseContent(msg.text).map((seg, si) =>
+                      {parseContent(t(msg.text)).map((seg, si) =>
                         seg.type === "code" ? (
                           <div key={si} className="my-3 rounded-[12px] overflow-hidden border border-[#3a3a3e]/30 bg-[#161b22]" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)" }}>
                             <div className="flex items-center justify-between px-[16px] py-[7px] border-b border-white/[0.04]">
@@ -195,7 +169,7 @@ function AppMockup() {
                   <Image size={14} />
                 </button>
                 <div className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded-xl px-[14px] py-[9px] text-[14px] text-dark-500 min-h-[38px] flex items-center">
-                  输入消息...（Enter 发送，Shift+Enter 换行）
+                  {t(appPreviewInputPlaceholder)}
                 </div>
                 <button className="w-[38px] h-[38px] rounded-full bg-gradient-to-r from-brand-500 to-brand-600 flex items-center justify-center text-white hover:from-brand-400 hover:to-brand-500 transition-all duration-300 hover:scale-105 shadow-lg shadow-brand-500/30">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -212,38 +186,9 @@ function AppMockup() {
   );
 }
 
-const mobileHighlights = [
-  {
-    icon: Zap,
-    title: "即开即用",
-    desc: "免安装便携版，下载即用",
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-500/10",
-  },
-  {
-    icon: Layers,
-    title: "11 家服务商",
-    desc: "62 个模型，一键切换",
-    color: "text-brand-400",
-    bgColor: "bg-brand-500/10",
-  },
-  {
-    icon: Shield,
-    title: "本地加密",
-    desc: "数据不上传，隐私安全",
-    color: "text-green-400",
-    bgColor: "bg-green-500/10",
-  },
-  {
-    icon: Palette,
-    title: "人设精调",
-    desc: "自定义 AI 性格身份",
-    color: "text-purple-400",
-    bgColor: "bg-purple-500/10",
-  },
-];
-
 export default function AppPreview() {
+  const { t } = useI18n();
+
   return (
     <section className="py-16 sm:py-24 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/70 to-dark-950" />
@@ -253,16 +198,16 @@ export default function AppPreview() {
         <ScrollReveal className="text-center mb-10 sm:mb-14">
           <span className="inline-flex items-center gap-2 text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
             <Monitor size={12} className="animate-pulse" />
-            Interface
+            {t(appPreviewBadge)}
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
-            看看<span className="text-gradient"> Quiddity</span>长什么样
+            {t(appPreviewSectionTitle)}
           </h2>
           <p className="text-dark-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
-            简洁直观的桌面界面——左边会话、右边聊天，上手只需 3 秒
+            {t(appPreviewSectionSubtitle)}
           </p>
           <p className="text-[11px] sm:text-xs text-dark-500 mt-2 sm:mt-3 hidden sm:block">
-            点击左侧会话切换预览不同场景
+            {t(appPreviewHint)}
           </p>
         </ScrollReveal>
 
@@ -275,15 +220,18 @@ export default function AppPreview() {
 
         <ScrollReveal threshold={0.1} className="sm:hidden">
           <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6">
-            {mobileHighlights.map((item) => (
-              <div key={item.title} className="glass rounded-xl p-4 text-center card-interactive">
-                <div className={`w-10 h-10 rounded-xl ${item.bgColor} flex items-center justify-center mx-auto mb-2.5`}>
-                  <item.icon size={20} className={item.color} />
+            {appPreviewMobileHighlights.map((item) => {
+              const Icon = iconMap[item.icon];
+              return (
+                <div key={item.id} className="glass rounded-xl p-4 text-center card-interactive">
+                  <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center mx-auto mb-2.5">
+                    {Icon && <Icon size={20} className="text-brand-400" />}
+                  </div>
+                  <div className="text-sm font-semibold text-white mb-1">{t(item.title)}</div>
+                  <div className="text-[11px] text-dark-400 leading-relaxed">{t(item.desc)}</div>
                 </div>
-                <div className="text-sm font-semibold text-white mb-1">{item.title}</div>
-                <div className="text-[11px] text-dark-400 leading-relaxed">{item.desc}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="text-center">
             <a
@@ -291,7 +239,7 @@ export default function AppPreview() {
               onClick={(e) => { e.preventDefault(); scrollToSection("download"); }}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-dark-950 font-semibold text-sm btn-press"
             >
-              立即下载
+              {t(appPreviewMobileCta)}
               <Monitor size={16} />
             </a>
           </div>
@@ -299,15 +247,14 @@ export default function AppPreview() {
 
         <ScrollReveal threshold={0.2} className="hidden sm:block">
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mt-6 sm:mt-10 text-[10px] sm:text-[11px] text-dark-400">
-            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
-              <Monitor size={12} className="text-brand-400" /> Windows 原生应用
-            </span>
-            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
-              <Settings size={12} className="text-brand-400" /> 便携版，免安装
-            </span>
-            <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
-              <Sun size={12} className="text-brand-400" /> 深色 / 浅色主题
-            </span>
+            {appPreviewFeatureTags.map((tag) => {
+              const Icon = iconMap[tag.icon];
+              return (
+                <span key={tag.icon} className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full glass">
+                  {Icon && <Icon size={12} className="text-brand-400" />} {t(tag.label)}
+                </span>
+              );
+            })}
           </div>
         </ScrollReveal>
       </div>

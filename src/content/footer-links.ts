@@ -58,10 +58,10 @@ export const footerMadeWith = {
   en: "Crafted by Quiddity Developers",
 };
 
-/** 管理后台入口文案（低调入口，仅在 Footer 显示） */
-export const footerAdminLink = {
-  zh: "管理后台",
-  en: "Admin Console",
+/** 法律入口链接文案 */
+export const legalLinkText = {
+  zh: "查看完整法律信息",
+  en: "View Full Legal Information",
 };
 
 /**

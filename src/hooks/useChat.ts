@@ -3,15 +3,11 @@
 // 从 Demo 页面中抽离出来，职责单一
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import type { Message } from "./types";
+import { pick } from "@/store/i18n";
+import { demoEmptyReply, demoErrorPrefix, demoUnknownError } from "@/content";
+import type { Message, ProviderConfig } from "./types";
 
 // ── 类型 ──
-
-export interface ProviderConfig {
-  url: string;
-  models: { id: string; label: string }[];
-  keyPlaceholder: string;
-}
 
 export interface ChatConfig {
   apiKey: string;
@@ -100,7 +96,7 @@ export function useChat(initialMessages: Message[] = []) {
 
         const data = await res.json();
         const reply =
-          data.choices?.[0]?.message?.content ?? "（未收到回复）";
+          data.choices?.[0]?.message?.content ?? pick(demoEmptyReply);
 
         updateMessages((prev) => [
           ...prev,
@@ -111,7 +107,7 @@ export function useChat(initialMessages: Message[] = []) {
           ...prev,
           {
             role: "assistant",
-            content: `出错了：${e instanceof Error ? e.message : "未知错误"}`,
+            content: `${pick(demoErrorPrefix)}${e instanceof Error ? e.message : pick(demoUnknownError)}`,
           },
         ]);
       } finally {

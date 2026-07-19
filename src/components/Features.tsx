@@ -31,6 +31,7 @@ import { staggerContainer, staggerItem } from "@/lib/animation";
 import {
   features,
   highlights,
+  featuresBadge,
   featuresSectionTitle,
   featuresSectionSubtitle,
 } from "@/content/features";
@@ -192,7 +193,7 @@ export default function Features() {
         <ScrollReveal className="text-center mb-10 sm:mb-14">
           <span className="inline-flex items-center gap-2 text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
             <Sparkles size={12} className="animate-pulse" />
-            Features
+            {t(featuresBadge)}
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4">
             <GradientText animated={true}>{t(featuresSectionTitle)}</GradientText>

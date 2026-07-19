@@ -9,7 +9,7 @@
  *   - 保留品牌标识与社交链接
  */
 
-import { Mail, Github, Twitter, Scale, ArrowRight, Shield } from "lucide-react";
+import { Mail, Github, Twitter, Scale, ArrowRight } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useI18n } from "@/store/i18n";
 import { navigateToSection } from "@/lib/scroll";
@@ -20,16 +20,11 @@ import {
   footerSocial,
   footerCopyright,
   footerMadeWith,
-  footerAdminLink,
+  legalLinkText,
   disclaimerTitle,
   disclaimerIntro,
   disclaimerHighlight,
 } from "@/content/footer-links";
-
-const LEGAL_LINK_TEXT = {
-  zh: "查看完整法律信息",
-  en: "View Full Legal Information",
-} as const;
 
 export default function Footer() {
   const { t } = useI18n();
@@ -152,7 +147,7 @@ export default function Footer() {
           </button>
           <div className="text-center mt-2">
             <span className="text-[10px] text-brand-400/70 hover:text-brand-400 transition-colors">
-              {t(LEGAL_LINK_TEXT)}
+              {t(legalLinkText)}
             </span>
           </div>
         </div>
@@ -169,14 +164,6 @@ export default function Footer() {
               : footerCopyright.en}
           </span>
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/admin")}
-              className="inline-flex items-center gap-1.5 text-[10px] sm:text-[11px] text-dark-600 hover:text-brand-400 transition-colors group"
-              title={t(footerAdminLink)}
-            >
-              <Shield size={11} className="group-hover:scale-110 transition-transform" />
-              {t(footerAdminLink)}
-            </button>
             <span className="text-[11px] sm:text-xs text-dark-500">
               {t(footerMadeWith)}
             </span>

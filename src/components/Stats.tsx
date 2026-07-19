@@ -14,6 +14,11 @@ import { motion } from "framer-motion";
 import { CountUp, ScrollReveal } from "@/components/animation";
 import { useI18n } from "@/store/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animation";
+import {
+  statsSectionBadge,
+  statsSectionTitle,
+  statsSectionHighlight,
+} from "@/content/stats";
 
 type Stat = {
   id: string;
@@ -83,12 +88,12 @@ export default function Stats() {
         {/* 标题 */}
         <ScrollReveal className="text-center mb-10 sm:mb-14">
           <span className="inline-block text-[11px] sm:text-xs tracking-[0.2em] uppercase text-brand-400 mb-3 sm:mb-4">
-            Platform
+            {t(statsSectionBadge)}
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
-            {t({ zh: "平台", en: "Platform" })}{" "}
+            {t(statsSectionTitle)}{" "}
             <span className="text-gradient">
-              {t({ zh: "能力", en: "Capability" })}
+              {t(statsSectionHighlight)}
             </span>
           </h2>
         </ScrollReveal>

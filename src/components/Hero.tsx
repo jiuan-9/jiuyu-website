@@ -23,14 +23,9 @@ import {
   ShaderGradient,
 } from "@/components/animation";
 import { getDevicePerformanceProfile } from "@/lib/perf";
-import { heroCtaPrimary, heroCtaSecondary } from "@/content/hero";
+import { heroCtaPrimary, heroCtaSecondary, scrollHint } from "@/content/hero";
+import { brand } from "@/content";
 import { staggerContainer, staggerItem } from "@/lib/animation";
-
-// Slogan 是品牌核心，固定双语（不通过 content 文件）
-const SLOGAN = {
-  zh: "知所不尽，往复不止！",
-  en: "Endless Quest, Eternal Loop",
-} as const;
 
 export default function Hero() {
   const { t } = useI18n();
@@ -115,7 +110,7 @@ export default function Hero() {
         {/* 口号（逐字揭示，紧跟名字，无分割线） */}
         <motion.div variants={staggerItem} className="mb-10 sm:mb-12">
           <TextSplit
-            text={t(SLOGAN)}
+            text={t(brand.slogan)}
             as="h2"
             stagger={0.05}
             duration={0.6}
@@ -160,10 +155,7 @@ export default function Hero() {
       >
         {isMobile ? (
           <span className="text-[10px] tracking-wide text-center px-6 leading-relaxed text-dark-500">
-            {t({
-              zh: "建议使用 PC 访问",
-              en: "Best on PC",
-            })}
+            {t(scrollHint)}
           </span>
         ) : (
           <div className="scroll-indicator">

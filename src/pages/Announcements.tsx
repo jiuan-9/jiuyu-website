@@ -9,14 +9,12 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Announcements from "@/components/Announcements";
 import Footer from "@/components/Footer";
-
-const BACK_HOME = {
-  zh: "返回首页",
-  en: "Back to Home",
-} as const;
+import { useI18n } from "@/store/i18n";
+import { backToHome } from "@/content/announcements";
 
 export default function AnnouncementsPage() {
   const navigate = useNavigate();
+  const { t } = useI18n();
 
   return (
     <main className="min-h-screen bg-dark-950">
@@ -27,7 +25,7 @@ export default function AnnouncementsPage() {
           className="inline-flex items-center gap-2 text-sm text-dark-400 hover:text-brand-400 transition-colors group"
         >
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-          {BACK_HOME.zh}
+          {t(backToHome)}
         </button>
       </div>
 

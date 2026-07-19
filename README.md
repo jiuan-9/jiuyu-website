@@ -89,7 +89,7 @@ quiddity-website/
 │   ├── ci.yml            # 主 CI（lint + test + build + e2e）
 │   └── check-links.yml   # 下载链接巡检
 ├── public/               # 静态资源（version.json / downloads.json / announcements.json）
-├── scripts/              # 构建辅助脚本（sync-downloads / sync-version / admin cli）
+├── scripts/              # 构建辅助脚本（sync-downloads / sync-version / prebuild）
 ├── src/
 │   ├── components/       # 可复用组件
 │   │   ├── animation/    # 动画组件（ShaderGradient / AuroraBackground / TextSplit 等）
@@ -108,9 +108,8 @@ quiddity-website/
 │   │   ├── Timeline.tsx  # 版本历程
 │   │   ├── Announcements.tsx
 │   │   ├── NotFound.tsx  # 404
-│   │   ├── admin/        # 管理后台
 │   │   └── legal/        # 法律信息
-│   ├── store/            # Zustand stores（i18n / announcement 等）
+│   ├── store/            # Zustand stores（i18n 等）
 │   ├── styles/           # 全局样式
 │   ├── types/            # TypeScript 类型定义
 │   ├── App.tsx           # 路由配置
@@ -124,6 +123,30 @@ quiddity-website/
 ├── vitest.config.ts      # Vitest 配置（jsdom + coverage）
 ├── tailwind.config.ts    # Tailwind 主题配置
 └── package.json
+```
+
+## 管理后台
+
+网站不再提供 `/admin` 页面。公告管理、GitHub 数据查看与一键部署已迁移到独立的桌面应用：
+
+```
+D:\Quiddity-Agent\admin\
+├── main.py           # CustomTkinter 桌面应用入口
+├── start.bat         # Windows 启动脚本
+├── config_store.py   # 本地配置持久化
+├── github_client.py  # GitHub API 封装
+├── announcements.py  # 公告增删查改
+├── deployer.py       # 部署流程封装
+└── requirements.txt  # Python 依赖
+```
+
+启动方式：
+
+```bash
+cd D:\Quiddity-Agent\admin
+pip install -r requirements.txt
+python main.py
+# 或双击 start.bat
 ```
 
 ## 关键特性
