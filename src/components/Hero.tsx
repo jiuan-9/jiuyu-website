@@ -11,7 +11,6 @@
  */
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/lib/scroll";
@@ -25,13 +24,11 @@ import {
 import { getDevicePerformanceProfile } from "@/lib/perf";
 import { heroCtaPrimary, heroCtaSecondary, scrollHint } from "@/content/hero";
 import { brand } from "@/content";
-import { staggerContainer, staggerItem } from "@/lib/animation";
 
 export default function Hero() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   const [deviceTier, setDeviceTier] = useState<"high" | "medium" | "low">(
     "high"
   );
@@ -45,12 +42,6 @@ export default function Hero() {
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
-  }, []);
-
-  // 入场触发：下一帧激活，避免初始闪烁
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setIsLoaded(true));
-    return () => cancelAnimationFrame(id);
   }, []);
 
   return (
@@ -88,41 +79,33 @@ export default function Hero() {
         }}
       />
 
-      {/* ============ 内容层（v2.2 极简：名字 + 口号 + CTA） ============ */}
-      <motion.div
-        className="container relative z-10 mx-auto px-4 sm:px-6 text-center flex-1 flex flex-col items-center justify-center pt-16 sm:pt-20"
-        variants={staggerContainer(0.15, 0.15)}
-        initial="hidden"
-        animate={isLoaded ? "visible" : "hidden"}
-      >
-        {/* 名字（取消逐字揭示入场，直接显示） */}
-        <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
+      {/* ============ 内容层（v2.2 极简：名字 + 口号 + CTA，取消整块入场动画） ============ */}
+      <div className="container relative z-10 mx-auto px-4 sm:px-6 text-center flex-1 flex flex-col items-center justify-center pt-16 sm:pt-20">
+        {/* 名字（直接显示，无入场） */}
+        <div className="mb-6 sm:mb-8">
           <TextSplit
             text="Quiddity"
             as="h1"
-            stagger={0}
-            duration={0}
+            stagger={0.08}
+            duration={0.8}
             className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white tracking-tight"
             charClassName="inline-block"
           />
-        </motion.div>
+        </div>
 
-        {/* 口号（取消逐字揭示，紧跟名字，无分割线） */}
-        <motion.div variants={staggerItem} className="mb-10 sm:mb-12">
+        {/* 口号（直接显示，无入场） */}
+        <div className="mb-10 sm:mb-12">
           <TextSplit
             text={t(brand.slogan)}
             as="h2"
-            stagger={0}
-            duration={0}
+            stagger={0.05}
+            duration={0.6}
             className="text-base sm:text-xl md:text-2xl lg:text-3xl text-white/80 font-light tracking-[0.3em]"
           />
-        </motion.div>
+        </div>
 
         {/* CTA 按钮组（核心转化元素，必须保留） */}
-        <motion.div
-          variants={staggerItem}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none"
-        >
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-sm sm:max-w-none">
           <MagneticButton
             strength={18}
             onClick={() => scrollToSection("download")}
@@ -143,16 +126,11 @@ export default function Hero() {
           >
             {t(heroCtaSecondary)}
           </button>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
 
-      {/* 滚动提示（仅箭头 + 上下浮动） */}
-      <motion.div
-        className="relative z-10 flex flex-col items-center gap-1 text-dark-500 pb-6 sm:pb-8 shrink-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-      >
+      {/* 滚动提示（直接显示，无 fade-in） */}
+      <div className="relative z-10 flex flex-col items-center gap-1 text-dark-500 pb-6 sm:pb-8 shrink-0">
         {isMobile ? (
           <span className="text-[10px] tracking-wide text-center px-6 leading-relaxed text-dark-500">
             {t(scrollHint)}
@@ -162,7 +140,7 @@ export default function Hero() {
             <ChevronDown size={20} className="text-brand-400/60" />
           </div>
         )}
-      </motion.div>
+      </div>
     </section>
   );
 }
