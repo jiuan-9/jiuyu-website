@@ -38,7 +38,6 @@ import { staggerContainer, staggerItem } from "@/lib/animation";
 import {
   quiddityFeatures,
   quiddityBadge,
-  quidditySectionTitle,
   quidditySectionHighlight,
   quidditySectionSubtitle,
   quidditySlogan,
