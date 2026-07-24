@@ -13,6 +13,7 @@
 
 import { motion } from "framer-motion";
 import {
+  Sparkles,
   Bot,
   UserCheck,
   ShieldCheck,
@@ -25,7 +26,6 @@ import {
 } from "lucide-react";
 import {
   ScrollReveal,
-  Tilt3D,
   SpotlightCard,
   EnergyRing,
   MorphingBlob,
@@ -35,6 +35,7 @@ import { useI18n } from "@/store/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animation";
 import {
   quiddityFeatures,
+  quiddityBadge,
   quidditySectionHighlight,
   quidditySectionSubtitle,
   quidditySlogan,
@@ -70,17 +71,16 @@ function FeatureCard({ index }: { index: number }) {
   const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
 
   return (
-    <Tilt3D maxAngle={6} scale={1.04} glare={false} className="h-full">
-      <SpotlightCard
-        color="rgba(168, 85, 247, 0.18)"
-        radius={180}
-        className="group relative h-full p-4 sm:p-5 rounded-2xl glass glow-border flex flex-col overflow-hidden hover:border-purple-500/30 transition-colors duration-500"
-      >
+    <SpotlightCard
+      color="rgba(168, 85, 247, 0.18)"
+      radius={180}
+      className="group relative h-full p-4 sm:p-5 rounded-2xl glass glow-border flex flex-col items-center text-center overflow-hidden hover:border-purple-500/30 transition-colors duration-500"
+    >
         {/* 渐变背景（hover） */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         {/* 图标（固定宽高 + 显式居中，与标题同列中心对齐） */}
-        <div className="relative w-11 h-11 mb-3 z-10 self-center">
+        <div className="relative w-11 h-11 mb-3 z-10 shrink-0 mx-auto">
           <div
             className={`w-full h-full rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-gradient-to-br ${accent} transition-all duration-500 group-hover:scale-110`}
           >
@@ -90,19 +90,18 @@ function FeatureCard({ index }: { index: number }) {
         </div>
 
         {/* 标题（与图标同列中心对齐） */}
-        <h3 className="text-sm font-semibold text-white mb-1.5 text-center group-hover:text-purple-300 transition-colors relative z-10">
+        <h3 className="text-sm font-semibold text-white mb-1.5 text-center group-hover:text-purple-300 transition-colors relative z-10 w-full">
           {t(feature.title)}
         </h3>
 
         {/* 描述（与图标/标题同列中心对齐） */}
-        <p className="text-[11px] text-dark-400 leading-relaxed text-center group-hover:text-dark-300 transition-colors relative z-10 mt-auto">
+        <p className="text-[11px] text-dark-400 leading-relaxed text-center group-hover:text-dark-300 transition-colors relative z-10 mt-auto w-full">
           {t(feature.desc)}
         </p>
 
         {/* 底部光线 */}
         <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      </SpotlightCard>
-    </Tilt3D>
+    </SpotlightCard>
   );
 }
 
@@ -135,7 +134,15 @@ export default function QuiddityPreview() {
             <EnergyRing size={88} strokeWidth={2} />
           </div>
 
-          {/* 标题（已删除"下一代 AI 体验"徽章那一行） */}
+          {/* 徽章 */}
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 sm:mb-6 group hover:border-purple-500/30 transition-colors">
+            <Sparkles size={12} className="text-purple-400 animate-pulse" />
+            <span className="text-[10px] font-semibold text-purple-400 tracking-wider">
+              {t(quiddityBadge)}
+            </span>
+          </div>
+
+          {/* 标题（只保留 Quiddity Agent） */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             <GradientText
               animated={true}
