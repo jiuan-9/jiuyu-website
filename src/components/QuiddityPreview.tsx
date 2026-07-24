@@ -76,28 +76,28 @@ function FeatureCard({ index }: { index: number }) {
       <SpotlightCard
         color="rgba(168, 85, 247, 0.18)"
         radius={180}
-        className="group relative h-full p-4 sm:p-5 rounded-2xl glass glow-border flex flex-col items-center text-center overflow-hidden hover:border-purple-500/30 transition-colors duration-500"
+        className="group relative h-full p-4 sm:p-5 rounded-2xl glass glow-border flex flex-col overflow-hidden hover:border-purple-500/30 transition-colors duration-500"
       >
         {/* 渐变背景（hover） */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-        {/* 图标（水平居中，位于标题正上方） */}
-        <div className="relative mb-2 sm:mb-3 z-10 mx-auto">
+        {/* 图标（固定宽高 + 显式居中，与标题同列中心对齐） */}
+        <div className="relative w-11 h-11 mb-3 z-10 self-center">
           <div
-            className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-gradient-to-br ${accent} transition-all duration-500 group-hover:scale-110`}
+            className={`w-full h-full rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-gradient-to-br ${accent} transition-all duration-500 group-hover:scale-110`}
           >
             <Icon size={20} className="text-purple-400" />
           </div>
           <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/30 to-blue-500/20 blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
         </div>
 
-        {/* 标题 */}
-        <h3 className="text-sm font-semibold text-white mb-1 sm:mb-1.5 group-hover:text-purple-300 transition-colors relative z-10">
+        {/* 标题（与图标同列中心对齐） */}
+        <h3 className="text-sm font-semibold text-white mb-1.5 text-center group-hover:text-purple-300 transition-colors relative z-10">
           {t(feature.title)}
         </h3>
 
-        {/* 描述 */}
-        <p className="text-[11px] text-dark-400 leading-relaxed group-hover:text-dark-300 transition-colors relative z-10">
+        {/* 描述（与图标/标题同列中心对齐） */}
+        <p className="text-[11px] text-dark-400 leading-relaxed text-center group-hover:text-dark-300 transition-colors relative z-10 mt-auto">
           {t(feature.desc)}
         </p>
 
@@ -164,7 +164,7 @@ export default function QuiddityPreview() {
 
         {/* Feature Grid */}
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto auto-rows-fr"
           variants={staggerContainer(0.1, 0.08)}
           initial="hidden"
           whileInView="visible"
