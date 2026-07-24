@@ -95,25 +95,25 @@ export default function Hero() {
         initial="hidden"
         animate={isLoaded ? "visible" : "hidden"}
       >
-        {/* 名字（逐字揭示入场，稳重不浮夸） */}
+        {/* 名字（取消逐字揭示入场，直接显示） */}
         <motion.div variants={staggerItem} className="mb-6 sm:mb-8">
           <TextSplit
             text="Quiddity"
             as="h1"
-            stagger={0.08}
-            duration={0.8}
+            stagger={0}
+            duration={0}
             className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold text-white tracking-tight"
             charClassName="inline-block"
           />
         </motion.div>
 
-        {/* 口号（逐字揭示，紧跟名字，无分割线） */}
+        {/* 口号（取消逐字揭示，紧跟名字，无分割线） */}
         <motion.div variants={staggerItem} className="mb-10 sm:mb-12">
           <TextSplit
             text={t(brand.slogan)}
             as="h2"
-            stagger={0.05}
-            duration={0.6}
+            stagger={0}
+            duration={0}
             className="text-base sm:text-xl md:text-2xl lg:text-3xl text-white/80 font-light tracking-[0.3em]"
           />
         </motion.div>

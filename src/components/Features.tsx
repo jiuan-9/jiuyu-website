@@ -115,24 +115,24 @@ function FeatureCard({ index }: { index: number }) {
         {/* 右下角模糊光斑 */}
         <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-brand-500/[0.05] rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-        <div className="relative z-10 p-4 sm:p-6 flex flex-col h-full">
-          {/* 图标 + 标题 */}
-          <div className="flex items-center gap-3 mb-3 sm:mb-4">
-            <div className="relative">
-              <div
-                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${accent} flex items-center justify-center transition-all duration-500 group-hover:scale-110`}
-              >
-                <Icon size={20} className="text-white" />
-              </div>
-              <div className="absolute inset-0 rounded-xl bg-brand-500/20 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
+        <div className="relative z-10 p-4 sm:p-6 flex flex-col h-full items-center text-center">
+          {/* 图标（顶部居中） */}
+          <div className="relative mb-3 sm:mb-4">
+            <div
+              className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${accent} flex items-center justify-center transition-all duration-500 group-hover:scale-110`}
+            >
+              <Icon size={20} className="text-white" />
             </div>
-            <h3 className="text-base sm:text-lg font-semibold text-white group-hover:text-brand-300 transition-colors">
-              {t(feature.title)}
-            </h3>
+            <div className="absolute inset-0 rounded-xl bg-brand-500/20 blur-lg opacity-0 group-hover:opacity-60 transition-opacity duration-500" />
           </div>
 
+          {/* 标题 */}
+          <h3 className="text-base sm:text-lg font-semibold text-white mb-1.5 sm:mb-2 group-hover:text-brand-300 transition-colors">
+            {t(feature.title)}
+          </h3>
+
           {/* 描述 */}
-          <p className="text-xs sm:text-sm text-dark-400 leading-relaxed pl-0 sm:pl-[52px] flex-1 group-hover:text-dark-300 transition-colors duration-300">
+          <p className="text-xs sm:text-sm text-dark-400 leading-relaxed flex-1 group-hover:text-dark-300 transition-colors duration-300">
             {t(feature.desc)}
           </p>
         </div>

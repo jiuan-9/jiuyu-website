@@ -31,7 +31,6 @@ import {
   EnergyRing,
   MorphingBlob,
   GradientText,
-  MagneticButton,
 } from "@/components/animation";
 import { useI18n } from "@/store/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animation";
@@ -44,7 +43,6 @@ import {
   quidditySloganSubtitle,
   quiddityCtaTitle,
   quiddityCtaSubtitle,
-  quiddityCtaButton,
 } from "@/content/quiddity-preview";
 
 /** 图标名 → 组件映射 */
@@ -195,21 +193,14 @@ export default function QuiddityPreview() {
           </div>
         </ScrollReveal>
 
-        {/* CTA */}
+        {/* CTA（删除"预约体验"按钮，只保留标题/副标题） */}
         <ScrollReveal threshold={0.2} className="mt-8 sm:mt-12 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl glass glow-border w-full sm:w-auto max-w-md mx-auto relative overflow-hidden group">
+          <div className="inline-flex flex-col items-center gap-1 px-5 sm:px-8 py-4 sm:py-5 rounded-2xl glass glow-border w-full sm:w-auto max-w-md mx-auto relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/[0.02] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="text-center sm:text-left relative z-10">
+            <div className="text-center relative z-10">
               <div className="text-sm font-semibold text-white">{t(quiddityCtaTitle)}</div>
               <div className="text-xs text-dark-400 mt-0.5">{t(quiddityCtaSubtitle)}</div>
             </div>
-            <MagneticButton
-              onClick={(e) => e.preventDefault()}
-              strength={0.4}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-semibold hover:from-purple-400 hover:to-blue-400 transition-all duration-300 whitespace-nowrap shadow-lg shadow-purple-500/20"
-            >
-              {t(quiddityCtaButton)}
-            </MagneticButton>
           </div>
         </ScrollReveal>
       </div>
