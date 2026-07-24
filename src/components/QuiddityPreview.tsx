@@ -13,7 +13,6 @@
 
 import { motion } from "framer-motion";
 import {
-  Sparkles,
   Bot,
   UserCheck,
   ShieldCheck,
@@ -36,7 +35,6 @@ import { useI18n } from "@/store/i18n";
 import { staggerContainer, staggerItem } from "@/lib/animation";
 import {
   quiddityFeatures,
-  quiddityBadge,
   quidditySectionHighlight,
   quidditySectionSubtitle,
   quidditySlogan,
@@ -137,15 +135,7 @@ export default function QuiddityPreview() {
             <EnergyRing size={88} strokeWidth={2} />
           </div>
 
-          {/* 徽章 */}
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-4 sm:mb-6 group hover:border-purple-500/30 transition-colors">
-            <Sparkles size={12} className="text-purple-400 animate-pulse" />
-            <span className="text-[10px] font-semibold text-purple-400 tracking-wider">
-              {t(quiddityBadge)}
-            </span>
-          </div>
-
-          {/* 标题（删除"下一代 AI 体验"那一行，只保留 Quiddity Agent） */}
+          {/* 标题（已删除"下一代 AI 体验"徽章那一行） */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
             <GradientText
               animated={true}
