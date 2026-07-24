@@ -84,8 +84,8 @@ function FeatureCard({ index }: { index: number }) {
         {/* 渐变背景（hover） */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/[0.03] to-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-        {/* 图标 */}
-        <div className="relative mb-2 sm:mb-3 z-10">
+        {/* 图标（水平居中，位于标题正上方） */}
+        <div className="relative mb-2 sm:mb-3 z-10 mx-auto">
           <div
             className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-purple-500/10 flex items-center justify-center group-hover:bg-gradient-to-br ${accent} transition-all duration-500 group-hover:scale-110`}
           >
@@ -148,10 +148,8 @@ export default function QuiddityPreview() {
             </span>
           </div>
 
-          {/* 标题 */}
+          {/* 标题（删除"下一代 AI 体验"那一行，只保留 Quiddity Agent） */}
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-            {t(quidditySectionTitle)}
-            <br />
             <GradientText
               animated={true}
               colors={["#a855f7", "#3b82f6", "#22d3ee"]}

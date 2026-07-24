@@ -72,8 +72,8 @@ export const features: Feature[] = [
     id: "skills",
     icon: "Wrench",
     title: {
-      zh: "强大 Skill 库",
-      en: "Powerful Skills",
+      zh: "强大精调功能",
+      en: "Powerful Persona Tuning",
     },
     desc: {
       zh: "内置代码审查、文档生成、Markdown 渲染等专业 Skills，开箱即用、可扩展。",
@@ -113,6 +113,6 @@ export const featuresSectionTitle = {
 };
 
 export const featuresSectionSubtitle = {
-  zh: "集多模型、隐私、流畅于一身，重新定义桌面 AI 体验",
-  en: "Multi-model, private, and fluid — redefining desktop AI",
+  zh: "集多模型、隐私、流畅于一身，专注做真正可用的桌面 AI",
+  en: "Multi-model, private, and fluid — a desktop AI focused on real usefulness",
 };

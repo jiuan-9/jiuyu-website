@@ -35,7 +35,7 @@ export const quiddityFeatures: QuiddityFeature[] = [
   {
     id: "skills",
     icon: "Wrench",
-    title: { zh: "强大 Skill 库", en: "Powerful Skills" },
+    title: { zh: "工具调用", en: "Tool Invocation" },
     desc: {
       zh: "内置丰富的 Skills，可独立完成多项专业工作。从代码审查到文档生成，开箱即用。",
       en: "Built-in rich skills that independently handle professional work — code review, doc generation, all out of the box.",
@@ -53,10 +53,10 @@ export const quiddityFeatures: QuiddityFeature[] = [
   {
     id: "classic",
     icon: "Palette",
-    title: { zh: "延续经典体验", en: "Continued Classic UX" },
+    title: { zh: "专业界面", en: "Refined UI" },
     desc: {
-      zh: "动画与主题风格沿用上一代设计语言，熟悉的交互，更强大的内核。",
-      en: "Animations and themes continue the previous design language — familiar interactions, more powerful core.",
+      zh: "界面与交互经过反复打磨，视觉风格统一、细节专业。",
+      en: "Carefully polished interface and interactions with a consistent, professional look.",
     },
   },
   {
@@ -86,8 +86,8 @@ export const quiddityBadge = {
 };
 
 export const quidditySectionTitle = {
-  zh: "下一代 AI 体验",
-  en: "Next-Gen AI Experience",
+  zh: "",
+  en: "",
 };
 
 export const quidditySectionHighlight = {
